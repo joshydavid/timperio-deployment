@@ -27,7 +27,9 @@
    mvn clean install -U
    ```
 
-3. Set up environment variables, create the file `.env` at `backend/.env`
+3. Set up environment variables
+
+   create the file `.env` at `backend/.env`
 
    ```
    DB_URL=jdbc:postgresql://localhost:5432/timperiodb
@@ -39,7 +41,13 @@
    MAILCHIMP_API_KEY={MAILCHIMP_API_KEY}
    ```
 
-4. Run the project in development environment
+   create the file `.env` at `frontend/.env`
+
+   ```
+   VITE_SERVER=http://localhost:8080
+   ```
+
+6. Run the project in development environment
 
    ```
    frontend - npm run dev
