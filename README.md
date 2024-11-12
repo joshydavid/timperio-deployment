@@ -72,6 +72,6 @@ Developed by Team 5
   <img src="https://github.com/user-attachments/assets/24522f87-6fb8-4b48-94d8-8022eb571e96" width="80">
 </a> &nbsp;
 
-<a href="https://www.linkedin.com/in/liawjunyi/">
+<!-- <a href="https://www.linkedin.com/in/liawjunyi/">
   <img src="https://github.com/user-attachments/assets/24522f87-6fb8-4b48-94d8-8022eb571e96" width="80">
-</a>
+</a> -->
