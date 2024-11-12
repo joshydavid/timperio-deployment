@@ -263,11 +263,10 @@ export const DashboardPage: React.FC = () => {
               <CardWithPlot
                 icon={
                   <DollarCircleOutlined
-                    style={{
-                      fontSize: 14,
-                      color: token.colorPrimary,
-                    }}
-                  />
+                                      style={{
+                                          fontSize: 14,
+                                          color: token.colorPrimary,
+                                      }} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                  />
                 }
                 title={t('Revenue')}
                 rightSlot={
@@ -325,11 +324,10 @@ export const DashboardPage: React.FC = () => {
                 title={t('dashboard.trendingProducts.title')}
                 extra={
                   <RiseOutlined
-                    style={{
-                      fontSize: 14,
-                      color: token.colorPrimary,
-                    }}
-                  />
+                        style={{
+                            fontSize: 14,
+                            color: token.colorPrimary,
+                        }} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                  />
                 }
               >
                 <TrendingMenu

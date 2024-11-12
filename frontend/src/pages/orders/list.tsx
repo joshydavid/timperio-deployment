@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useNavigation, useTranslate } from "@refinedev/core";
 import {
-  Table,
-  Input,
-  Select,
-  Typography,
-  InputNumber,
-  DatePicker,
   Button,
-} from 'antd';
-import { useTranslate, useNavigation } from '@refinedev/core';
-import dayjs from 'dayjs';
+  DatePicker,
+  Input,
+  InputNumber,
+  Select,
+  Table,
+  Typography,
+} from "antd";
+import axios from "axios";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -22,32 +22,30 @@ export const OrderList = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch data from server based on filters
-  const fetchFilteredData = async (filterType, filterValue) => {
+  const fetchFilteredData = async (filterType?: any, filterValue?: any) => {
     setLoading(true);
     try {
       let url = `${import.meta.env.VITE_SERVER}/api/v1/purchaseHistory`;
 
       if (filterType && filterValue) {
-        // Dynamically construct the URL based on filter type
         url += `/${filterType}/${filterValue}`;
       }
 
       const response = await axios.get(url, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+          Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
         },
       });
       setData(response.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchFilteredData(); // Initial data load
+    fetchFilteredData();
   }, []);
 
   return (
@@ -58,14 +56,14 @@ export const OrderList = () => {
         loading={loading}
         onRow={(record) => ({
           onClick: () => {
-            show('orders', record.salesId);
+            show("orders", record.salesId);
           },
         })}
       >
         <Table.Column
           key="salesId"
           dataIndex="salesId"
-          title={t('orders.fields.order')}
+          title={t("orders.fields.order")}
           render={(value) => <Typography.Text>#{value}</Typography.Text>}
           filterDropdown={({
             setSelectedKeys,
@@ -75,8 +73,9 @@ export const OrderList = () => {
           }) => (
             <div style={{ padding: 8 }}>
               <InputNumber
-                placeholder={t('orders.filter.orderId.placeholder')}
-                style={{ width: '100%' }}
+                placeholder={t("orders.filter.orderId.placeholder")}
+                style={{ width: "100%" }}
+                // @ts-ignore
                 value={selectedKeys[0]}
                 onChange={(value) => {
                   setSelectedKeys(value ? [value] : []);
@@ -112,7 +111,7 @@ export const OrderList = () => {
         <Table.Column
           key="customerId"
           dataIndex="customerId"
-          title={t('orders.fields.customerID')}
+          title={t("orders.fields.customerID")}
           filterDropdown={({
             setSelectedKeys,
             selectedKeys,
@@ -121,15 +120,15 @@ export const OrderList = () => {
           }) => (
             <div style={{ padding: 8 }}>
               <Input
-                placeholder={t('orders.filter.customerId.placeholder')}
-                style={{ width: '100%' }}
+                placeholder={t("orders.filter.customerId.placeholder")}
+                style={{ width: "100%" }}
                 value={selectedKeys[0]}
                 onChange={(e) => {
                   setSelectedKeys(e.target.value ? [e.target.value] : []);
                 }}
                 onPressEnter={() => {
                   confirm();
-                  fetchFilteredData('customerId', selectedKeys[0]);
+                  fetchFilteredData("customerId", selectedKeys[0]);
                 }}
               />
               <div style={{ marginTop: 8 }}>
@@ -148,7 +147,7 @@ export const OrderList = () => {
                   size="small"
                   onClick={() => {
                     confirm();
-                    fetchFilteredData('customerId', selectedKeys[0]);
+                    fetchFilteredData("customerId", selectedKeys[0]);
                   }}
                   style={{ width: 90 }}
                 >
@@ -162,7 +161,7 @@ export const OrderList = () => {
         <Table.Column
           key="product"
           dataIndex="product"
-          title={t('orders.fields.products')}
+          title={t("orders.fields.products")}
           filterDropdown={({
             setSelectedKeys,
             selectedKeys,
@@ -171,8 +170,8 @@ export const OrderList = () => {
           }) => (
             <div style={{ padding: 8 }}>
               <Input
-                placeholder={t('orders.filter.product.placeholder')}
-                style={{ width: '100%' }}
+                placeholder={t("orders.filter.product.placeholder")}
+                style={{ width: "100%" }}
                 value={selectedKeys[0]}
                 onChange={(e) => {
                   setSelectedKeys(e.target.value ? [e.target.value] : []);
@@ -199,16 +198,14 @@ export const OrderList = () => {
             </div>
           )}
           onFilter={(value, record) => {
-            return value
-              ? record.product.toLowerCase().includes(value.toLowerCase())
-              : true;
+            return value ? record.product.toLowerCase().includes(value) : true;
           }}
         />
 
         <Table.Column
           key="totalPrice"
           dataIndex="totalPrice"
-          title={t('orders.fields.amount')}
+          title={t("orders.fields.amount")}
           render={(value) => `SGD ${value}`}
           filterDropdown={({
             setSelectedKeys,
@@ -218,8 +215,9 @@ export const OrderList = () => {
           }) => (
             <div style={{ padding: 8 }}>
               <InputNumber
-                placeholder={t('orders.filter.amount.placeholder')}
-                style={{ width: '100%' }}
+                placeholder={t("orders.filter.amount.placeholder")}
+                style={{ width: "100%" }}
+                // @ts-ignore
                 value={selectedKeys[0]}
                 onChange={(value) => {
                   setSelectedKeys(value ? [value] : []);
@@ -255,8 +253,8 @@ export const OrderList = () => {
         <Table.Column
           key="salesDate"
           dataIndex="salesDate"
-          title={t('orders.fields.salesDate')}
-          render={(value) => dayjs(value).format('YYYY-MM-DD')}
+          title={t("orders.fields.salesDate")}
+          render={(value) => dayjs(value).format("YYYY-MM-DD")}
           filterDropdown={({
             setSelectedKeys,
             selectedKeys,
@@ -265,9 +263,11 @@ export const OrderList = () => {
           }) => (
             <div style={{ padding: 8 }}>
               <RangePicker
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
+                // @ts-ignore
                 value={selectedKeys[0]}
                 onChange={(dates) => {
+                  // @ts-ignore
                   setSelectedKeys(dates ? [dates] : []);
                 }}
                 onPressEnter={() => confirm()}
@@ -297,7 +297,7 @@ export const OrderList = () => {
                   value[0],
                   value[1],
                   null,
-                  '[]'
+                  "[]"
                 )
               : true;
           }}
@@ -305,7 +305,7 @@ export const OrderList = () => {
         <Table.Column
           key="salesType"
           dataIndex="salesType"
-          title={t('orders.fields.salesType')}
+          title={t("orders.fields.salesType")}
           filterDropdown={({
             setSelectedKeys,
             selectedKeys,
@@ -315,14 +315,14 @@ export const OrderList = () => {
             <div style={{ padding: 8 }}>
               <Select
                 mode="multiple"
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
                 value={selectedKeys}
                 onChange={(value) => {
                   setSelectedKeys(value || []);
                 }}
-                onPressEnter={() => {
+                onKeyDown={() => {
                   confirm();
-                  fetchFilteredData('salesType', selectedKeys.join(',')); // Join for multiple values
+                  fetchFilteredData("salesType", selectedKeys.join(","));
                 }}
               >
                 <Select.Option value="DIRECT_B2B">DIRECT_B2B</Select.Option>
@@ -347,7 +347,7 @@ export const OrderList = () => {
                   size="small"
                   onClick={() => {
                     confirm();
-                    fetchFilteredData('salesType', selectedKeys.join(','));
+                    fetchFilteredData("salesType", selectedKeys.join(","));
                   }}
                   style={{ width: 90 }}
                 >

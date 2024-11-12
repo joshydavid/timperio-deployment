@@ -1,29 +1,26 @@
-import { useState, useEffect } from 'react';
+import { EyeOutlined } from '@ant-design/icons';
+import { useTranslate } from '@refinedev/core';
 import {
-  List,
-  Table,
-  Button,
-  Input,
-  Select,
-  Typography,
-  Modal,
-  Tabs,
-  Card,
-  Row,
-  Col,
-  theme,
+    Button,
+    Card,
+    Col,
+    Input,
+    List,
+    Modal,
+    Row,
+    Table,
+    Tabs,
+    theme,
+    Typography
 } from 'antd';
-import { useGo, useTranslate } from '@refinedev/core';
-import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
-import { PaginationTotal } from '../../components';
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { PaginationTotal } from '../../components';
 
 const { TabPane } = Tabs;
 
 export const CustomerList = () => {
-  const { showUrl } = useGo();
-  const { pathname } = useLocation();
+
   const t = useTranslate();
   const { token } = theme.useToken();
 
@@ -201,7 +198,7 @@ export const CustomerList = () => {
       title: 'Actions',
       render: (_, record) => (
         <Button
-          icon={<EyeOutlined />}
+          icon={<EyeOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
           onClick={() => {
             setSelectedCustomer(record);
             setIsModalVisible(true);
@@ -213,12 +210,11 @@ export const CustomerList = () => {
 
   return (
     <List
-      breadcrumb={false}
-      headerProps={{
-        extra: <Button loading={isLoading} icon={<SearchOutlined />} />,
-      }}
+    //   breadcrumb={true}
+    //   headerProps={{
+    //     extra: <Button loading={isLoading} icon={<SearchOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />} />,
+    //   }}
     >
-      {/* Tabs for selecting customer segments */}
       <Tabs
         defaultActiveKey="ALL_CUSTOMERS"
         activeKey={activeTab}
@@ -231,7 +227,6 @@ export const CustomerList = () => {
         <TabPane tab="High Value" key="HIGH_VALUE" />
       </Tabs>
 
-      {/* Display overall metrics cards only on All Customers tab */}
       {activeTab === 'ALL_CUSTOMERS' && overallMetrics && (
         <Row gutter={16} style={{ marginBottom: 24 }}>
           <Col span={8}>
@@ -258,7 +253,7 @@ export const CustomerList = () => {
         </Row>
       )}
 
-      {/* Table for displaying customers */}
+
       <Table
         rowKey="customerId"
         columns={columns}
@@ -273,7 +268,7 @@ export const CustomerList = () => {
         }}
       />
 
-      {/* Modal for displaying full purchase history */}
+
       {selectedCustomer && (
         <Modal
           title={`Purchase History for Customer #${selectedCustomer.customerId}`}
@@ -286,7 +281,7 @@ export const CustomerList = () => {
           ]}
         >
           <ul>
-            {selectedCustomer.purchaseHistory.map((purchase) => (
+            {selectedCustomer.purchaseHistory.map((purchase: any) => (
               <li key={purchase.salesId}>
                 <Typography.Text>
                   {purchase.product} - {purchase.totalPrice}

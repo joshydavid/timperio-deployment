@@ -6,9 +6,9 @@ import App from "./App";
 import dayjs from "dayjs";
 import "./i18n";
 
-import WeekDay from "dayjs/plugin/weekday";
 import LocaleData from "dayjs/plugin/localeData";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
+import WeekDay from "dayjs/plugin/weekday";
 
 dayjs.extend(WeekDay);
 dayjs.extend(LocaleData);

@@ -88,6 +88,7 @@ export interface ICourierStatus {
 }
 
 export interface ICourier {
+  userId: any;
   id: number;
   name: string;
   surname: string;
@@ -105,19 +106,31 @@ export interface ICourier {
 }
 
 export interface IOrder {
-  salesId: number; // Renamed from 'id' to 'salesId' to match the response
-  salesDate: string; // Corresponds to 'salesDate'
-  salesType: string; // Corresponds to 'salesType'
-  channelType: string; // Corresponds to 'channelType'
-  customerId: number; // Corresponds to 'customerId'
-  zipCode: number; // Corresponds to 'zipCode'
-  shippingMethod: string; // Corresponds to 'shippingMethod'
-  product: string; // Corresponds to 'product'
-  unitPrice: number; // Corresponds to 'unitPrice'
-  variant: number; // Corresponds to 'variant'
-  quantity: number; // Corresponds to 'quantity'
-  totalPrice: number; // Corresponds to 'totalPrice'
-}
+    salesId: number;
+    salesDate: string;
+    salesType: string;
+    channelType: string;
+    customerId: number;
+    zipCode: number;
+    shippingMethod: string;
+    product: string;
+    unitPrice: number;
+    variant: number;
+    quantity: number;
+    totalPrice: number;
+    orderNumber: number;
+    record: any;
+    status: any;
+    id: any;
+    products: any;
+    user: any;
+    createdAt: any
+    courier: any
+    store: any
+    events: any
+    adress: any
+  }
+
 
 export interface IProduct {
   id: number;

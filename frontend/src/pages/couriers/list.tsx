@@ -134,7 +134,7 @@ export const UserManagement = () => {
       <Title level={3}>{t('User Management')}</Title>
       <Button
         type="primary"
-        icon={<PlusOutlined />}
+        icon={<PlusOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
         onClick={showCreateUserModal}
         style={{ float: 'right', marginBottom: '16px' }}
       >
@@ -159,7 +159,7 @@ export const UserManagement = () => {
           render={(_, record: ICourier) => (
             <div>
               <Button
-                icon={<EditOutlined />}
+                icon={<EditOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
                 onClick={() => showEditModal(record)}
                 style={{ marginRight: 8 }}
               >
@@ -171,7 +171,7 @@ export const UserManagement = () => {
                 okText="Yes"
                 cancelText="No"
               >
-                <Button icon={<DeleteOutlined />} danger>
+                <Button icon={<DeleteOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />} danger>
                   Delete
                 </Button>
               </Popconfirm>
