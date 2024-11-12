@@ -12,8 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.Timperio.enums.Role;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,14 +29,13 @@ import lombok.Setter;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public abstract class User implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,14 +53,8 @@ public abstract class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
-    @Column(name = "role", insertable = false, updatable = false)
+    @Column(name = "role")
     private Role role;
-
-    public User(String userEmail, String password, String userName) {
-        this.userEmail = userEmail;
-        this.password = password;
-        this.name = userName;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

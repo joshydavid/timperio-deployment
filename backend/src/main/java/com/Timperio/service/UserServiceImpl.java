@@ -12,7 +12,6 @@ import com.Timperio.repository.UserRepository;
 import com.Timperio.service.impl.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -29,26 +28,30 @@ public class UserServiceImpl implements UserService {
     }
 
     public User createUser(CreateUpdateUserAdminDto input) {
-        User user;
+        User user = null;
+        Role role = input.getRole();
         
-        switch (input.getRole()) {
+        switch (role) {
             case ADMIN:
-                user = new AdminUser(); 
+                user = new User(); 
+                user.setRole(Role.ADMIN);
                 break;
             case MARKETING:
-                user = new MarketingUser();
+                user = new User();
+                user.setRole(Role.MARKETING);
                 break;
             case SALES:
-                user = new SalesUser();
+                user = new User();
+                user.setRole(Role.SALES);
                 break;
             default:
-                throw new InvalidRoleException("Invalid role: " + input.getRole());
+                throw new InvalidRoleException("Invalid role: " + role);
         }
     
         user.setName(input.getName());
         user.setUserEmail(input.getUserEmail());
         user.setPassword(passwordEncoder.encode(input.getPassword()));
-    
+
         return userRepository.save(user);
     }
 
@@ -134,18 +137,6 @@ public class UserServiceImpl implements UserService {
 
     public List<User> findByRole(Role role) {
         return userRepository.findByRole(role);
-    }
-
-    public void saveUser(MarketingUser user) {
-        userRepository.save(user);
-    }
-
-    public void saveUser(SalesUser user) {
-        userRepository.save(user);
-    }
-
-    public void saveUser(AdminUser user) {
-        userRepository.save(user);
     }
 
 }
