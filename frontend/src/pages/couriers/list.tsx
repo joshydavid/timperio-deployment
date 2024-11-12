@@ -40,7 +40,7 @@ export const UserManagement = () => {
         throw new Error('No token found in localStorage');
       }
 
-      const response = await axios.get('http://localhost:8080/api/v1/user', {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER}/api/v1/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -63,7 +63,7 @@ export const UserManagement = () => {
   // Handle modal submission for creating a new user
   const handleCreateUser = async (values: any) => {
     try {
-      await axios.post('http://localhost:8080/api/v1/user', values, {
+      await axios.post(`${import.meta.env.VITE_SERVER}/api/v1/user`, values, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
         },
@@ -91,7 +91,7 @@ export const UserManagement = () => {
 
     try {
       await axios.put(
-        `http://localhost:8080/api/v1/user/admin/${editingUser.userId}`,
+        `${import.meta.env.VITE_SERVER}/api/v1/user/admin/${editingUser.userId}`,
         values,
         {
           headers: {
@@ -117,7 +117,7 @@ export const UserManagement = () => {
   // Handle user deletion
   const handleDeleteUser = async (userId: string) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/user/id/${userId}`, {
+      await axios.delete(`${import.meta.env.VITE_SERVER}/api/v1/user/id/${userId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
         },

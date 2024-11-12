@@ -49,7 +49,7 @@
 ## API Documentation
 
 ```
-http://localhost:8080/swagger-ui/index.html
+${import.meta.env.VITE_SERVER}/swagger-ui/index.html
 ```
 
 ## Acknowledgements

@@ -39,7 +39,7 @@ export const CustomerList = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://localhost:8080/api/v1/customers/segment/${segment}`,
+        `${import.meta.env.VITE_SERVER}/api/v1/customers/segment/${segment}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
@@ -58,7 +58,7 @@ export const CustomerList = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        'http://localhost:8080/api/v1/customers',
+        `${import.meta.env.VITE_SERVER}/api/v1/customers`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
@@ -80,7 +80,7 @@ export const CustomerList = () => {
       const updatedCustomers = await Promise.all(
         customersData.map(async (customer) => {
           const metricsResponse = await axios.get(
-            `http://localhost:8080/api/v1/customers/metrics/${customer.customerId}`,
+            `${import.meta.env.VITE_SERVER}/api/v1/customers/metrics/${customer.customerId}`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem(
@@ -107,7 +107,7 @@ export const CustomerList = () => {
   const fetchOverallMetrics = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:8080/api/v1/customers/metrics',
+        `${import.meta.env.VITE_SERVER}/api/v1/customers/metrics`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,

@@ -22,7 +22,7 @@ export const DailyRevenue = ({ height, selectedDateRange }: Props) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        'http://localhost:8080/api/v1/purchaseHistory',
+        `${import.meta.env.VITE_SERVER}/api/v1/purchaseHistory`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,

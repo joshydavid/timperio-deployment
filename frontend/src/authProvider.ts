@@ -28,7 +28,7 @@ export const authProvider: AuthProvider = {
     try {
       enableAutoLogin();
       const response = await axios.post(
-        'http://localhost:8080/api/v1/auth/login',
+        `${import.meta.env.VITE_SERVER}/api/v1/auth/login`,
         {
           userEmail: email,
           password: password,
@@ -115,7 +115,7 @@ export const authProvider: AuthProvider = {
 
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/user/email/${loggedInEmail}`,
+        `${import.meta.env.VITE_SERVER}/api/v1/user/email/${loggedInEmail}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

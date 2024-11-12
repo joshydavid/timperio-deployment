@@ -26,7 +26,7 @@ export const OrderList = () => {
   const fetchFilteredData = async (filterType, filterValue) => {
     setLoading(true);
     try {
-      let url = `http://localhost:8080/api/v1/purchaseHistory`;
+      let url = `${import.meta.env.VITE_SERVER}/api/v1/purchaseHistory`;
 
       if (filterType && filterValue) {
         // Dynamically construct the URL based on filter type
