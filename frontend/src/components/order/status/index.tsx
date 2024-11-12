@@ -3,13 +3,18 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
-} from "@ant-design/icons";
-import { useTranslate } from "@refinedev/core";
-import { Tag } from "antd";
-import { BikeIcon, BikeWhiteIcon } from "../../icons";
+} from '@ant-design/icons';
+import { useTranslate } from '@refinedev/core';
+import { Tag } from 'antd';
+import { BikeIcon, BikeWhiteIcon } from '../../icons';
 
 type OrderStatusProps = {
-  status: "Pending" | "Ready" | "On The Way" | "Delivered" | "Cancelled";
+  status:
+    | 'DIRECT_B2C'
+    | 'DIRECT_B2B'
+    | 'MARKETING'
+    | 'CONSIGNMENT'
+    | 'WHOLESALER';
 };
 
 export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
@@ -18,36 +23,36 @@ export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
   let icon;
 
   switch (status) {
-    case "Pending":
-      color = "orange";
+    case 'CONSIGNMENT':
+      color = 'orange';
       // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
       icon = <ClockCircleOutlined />;
       break;
-    case "Ready":
-      color = "cyan";
+    case 'MARKETING':
+      color = 'cyan';
       // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
       icon = <BellOutlined />;
       break;
-    case "On The Way":
-      color = "blue";
+    case 'DIRECT_B2C':
+      color = 'blue';
       // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
       icon = <BikeWhiteIcon />;
       break;
-    case "Delivered":
-      color = "green";
+    case 'DIRECT_B2B':
+      color = 'green';
       // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
       icon = <CheckCircleOutlined />;
       break;
-    case "Cancelled":
-      color = "red";
+    case 'WHOLESALER':
+      color = 'pink';
       // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-      icon = <CloseCircleOutlined />;
+      icon = <CheckCircleOutlined />;
       break;
   }
 
   return (
     <Tag color={color} icon={icon}>
-      {t(`enum.orderStatuses.${status}`)}
+      {t(`enum.salesType.${status}`)}
     </Tag>
   );
 };

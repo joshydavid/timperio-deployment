@@ -285,11 +285,11 @@
     "timeline": {
       "title": "Timeline",
       "orderStatuses": {
-        "pending": "Preparing order",
-        "ready": "Order is ready",
-        "on the way": "Order is on the way",
-        "delivered": "Order is delivered",
-        "cancelled": "Order is cancelled"
+        "CONSIGNMENT": "Consignment",
+        "DIRECT_B2B": "DIRECT_B2B",
+        "MARKETING": "MARKETING",
+        "DIRECT_B2C": "DIRECT_B2C",
+        "WHOLESALER": "WHOLESALER"
       }
     },
     "recentOrders": {
@@ -303,12 +303,12 @@
     }
   },
   "enum": {
-    "orderStatuses": {
-      "Pending": "Pending",
-      "Ready": "Ready",
-      "On The Way": "On the way",
-      "Delivered": "Delivered",
-      "Cancelled": "Cancelled"
+    "salesType": {
+      "CONSIGNMENT": "Consignment",
+      "DIRECT_B2B": "DIRECT_B2B",
+      "MARKETING": "MARKETING",
+      "DIRECT_B2C": "DIRECT_B2C",
+      "WHOLESALER": "WHOLESALER"
     }
   },
   "orders": {
@@ -324,10 +324,13 @@
     "fields": {
       "orderNumber": "Order Number",
       "orderID": "Order ID",
+      "customerID": "Customer ID",
       "status": "Status",
+      "salesType": "Sales Type",
       "store": "Store",
       "user": "User",
       "products": "Products",
+      "salesDate": "Sales Date",
       "createdAt": "CreatedAt",
       "amount": "Amount",
       "itemsAmount": "{{amount}} items",
@@ -343,9 +346,9 @@
         "label": "Search",
         "placeholder": "Order Number, User, etc."
       },
-      "status": {
-        "label": "Status",
-        "placeholder": "Order Status"
+      "salestype": {
+        "label": "SalesType",
+        "placeholder": "Sales Type"
       },
       "store": {
         "label": "Store",
@@ -362,9 +365,9 @@
       "createdAt": {
         "label": "Created At"
       },
-      "orderNumber": {
-        "label": "Order Number",
-        "placeholder": "Search Order Number"
+      "orderId": {
+        "label": "Order ID",
+        "placeholder": "Search Order ID"
       },
       "submit": "Filter"
     },

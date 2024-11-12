@@ -1,14 +1,13 @@
-import { AuthPage as AntdAuthPage, type AuthProps } from "@refinedev/antd";
-import { Flex } from "antd";
-import { Link } from "react-router-dom";
-import { FinefoodsLogoIcon, FinefoodsLogoText } from "../../components";
+import { AuthPage as AntdAuthPage, type AuthProps } from '@refinedev/antd';
+import { Flex } from 'antd';
+import { Link } from 'react-router-dom';
 
 const authWrapperProps = {
-  style: {
-    background:
-      "radial-gradient(50% 50% at 50% 50%,rgba(255, 255, 255, 0) 0%,rgba(0, 0, 0, 0.5) 100%),url('images/login-bg.png')",
-    backgroundSize: "cover",
-  },
+  // style: {
+  //   background:
+  //     "radial-gradient(50% 50% at 50% 50%,rgba(255, 255, 255, 0) 0%,rgba(0, 0, 0, 0.5) 100%),url('images/login-bg.png')",
+  //   backgroundSize: "cover",
+  // },
 };
 
 const renderAuthContent = (content: React.ReactNode) => {
@@ -16,7 +15,7 @@ const renderAuthContent = (content: React.ReactNode) => {
     <div
       style={{
         maxWidth: 408,
-        margin: "auto",
+        margin: 'auto',
       }}
     >
       <Link to="/">
@@ -28,20 +27,13 @@ const renderAuthContent = (content: React.ReactNode) => {
             marginBottom: 16,
           }}
         >
-          <FinefoodsLogoIcon
+          <img
+            src="/images/timperioLogo.png" // Adjust path if necessary
+            alt="Finefoods Logo"
             style={{
-              width: 64,
-              height: 64,
-              color: "#fff",
+              width: 264,
             }}
-          />
-          <FinefoodsLogoText
-            style={{
-              color: "#fff",
-              width: "300px",
-              height: "auto",
-            }}
-          />
+          />{' '}
         </Flex>
       </Link>
       {content}

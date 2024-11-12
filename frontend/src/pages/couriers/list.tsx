@@ -1,282 +1,290 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useTranslate, useNavigation, useGo } from '@refinedev/core';
 import {
-  useTranslate,
-  getDefaultFilter,
-  useNavigation,
-  useGo,
-} from "@refinedev/core";
-import {
-  CreateButton,
-  EditButton,
-  FilterDropdown,
-  List,
-  useTable,
-} from "@refinedev/antd";
-import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
-import { Table, Avatar, Typography, theme, InputNumber, Input } from "antd";
-import InputMask from "react-input-mask";
-import type { ICourier } from "../../interfaces";
-import {
-  PaginationTotal,
-  CourierStatus,
-  CourierTableColumnRating,
-} from "../../components";
-import { useLocation } from "react-router-dom";
-import type { PropsWithChildren } from "react";
+  Button,
+  Modal,
+  Form,
+  Input,
+  Select,
+  Table,
+  Typography,
+  message,
+  Popconfirm,
+} from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import type { ICourier } from '../../interfaces';
 
-export const CourierList = ({ children }: PropsWithChildren) => {
+const { Title } = Typography;
+
+export const UserManagement = () => {
   const go = useGo();
-  const { pathname } = useLocation();
-  const { createUrl } = useNavigation();
   const t = useTranslate();
-  const { token } = theme.useToken();
+  const { createUrl } = useNavigation();
 
-  const { tableProps, filters } = useTable<ICourier>({
-    filters: {
-      initial: [
-        {
-          field: "name",
-          operator: "contains",
-          value: "",
+  const [users, setUsers] = useState<ICourier[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [editingUser, setEditingUser] = useState<ICourier | null>(null);
+  const [form] = Form.useForm();
+
+  // Fetch users on component mount
+  React.useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem('token_timperio');
+      if (!token) {
+        throw new Error('No token found in localStorage');
+      }
+
+      const response = await axios.get('http://localhost:8080/api/v1/user', {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          field: "licensePlate",
-          operator: "contains",
-          value: "",
+      });
+      setUsers(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.error('Unauthorized, please log in again');
+      } else {
+        console.error('Error fetching user data:', error);
+      }
+    }
+  };
+
+  // Show create user modal
+  const showCreateUserModal = () => {
+    setIsModalVisible(true);
+  };
+
+  // Handle modal submission for creating a new user
+  const handleCreateUser = async (values: any) => {
+    try {
+      await axios.post('http://localhost:8080/api/v1/user', values, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
         },
+      });
+      message.success('User created successfully');
+      form.resetFields();
+      setIsModalVisible(false);
+      fetchUsers(); // Refresh the user list
+    } catch (error) {
+      message.error('Failed to create user');
+    }
+  };
+
+  // Show edit modal with selected user's details
+  const showEditModal = (user: ICourier) => {
+    setEditingUser(user);
+    form.setFieldsValue(user); // Populate form with user details
+    setIsEditModalVisible(true);
+  };
+
+  // Handle user update
+  const handleEditUser = async (values: any) => {
+    if (!editingUser) return;
+    console.log(localStorage.getItem('token_timperio'));
+
+    try {
+      await axios.put(
+        `http://localhost:8080/api/v1/user/admin/${editingUser.userId}`,
+        values,
         {
-          field: "email",
-          operator: "contains",
-          value: "",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+          },
+        }
+      );
+      message.success('User updated successfully');
+      setIsEditModalVisible(false);
+      fetchUsers(); // Refresh the user list
+    } catch (error) {
+      if (error.status == 403) {
+        message.error(
+          'User is an admin account. You cannot update user details.'
+        );
+      } else {
+        message.error('Failed to update user');
+        console.log(values);
+      }
+    }
+  };
+
+  // Handle user deletion
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/v1/user/id/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
         },
-      ],
-    },
-  });
+      });
+      message.success('User deleted successfully');
+      fetchUsers(); // Refresh the user list
+    } catch (error) {
+      message.error('Failed to delete user');
+    }
+  };
 
   return (
-    <>
-      <List
-        breadcrumb={false}
-        headerButtons={(props) => [
-          <CreateButton
-            {...props.createButtonProps}
-            key="create"
-            size="large"
-            onClick={() => {
-              return go({
-                to: `${createUrl("couriers")}`,
-                query: {
-                  to: pathname,
-                },
-                options: {
-                  keepQuery: true,
-                },
-                type: "replace",
-              });
-            }}
-          >
-            {t("couriers.actions.add")}
-          </CreateButton>,
-        ]}
+    <div>
+      <Title level={3}>{t('User Management')}</Title>
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        onClick={showCreateUserModal}
+        style={{ float: 'right', marginBottom: '16px' }}
       >
-        <Table
-          {...tableProps}
-          rowKey="id"
-          scroll={{ x: true }}
-          pagination={{
-            ...tableProps.pagination,
-            showTotal: (total) => (
-              <PaginationTotal total={total} entityName="products" />
-            ),
-          }}
-        >
-          <Table.Column
-            title={
-              <Typography.Text
-                style={{
-                  whiteSpace: "nowrap",
-                }}
+        {t('Add New User')}
+      </Button>
+
+      {/* Table displaying users */}
+      <Table dataSource={users} rowKey="userId" pagination={{ pageSize: 5 }}>
+        <Table.Column title="ID" dataIndex="userId" key="userId" />
+        <Table.Column title="Name" dataIndex="name" key="name" />
+        <Table.Column title="Email" dataIndex="userEmail" key="userEmail" />
+        <Table.Column title="Role" dataIndex="role" key="role" />
+        <Table.Column
+          title="Status"
+          dataIndex="enabled"
+          key="enabled"
+          render={(enabled) => (enabled ? 'Enabled' : 'Disabled')}
+        />
+        <Table.Column
+          title="Actions"
+          key="actions"
+          render={(_, record: ICourier) => (
+            <div>
+              <Button
+                icon={<EditOutlined />}
+                onClick={() => showEditModal(record)}
+                style={{ marginRight: 8 }}
               >
-                ID #
-              </Typography.Text>
-            }
-            dataIndex="id"
-            key="id"
-            width={80}
-            render={(value) => (
-              <Typography.Text
-                style={{
-                  whiteSpace: "nowrap",
-                }}
+                Edit
+              </Button>
+              <Popconfirm
+                title="Are you sure to delete this user?"
+                onConfirm={() => handleDeleteUser(record.userId)}
+                okText="Yes"
+                cancelText="No"
               >
-                #{value}
-              </Typography.Text>
-            )}
-            filterIcon={(filtered) => (
-              // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              <SearchOutlined
-                style={{
-                  color: filtered ? token.colorPrimary : undefined,
-                }}
-              />
-            )}
-            defaultFilteredValue={getDefaultFilter("id", filters, "eq")}
-            filterDropdown={(props) => (
-              <FilterDropdown {...props}>
-                <InputNumber
-                  addonBefore="#"
-                  style={{ width: "100%" }}
-                  placeholder={t("products.filter.id.placeholder")}
-                />
-              </FilterDropdown>
-            )}
-          />
-          <Table.Column<ICourier>
-            key="avatar"
-            dataIndex="avatar"
-            title={t("couriers.fields.avatar.label")}
-            render={(_, record) => (
-              <Avatar
-                src={record.avatar?.[0]?.url}
-                alt={record?.avatar?.[0].name}
-              />
-            )}
-          />
-          <Table.Column<ICourier>
-            key="name"
-            dataIndex="name"
-            title={t("couriers.fields.name.label")}
-            filterIcon={(filtered) => (
-              // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              <SearchOutlined
-                style={{
-                  color: filtered ? token.colorPrimary : undefined,
-                }}
-              />
-            )}
-            defaultFilteredValue={getDefaultFilter("name", filters, "contains")}
-            filterDropdown={(props) => (
-              <FilterDropdown {...props}>
-                <Input placeholder={t("couriers.filter.name.placeholder")} />
-              </FilterDropdown>
-            )}
-          />
-          <Table.Column
-            key="licensePlate"
-            dataIndex="licensePlate"
-            title={() => {
-              return (
-                <Typography.Text
-                  style={{
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {t("couriers.fields.licensePlate.label")}
-                </Typography.Text>
-              );
-            }}
-            filterIcon={(filtered) => (
-              // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              <SearchOutlined
-                style={{
-                  color: filtered ? token.colorPrimary : undefined,
-                }}
-              />
-            )}
-            defaultFilteredValue={getDefaultFilter(
-              "licensePlate",
-              filters,
-              "contains",
-            )}
-            filterDropdown={(props) => (
-              <FilterDropdown {...props}>
-                <Input
-                  placeholder={t("couriers.filter.licensePlate.placeholder")}
-                />
-              </FilterDropdown>
-            )}
-            render={(value) => (
-              <Typography.Text
-                style={{
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {value}
-              </Typography.Text>
-            )}
-          />
-          <Table.Column
-            dataIndex="gsm"
-            key="gsm"
-            title={t("couriers.fields.gsm.label")}
-            filterIcon={(filtered) => (
-              // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              <SearchOutlined
-                style={{
-                  color: filtered ? token.colorPrimary : undefined,
-                }}
-              />
-            )}
-            defaultFilteredValue={getDefaultFilter("gsm", filters, "eq")}
-            filterDropdown={(props) => (
-              <FilterDropdown {...props}>
-                <InputMask mask="(999) 999 99 99">
-                  {/* 
-                              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                              // @ts-ignore */}
-                  {(props: InputProps) => <Input {...props} />}
-                </InputMask>
-              </FilterDropdown>
-            )}
-            render={(value) => (
-              <Typography.Text
-                style={{
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {value}
-              </Typography.Text>
-            )}
-          />
-          <Table.Column<ICourier>
-            dataIndex={["store", "title"]}
-            key="store"
-            title={t("couriers.fields.store.label")}
-          />
-          <Table.Column<ICourier>
-            dataIndex="id"
-            key="ratings"
-            title={t("couriers.fields.rating.label")}
-            render={(_, record) => {
-              return <CourierTableColumnRating courier={record} />;
-            }}
-          />
-          <Table.Column<ICourier>
-            dataIndex="status"
-            key="status"
-            title={t("couriers.fields.status.label")}
-            render={(_, record) => {
-              return <CourierStatus value={record.status} />;
-            }}
-          />
-          <Table.Column
-            title={t("table.actions")}
-            key="actions"
-            fixed="right"
-            align="center"
-            render={(_, record: ICourier) => {
-              return (
-                <EditButton
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon={<EyeOutlined />}
-                  hideText
-                  recordItemId={record.id}
-                />
-              );
-            }}
-          />
-        </Table>
-      </List>
-      {children}
-    </>
+                <Button icon={<DeleteOutlined />} danger>
+                  Delete
+                </Button>
+              </Popconfirm>
+            </div>
+          )}
+        />
+      </Table>
+
+      {/* Modal for creating a new user */}
+      <Modal
+        title="Create New User"
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        onOk={() => form.submit()}
+        okText="Create"
+        cancelText="Cancel"
+      >
+        <Form form={form} layout="vertical" onFinish={handleCreateUser}>
+          <Form.Item
+            name="userEmail"
+            label="Email"
+            rules={[
+              {
+                required: true,
+                type: 'email',
+                message: 'Please enter a valid email',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: 'Please enter a password' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[
+              { required: true, message: "Please enter the user's name" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="role"
+            label="Role"
+            rules={[{ required: true, message: 'Please select a role' }]}
+          >
+            <Select>
+              <Select.Option value="MARKETING">Marketing</Select.Option>
+              <Select.Option value="SALES">Sales</Select.Option>
+              <Select.Option value="ADMIN">Admin</Select.Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Modal for editing a user */}
+      <Modal
+        title="Edit User"
+        visible={isEditModalVisible}
+        onCancel={() => setIsEditModalVisible(false)}
+        onOk={() => form.submit()}
+        okText="Update"
+        cancelText="Cancel"
+      >
+        <Form form={form} layout="vertical" onFinish={handleEditUser}>
+          <Form.Item
+            name="userEmail"
+            label="Email"
+            rules={[
+              {
+                required: true,
+                type: 'email',
+                message: 'Please enter a valid email',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: 'Please enter a password' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[
+              { required: true, message: "Please enter the user's name" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="role"
+            label="Role"
+            rules={[{ required: true, message: 'Please select a role' }]}
+          >
+            <Select>
+              <Select.Option value="MARKETING">Marketing</Select.Option>
+              <Select.Option value="SALES">Sales</Select.Option>
+              <Select.Option value="ADMIN">Admin</Select.Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
   );
 };

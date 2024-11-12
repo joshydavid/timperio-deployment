@@ -4,17 +4,17 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
+} from 'react';
 import {
   ConfigProvider as AntdConfigProvider,
   theme,
   type ThemeConfig,
-} from "antd";
-import { ThemeProvider } from "antd-style";
-import { RefineThemes } from "@refinedev/antd";
-import "./config.css";
+} from 'antd';
+import { ThemeProvider } from 'antd-style';
+import { RefineThemes } from '@refinedev/antd';
+import './config.css';
 
-type Mode = "light" | "dark";
+type Mode = 'light' | 'dark';
 
 type ConfigProviderContext = {
   mode: Mode;
@@ -25,7 +25,7 @@ export const ConfigProviderContext = createContext<
   ConfigProviderContext | undefined
 >(undefined);
 
-const defaultMode: Mode = (localStorage.getItem("theme") as Mode) || "light";
+const defaultMode: Mode = (localStorage.getItem('theme') as Mode) || 'light';
 
 type ConfigProviderProps = {
   theme?: ThemeConfig;
@@ -38,25 +38,25 @@ export const ConfigProvider = ({
   const [mode, setMode] = useState<Mode>(defaultMode);
 
   const handleSetMode = (mode: Mode) => {
-    localStorage.setItem("theme", mode);
-    const html = document.querySelector("html");
-    html?.setAttribute("data-theme", mode);
+    localStorage.setItem('theme', mode);
+    const html = document.querySelector('html');
+    html?.setAttribute('data-theme', mode);
     setMode(mode);
   };
 
   // add data-theme to html tag
   useEffect(() => {
-    const html = document.querySelector("html");
-    html?.setAttribute("data-theme", mode);
+    const html = document.querySelector('html');
+    html?.setAttribute('data-theme', mode);
   }, []);
 
   return (
     <ConfigProviderContext.Provider value={{ mode, setMode: handleSetMode }}>
       <AntdConfigProvider
         theme={{
-          ...RefineThemes.Orange,
+          ...RefineThemes.Green,
           algorithm:
-            mode === "light" ? theme.defaultAlgorithm : theme.darkAlgorithm,
+            mode === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
           ...themeFromProps,
         }}
       >
@@ -70,7 +70,7 @@ export const useConfigProvider = () => {
   const context = useContext(ConfigProviderContext);
 
   if (context === undefined) {
-    throw new Error("useConfigProvider must be used within a ConfigProvider");
+    throw new Error('useConfigProvider must be used within a ConfigProvider');
   }
 
   return context;

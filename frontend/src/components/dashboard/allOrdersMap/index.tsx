@@ -1,67 +1,94 @@
-import { useList, useNavigation } from "@refinedev/core";
+import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
+import axios from 'axios';
 
-import { Map, MapMarker } from "../..";
-import type { IOrder } from "../../../interfaces";
+interface Props {
+  selectedDateRange: { start: string; end: string };
+}
 
-export const AllOrdersMap: React.FC = () => {
-  const { data: orderData } = useList<IOrder>({
-    resource: "orders",
-    config: {
-      filters: [
+export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
+  const [topCustomers, setTopCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch the orders and filter based on selected date range
+  const fetchTopCustomers = async (start: dayjs.Dayjs, end: dayjs.Dayjs) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        'http://localhost:8080/api/v1/purchaseHistory',
         {
-          field: "status.text",
-          operator: "eq",
-          value: "On The Way",
-        },
-      ],
-      pagination: {
-        mode: "off",
-      },
-    },
-  });
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+          },
+        }
+      );
 
-  const defaultProps = {
-    center: {
-      lat: 40.73061,
-      lng: -73.935242,
-    },
-    zoom: 10,
+      // Aggregate spending data per customer
+      const aggregatedData = response.data.reduce((acc: any[], order: any) => {
+        const orderDate = dayjs(order.salesDate);
+        if (
+          (start && orderDate.isBefore(start, 'day')) ||
+          (end && orderDate.isAfter(end, 'day'))
+        ) {
+          return acc;
+        }
+
+        const customerId = order.customerId;
+        const totalPrice = order.totalPrice;
+        const existingCustomer = acc.find(
+          (entry) => entry.customerId === customerId
+        );
+
+        if (existingCustomer) {
+          existingCustomer.totalSpending += totalPrice;
+        } else {
+          acc.push({
+            customerId,
+            totalSpending: totalPrice,
+          });
+        }
+        return acc;
+      }, []);
+
+      // Sort by total spending in descending order and get top 10 customers
+      const topCustomersArray = aggregatedData
+        .sort((a, b) => b.totalSpending - a.totalSpending)
+        .slice(0, 10);
+
+      setTopCustomers(topCustomersArray);
+    } catch (error) {
+      console.error('Error fetching top customers:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const { show } = useNavigation();
+  // Effect hook to fetch data when selectedDateRange changes
+  useEffect(() => {
+    const start = dayjs(selectedDateRange.start);
+    const end = dayjs(selectedDateRange.end);
+    fetchTopCustomers(start, end);
+  }, [selectedDateRange]);
 
   return (
-    <Map mapProps={defaultProps}>
-      {orderData?.data.map((order) => {
-        return (
-          <MapMarker
-            key={order.id}
-            onClick={() => show("orders", order.id)}
-            icon={{
-              url: "/images/marker-courier.svg",
-            }}
-            position={{
-              lat: Number(order.adress.coordinate[0]),
-              lng: Number(order.adress.coordinate[1]),
-            }}
-          />
-        );
-      })}
-      {orderData?.data.map((order) => {
-        return (
-          <MapMarker
-            key={order.id}
-            onClick={() => show("orders", order.id)}
-            icon={{
-              url: "/images/marker-customer.svg",
-            }}
-            position={{
-              lat: Number(order.store.address.coordinate[0]),
-              lng: Number(order.store.address.coordinate[1]),
-            }}
-          />
-        );
-      })}
-    </Map>
+    <div>
+      {loading ? (
+        <div>Loading...</div>
+      ) : topCustomers.length === 0 ? (
+        <div>No data available for the selected range.</div>
+      ) : (
+        <div style={{ marginTop: '10px' }}>
+          <ol>
+            {topCustomers.map((customer, index) => (
+              <li key={customer.customerId}>
+                <strong>{`Customer ID: ${customer.customerId}`}</strong>
+                <br />
+                Total Spending: ${customer.totalSpending.toFixed(2)}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+    </div>
   );
 };

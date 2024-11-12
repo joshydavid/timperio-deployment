@@ -1,18 +1,18 @@
-import React from "react";
-import { Authenticated, Refine } from "@refinedev/core";
-import { RefineKbarProvider, RefineKbar } from "@refinedev/kbar";
+import React from 'react';
+import { Authenticated, Refine } from '@refinedev/core';
+import { RefineKbarProvider, RefineKbar } from '@refinedev/kbar';
 import {
   useNotificationProvider,
   ThemedLayoutV2,
   ErrorComponent,
-} from "@refinedev/antd";
+} from '@refinedev/antd';
 import routerProvider, {
   CatchAllNavigate,
   NavigateToResource,
   UnsavedChangesNotifier,
   DocumentTitleHandler,
-} from "@refinedev/react-router-v6";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+} from '@refinedev/react-router-v6';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import {
   ShoppingOutlined,
   ShopOutlined,
@@ -20,39 +20,39 @@ import {
   UserOutlined,
   UnorderedListOutlined,
   TagsOutlined,
-} from "@ant-design/icons";
-import jsonServerDataProvider from "@refinedev/simple-rest";
-import { authProvider } from "./authProvider";
+} from '@ant-design/icons';
+import jsonServerDataProvider from '@refinedev/simple-rest';
+import { authProvider } from './authProvider';
 
-import "dayjs/locale/de";
+import 'dayjs/locale/de';
 
-import { DashboardPage } from "./pages/dashboard";
-import { OrderList, OrderShow } from "./pages/orders";
-import { AuthPage } from "./pages/auth";
-import { CustomerShow, CustomerList } from "./pages/customers";
-import { CourierList, CourierCreate, CourierEdit } from "./pages/couriers";
+import { DashboardPage } from './pages/dashboard';
+import { OrderList, OrderShow } from './pages/orders';
+import { AuthPage } from './pages/auth';
+import { CustomerShow, CustomerList } from './pages/customers';
+import { UserManagement, CourierCreate, CourierEdit } from './pages/couriers';
 import {
   ProductList,
   ProductCreate,
   ProductEdit,
   ProductShow,
-} from "./pages/products";
-import { StoreCreate, StoreEdit, StoreList } from "./pages/stores";
-import { CategoryList } from "./pages/categories";
-import { useTranslation } from "react-i18next";
-import { Header, Title } from "./components";
-import { BikeWhiteIcon } from "./components/icons";
-import { ConfigProvider } from "./context";
-import { useAutoLoginForDemo } from "./hooks";
+} from './pages/products';
+import { StoreCreate, StoreEdit, StoreList } from './pages/stores';
+import { CategoryList } from './pages/categories';
+import { useTranslation } from 'react-i18next';
+import { Header, Title } from './components';
+import { BikeWhiteIcon } from './components/icons';
+import { ConfigProvider } from './context';
+import { useAutoLoginForDemo } from './hooks';
 
-import "@refinedev/antd/dist/reset.css";
+import '@refinedev/antd/dist/reset.css';
 
 const App: React.FC = () => {
   // This hook is used to automatically login the user.
   // We use this hook to skip the login page and demonstrate the application more quickly.
   const { loading } = useAutoLoginForDemo();
 
-  const API_URL = "https://api.finefoods.refine.dev";
+  const API_URL = ''; // Update API URL
   const dataProvider = jsonServerDataProvider(API_URL);
 
   const { t, i18n } = useTranslation();
@@ -83,67 +83,67 @@ const App: React.FC = () => {
             notificationProvider={useNotificationProvider}
             resources={[
               {
-                name: "dashboard",
-                list: "/",
+                name: 'dashboard',
+                list: '/',
                 meta: {
-                  label: "Dashboard",
+                  label: 'Dashboard',
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <DashboardOutlined />,
                 },
               },
               {
-                name: "orders",
-                list: "/orders",
-                show: "/orders/:id",
+                name: 'orders', // Change name from orders to purchaseHistory
+                list: '/purchaseHistory', // Update list route
+                show: '/purchaseHistory/:id', // Update show route
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <ShoppingOutlined />,
                 },
               },
               {
-                name: "users",
-                list: "/customers",
-                show: "/customers/:id",
+                name: 'users',
+                list: '/customers',
+                show: '/customers/:id',
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <UserOutlined />,
                 },
               },
+              // {
+              //   name: 'products',
+              //   list: '/products',
+              //   create: '/products/new',
+              //   edit: '/products/:id/edit',
+              //   show: '/products/:id',
+              //   meta: {
+              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+              //     icon: <UnorderedListOutlined />,
+              //   },
+              // },
+              // {
+              //   name: 'categories',
+              //   list: '/categories',
+              //   meta: {
+              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+              //     icon: <TagsOutlined />,
+              //   },
+              // },
+              // {
+              //   name: 'stores',
+              //   list: '/stores',
+              //   create: '/stores/new',
+              //   edit: '/stores/:id/edit',
+              //   meta: {
+              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+              //     icon: <ShopOutlined />,
+              //   },
+              // },
               {
-                name: "products",
-                list: "/products",
-                create: "/products/new",
-                edit: "/products/:id/edit",
-                show: "/products/:id",
-                meta: {
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <UnorderedListOutlined />,
-                },
-              },
-              {
-                name: "categories",
-                list: "/categories",
-                meta: {
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <TagsOutlined />,
-                },
-              },
-              {
-                name: "stores",
-                list: "/stores",
-                create: "/stores/new",
-                edit: "/stores/:id/edit",
-                meta: {
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <ShopOutlined />,
-                },
-              },
-              {
-                name: "couriers",
-                list: "/couriers",
-                create: "/couriers/new",
-                edit: "/couriers/:id/edit",
-                show: "/couriers/:id",
+                name: 'UserManagement',
+                list: '/UserManagement',
+                create: '/UserManagement/new',
+                edit: '/UserManagement/:id/edit',
+                show: '/UserManagement/:id',
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <BikeWhiteIcon />,
@@ -161,9 +161,9 @@ const App: React.FC = () => {
                     <ThemedLayoutV2 Header={Header} Title={Title}>
                       <div
                         style={{
-                          maxWidth: "1200px",
-                          marginLeft: "auto",
-                          marginRight: "auto",
+                          maxWidth: '1200px',
+                          marginLeft: 'auto',
+                          marginRight: 'auto',
                         }}
                       >
                         <Outlet />
@@ -174,7 +174,7 @@ const App: React.FC = () => {
               >
                 <Route index element={<DashboardPage />} />
 
-                <Route path="/orders">
+                <Route path="/purchaseHistory">
                   <Route index element={<OrderList />} />
                   <Route path=":id" element={<OrderShow />} />
                 </Route>
@@ -190,7 +190,7 @@ const App: React.FC = () => {
                   <Route path=":id" element={<CustomerShow />} />
                 </Route>
 
-                <Route
+                {/* <Route
                   path="/products"
                   element={
                     <ProductList>
@@ -201,23 +201,23 @@ const App: React.FC = () => {
                   <Route path="new" element={<ProductCreate />} />
                   <Route path=":id" element={<ProductShow />} />
                   <Route path=":id/edit" element={<ProductEdit />} />
-                </Route>
+                </Route> */}
 
-                <Route path="/stores">
+                {/* <Route path="/stores">
                   <Route index element={<StoreList />} />
                   <Route path="new" element={<StoreCreate />} />
                   <Route path=":id/edit" element={<StoreEdit />} />
-                </Route>
+                </Route> */}
 
-                <Route path="/categories" element={<CategoryList />} />
+                {/* <Route path="/categories" element={<CategoryList />} /> */}
 
-                <Route path="/couriers">
+                <Route path="/UserManagement">
                   <Route
                     path=""
                     element={
-                      <CourierList>
+                      <UserManagement>
                         <Outlet />
-                      </CourierList>
+                      </UserManagement>
                     }
                   >
                     <Route path="new" element={<CourierCreate />} />
@@ -241,8 +241,8 @@ const App: React.FC = () => {
                       type="login"
                       formProps={{
                         initialValues: {
-                          email: "demo@refine.dev",
-                          password: "demodemo",
+                          email: 'admin@timperio.com',
+                          password: 'password123',
                         },
                       }}
                     />
@@ -255,8 +255,8 @@ const App: React.FC = () => {
                       type="register"
                       formProps={{
                         initialValues: {
-                          email: "demo@refine.dev",
-                          password: "demodemo",
+                          email: '',
+                          password: 'demodemo',
                         },
                       }}
                     />

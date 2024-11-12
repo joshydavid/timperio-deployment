@@ -1,134 +1,95 @@
-import { NumberField, useSimpleList } from "@refinedev/antd";
-import { Typography, Avatar, List as AntdList, Flex } from "antd";
-import type { ITrendingProducts } from "../../../interfaces";
-import {
-  Rank1Icon,
-  Rank2Icon,
-  Rank3Icon,
-  Rank4Icon,
-  Rank5Icon,
-} from "../../icons";
-import type { ReactNode } from "react";
+import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
+import axios from 'axios';
 
-export const TrendingMenu: React.FC = () => {
-  const { listProps } = useSimpleList<ITrendingProducts>({
-    resource: "trendingProducts",
-    pagination: { pageSize: 5, current: 1 },
-    syncWithLocation: false,
-  });
+interface DateRangePickerProps {
+  selectedDateRange: { start: string; end: string };
+  height: number;
+}
+
+export const TrendingMenu = ({
+  selectedDateRange,
+  height,
+}: DateRangePickerProps) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch the trending products data and filter based on selected date range
+  const fetchTrendingData = async (start: dayjs.Dayjs, end: dayjs.Dayjs) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        'http://localhost:8080/api/v1/purchaseHistory',
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+          },
+        }
+      );
+
+      const aggregatedData = response.data.reduce(
+        (acc: any[], product: any) => {
+          const productDate = dayjs(product.salesDate);
+          if (
+            (start && productDate.isBefore(start, 'day')) ||
+            (end && productDate.isAfter(end, 'day'))
+          ) {
+            return acc;
+          }
+
+          const existingProduct = acc.find(
+            (entry) => entry.product === product.product // Update to check `product` field
+          );
+
+          if (existingProduct) {
+            existingProduct.count += 1;
+          } else {
+            acc.push({
+              product: product.product, // Store product name
+              count: 1,
+            });
+          }
+          return acc;
+        },
+        []
+      );
+
+      const topProducts = aggregatedData
+        .sort((a, b) => b.count - a.count) // Sort by highest count
+        .slice(0, 5); // Get top 5 products
+
+      setData(topProducts); // Set the top products to state
+    } catch (error) {
+      console.error('Error fetching trending data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Effect hook to fetch data when selectedDateRange changes
+  useEffect(() => {
+    const start = dayjs(selectedDateRange.start);
+    const end = dayjs(selectedDateRange.end);
+    fetchTrendingData(start, end);
+  }, [selectedDateRange]);
 
   return (
-    <AntdList
-      {...listProps}
-      pagination={false}
-      size="large"
-      bordered={false}
-      renderItem={(item, index) => {
-        return (
-          <AntdList.Item
-            key={index}
-            style={{
-              borderBlockEnd: "none",
-            }}
-          >
-            <Flex
-              gap={24}
-              style={{
-                width: "100%",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  position: "relative",
-                }}
-              >
-                <Avatar
-                  shape="square"
-                  style={{
-                    borderRadius: 24,
-                  }}
-                  size={{
-                    xs: 64,
-                    sm: 64,
-                    md: 64,
-                    lg: 108,
-                    xl: 120,
-                    xxl: 120,
-                  }}
-                  src={item.product?.images[0]?.url}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 12,
-                    right: -8,
-                  }}
-                >
-                  {RankIcons[index + 1]}
-                </div>
-              </div>
-              <Flex
-                vertical
-                gap="10px"
-                justify="center"
-                style={{
-                  width: "100%",
-                  overflow: "hidden",
-                }}
-              >
-                <Flex vertical justify="center">
-                  <div>
-                    <Typography.Paragraph
-                      ellipsis={{
-                        rows: 1,
-                        tooltip: {
-                          placement: "top",
-                          title: item.product?.name,
-                        },
-                      }}
-                      style={{
-                        margin: 0,
-                        fontSize: 24,
-                      }}
-                      strong={index <= 2}
-                    >
-                      {item.product?.name}
-                    </Typography.Paragraph>
-                  </div>
-                  <NumberField
-                    type="secondary"
-                    options={{
-                      currency: "USD",
-                      style: "currency",
-                      notation: "standard",
-                    }}
-                    value={item.orderCount * item.product.price}
-                  />
-                </Flex>
-                <Typography.Text
-                  style={{
-                    fontSize: 16,
-                  }}
-                  type="secondary"
-                >
-                  Ordered{" "}
-                  <Typography.Text strong>{item.orderCount} </Typography.Text>
-                  times
-                </Typography.Text>
-              </Flex>
-            </Flex>
-          </AntdList.Item>
-        );
-      }}
-    />
+    <div>
+      {loading ? (
+        <div>Loading...</div>
+      ) : data.length === 0 ? (
+        <div>No data available for the selected range.</div>
+      ) : (
+        <div style={{ marginTop: '10px' }}>
+          <ol>
+            {data.map((product, index) => (
+              <li key={index}>
+                <strong>{product.product}</strong> - Sold: {product.count}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+    </div>
   );
-};
-
-const RankIcons: Record<number, ReactNode> = {
-  1: <Rank1Icon />,
-  2: <Rank2Icon />,
-  3: <Rank3Icon />,
-  4: <Rank4Icon />,
-  5: <Rank5Icon />,
 };

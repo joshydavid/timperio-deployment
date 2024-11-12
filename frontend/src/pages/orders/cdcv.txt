@@ -1,0 +1,291 @@
+import {
+  useTranslate,
+  useExport,
+  useNavigation,
+  type HttpError,
+  getDefaultFilter,
+} from '@refinedev/core';
+import dayjs from 'dayjs';
+
+import axios from 'axios';
+
+import {
+  List,
+  useTable,
+  getDefaultSortOrder,
+  DateField,
+  NumberField,
+  useSelect,
+  ExportButton,
+  FilterDropdown,
+} from '@refinedev/antd';
+import { SearchOutlined } from '@ant-design/icons';
+import {
+  Table,
+  Input,
+  Select,
+  Typography,
+  theme,
+  InputNumber,
+  DatePicker,
+} from 'antd';
+
+import React, { useEffect, useState } from 'react';
+
+import {
+  OrderStatus,
+  OrderActions,
+  PaginationTotal,
+  OrderTableColumnProducts,
+} from '../../components';
+import type {
+  IOrder,
+  IOrderFilterVariables,
+  IOrderStatus,
+} from '../../interfaces';
+import { userInfo } from 'os';
+const { RangePicker } = DatePicker;
+
+export const OrderList = () => {
+  const { token } = theme.useToken();
+  const [tableData, setTableData] = useState<IOrder[]>([]); // Define state for table data
+
+  const { tableProps, sorters, filters } = useTable<
+    IOrder,
+    HttpError,
+    IOrderFilterVariables
+  >({
+    filters: {
+      initial: [
+        {
+          field: 'user.fullName',
+          operator: 'contains',
+          value: '',
+        },
+        {
+          field: 'store.title',
+          operator: 'contains',
+          value: '',
+        },
+      ],
+    },
+  });
+
+  const t = useTranslate();
+  const { show } = useNavigation();
+
+  const { isLoading, triggerExport } = useExport<IOrder>({
+    sorters,
+    filters,
+    pageSize: 50,
+    maxItemCount: 50,
+    mapData: (item) => {
+      return {
+        id: item.id,
+        amount: item.amount,
+        orderNumber: item.orderNumber,
+        status: item.status.text,
+        store: item.store.title,
+        createdAt: item.store.createdAt,
+        user: item.user.firstName,
+      };
+    },
+  });
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        'http://localhost:8080/api/v1/purchaseHistory'
+      );
+      const data = response.data;
+      console.log('response', data);
+
+      // Map the API response to match your table structure
+      const mappedData = data.map((item) => ({
+        id: item.salesId,
+        orderNumber: item.salesId,
+        amount: item.totalPrice,
+        createdAt: item.salesDate,
+        user: {
+          id: item.customerId,
+          fullName: `Customer ${item.customerId}`, // Replace with actual customer name if available
+        },
+        products: [
+          {
+            product: item.product,
+            unitPrice: item.unitPrice,
+            variant: item.variant,
+            quantity: item.quantity,
+            totalPrice: item.totalPrice,
+          },
+        ],
+        status: {
+          text: item.salesType,
+        },
+        shippingMethod: item.shippingMethod,
+        channelType: item.channelType,
+        zipCode: item.zipCode,
+      }));
+
+      setTableData(mappedData); // Update tableData state with the fetched data
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []); // Fetch data when component mounts
+
+  const { selectProps: orderSelectProps } = useSelect<IOrderStatus>({
+    resource: 'orderStatuses',
+    optionLabel: 'text',
+    optionValue: 'text',
+    defaultValue: getDefaultFilter('status.text', filters, 'in'),
+  });
+
+  return (
+    <List
+      headerProps={{
+        extra: <ExportButton onClick={triggerExport} loading={isLoading} />,
+      }}
+    >
+      <Table
+        dataSource={tableData} // Set data source to fetched data
+        rowKey="id"
+        style={{
+          cursor: 'pointer',
+        }}
+        onRow={(record) => {
+          return {
+            onClick: () => {
+              show('orders', record.id);
+            },
+          };
+        }}
+        pagination={{
+          showTotal: (total) => (
+            <PaginationTotal total={total} entityName="orders" />
+          ),
+        }}
+      >
+        <Table.Column
+          key="orderNumber"
+          dataIndex="orderNumber"
+          title={t('orders.fields.order')}
+          render={(value) => (
+            <Typography.Text
+              style={{
+                whiteSpace: 'nowrap',
+              }}
+            >
+              #{value}
+            </Typography.Text>
+          )}
+          filterIcon={(filtered) => (
+            <SearchOutlined
+              style={{
+                color: filtered ? token.colorPrimary : undefined,
+              }}
+            />
+          )}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <InputNumber
+                addonBefore="#"
+                style={{ width: '100%' }}
+                placeholder={t('orders.filter.orderNumber.placeholder')}
+              />
+            </FilterDropdown>
+          )}
+        />
+
+        {/* Filter by Customer ID */}
+        <Table.Column<IOrder>
+          key="user.id"
+          dataIndex={['user', 'id']}
+          title={t('orders.fields.customerID')}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <Input placeholder={t('orders.filter.customerId.placeholder')} />
+            </FilterDropdown>
+          )}
+        />
+        <Table.Column<IOrder>
+          key="products"
+          dataIndex="products"
+          title={t('orders.fields.products')}
+          render={(_, record) => {
+            return <OrderTableColumnProducts order={record} />;
+          }}
+        />
+        <Table.Column
+          align="right"
+          key="amount"
+          dataIndex="amount"
+          title={t('orders.fields.amount')}
+          render={(value) => (
+            <NumberField
+              options={{
+                currency: 'SGD',
+                style: 'currency',
+              }}
+              value={value}
+            />
+          )}
+        />
+
+        <Table.Column
+          key="user.fullName"
+          dataIndex={['user', 'fullName']}
+          title={t('orders.fields.customer')}
+          filterIcon={(filtered) => (
+            <SearchOutlined
+              style={{
+                color: filtered ? token.colorPrimary : undefined,
+              }}
+            />
+          )}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <Input placeholder={t('orders.filter.customer.placeholder')} />
+            </FilterDropdown>
+          )}
+        />
+
+        <Table.Column<IOrder>
+          key="createdAt"
+          dataIndex="createdAt"
+          title={t('orders.fields.salesDate')}
+          render={(value) => <DateField value={value} />}
+        />
+
+        <Table.Column<IOrder>
+          key="status.text"
+          dataIndex="status"
+          title={t('orders.fields.status')}
+          render={(status) => <OrderStatus status={status} />}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <Select
+                {...orderSelectProps}
+                style={{ width: '200px' }}
+                allowClear
+                mode="multiple"
+                placeholder={t('orders.filter.status.placeholder')}
+              />
+            </FilterDropdown>
+          )}
+        />
+
+        <Table.Column<IOrder>
+          fixed="right"
+          title={t('table.actions')}
+          dataIndex="actions"
+          key="actions"
+          align="center"
+          render={(_value, record) => <OrderActions record={record} />}
+        />
+      </Table>
+    </List>
+  );
+};

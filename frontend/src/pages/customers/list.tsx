@@ -1,230 +1,301 @@
-import {
-  useTranslate,
-  type HttpError,
-  getDefaultFilter,
-  useExport,
-  useGo,
-  useNavigation,
-} from "@refinedev/core";
+import { useState, useEffect } from 'react';
 import {
   List,
-  useTable,
-  DateField,
-  FilterDropdown,
-  getDefaultSortOrder,
-  ExportButton,
-} from "@refinedev/antd";
-import {
   Table,
-  Avatar,
-  Typography,
-  theme,
-  InputNumber,
+  Button,
   Input,
   Select,
-  Button,
-} from "antd";
+  Typography,
+  Modal,
+  Tabs,
+  Card,
+  Row,
+  Col,
+  theme,
+} from 'antd';
+import { useGo, useTranslate } from '@refinedev/core';
+import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { PaginationTotal } from '../../components';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
-import type { IUser, IUserFilterVariables } from "../../interfaces";
-import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
-import { PaginationTotal, UserStatus } from "../../components";
-import type { PropsWithChildren } from "react";
-import { useLocation } from "react-router-dom";
+const { TabPane } = Tabs;
 
-export const CustomerList = ({ children }: PropsWithChildren) => {
-  const go = useGo();
+export const CustomerList = () => {
+  const { showUrl } = useGo();
   const { pathname } = useLocation();
-  const { showUrl } = useNavigation();
   const t = useTranslate();
   const { token } = theme.useToken();
 
-  const { tableProps, filters, sorters } = useTable<
-    IUser,
-    HttpError,
-    IUserFilterVariables
-  >({
-    filters: {
-      initial: [
-        {
-          field: "fullName",
-          operator: "contains",
-          value: "",
-        },
-      ],
-    },
-    sorters: {
-      initial: [
-        {
-          field: "id",
-          order: "desc",
-        },
-      ],
-    },
-    syncWithLocation: true,
-  });
+  const [customers, setCustomers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [activeTab, setActiveTab] = useState('ALL_CUSTOMERS'); // Default to All Customers
+  const [overallMetrics, setOverallMetrics] = useState(null); // Holds the aggregate metrics data
 
-  const { isLoading, triggerExport } = useExport<IUser>({
-    sorters,
-    filters,
-    pageSize: 50,
-    maxItemCount: 50,
-    mapData: (item) => {
-      return {
-        id: item.id,
-        fullName: item.fullName,
-        gsm: item.gsm,
-        isActive: item.isActive,
-        createdAt: item.createdAt,
-      };
+  // Fetch customer data from the API
+  const fetchCustomersBySegment = async (segment) => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/customers/segment/${segment}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+          },
+        }
+      );
+      await fetchMetrics(response.data);
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchAllCustomers = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        'http://localhost:8080/api/v1/customers',
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+          },
+        }
+      );
+      await fetchMetrics(response.data);
+      await fetchOverallMetrics(); // Fetch aggregate metrics for All Customers
+    } catch (error) {
+      console.error('Error fetching all customers:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch metrics for each customer and add it to the customers data
+  const fetchMetrics = async (customersData) => {
+    try {
+      const updatedCustomers = await Promise.all(
+        customersData.map(async (customer) => {
+          const metricsResponse = await axios.get(
+            `http://localhost:8080/api/v1/customers/metrics/${customer.customerId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem(
+                  'token_timperio'
+                )}`,
+              },
+            }
+          );
+          return {
+            ...customer,
+            totalSalesAmount: metricsResponse.data.totalSalesAmount,
+            totalSalesCount: metricsResponse.data.totalSalesCount,
+            totalAverageSales: metricsResponse.data.totalAverageSales,
+          };
+        })
+      );
+      setCustomers(updatedCustomers);
+    } catch (error) {
+      console.error('Error fetching customer metrics:', error);
+    }
+  };
+
+  // Fetch aggregate metrics for All Customers tab
+  const fetchOverallMetrics = async () => {
+    try {
+      const response = await axios.get(
+        'http://localhost:8080/api/v1/customers/metrics',
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+          },
+        }
+      );
+      setOverallMetrics(response.data);
+    } catch (error) {
+      console.error('Error fetching overall metrics:', error);
+    }
+  };
+
+  // Fetch customers based on the active tab
+  useEffect(() => {
+    if (activeTab === 'ALL_CUSTOMERS') {
+      fetchAllCustomers();
+    } else {
+      fetchCustomersBySegment(activeTab);
+    }
+  }, [activeTab]);
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    setSelectedCustomer(null);
+  };
+
+  const columns = [
+    {
+      key: 'customerId',
+      dataIndex: 'customerId',
+      title: 'Customer ID',
+      render: (value) => (
+        <Typography.Text style={{ whiteSpace: 'nowrap' }}>
+          #{value}
+        </Typography.Text>
+      ),
+      sorter: (a, b) => a.customerId - b.customerId,
     },
-  });
+    {
+      key: 'customerEmail',
+      dataIndex: 'customerEmail',
+      title: 'Email',
+      filterDropdown: (props) => (
+        <Input {...props} placeholder={t('users.filter.email.placeholder')} />
+      ),
+    },
+    {
+      key: 'purchaseHistory',
+      title: 'Purchase History',
+      render: (_, record) => {
+        const limitedPurchases = record.purchaseHistory.slice(0, 5);
+        return (
+          <ul>
+            {limitedPurchases.map((purchase) => (
+              <li key={purchase.salesId}>
+                <Typography.Text>
+                  {purchase.product} - {purchase.totalPrice}
+                </Typography.Text>
+              </li>
+            ))}
+            {record.purchaseHistory.length > 5 && (
+              <Typography.Text style={{ color: token.colorPrimary }}>
+                + {record.purchaseHistory.length - 5} more
+              </Typography.Text>
+            )}
+          </ul>
+        );
+      },
+    },
+    {
+      key: 'totalSalesAmount',
+      title: 'Total Sales Amount',
+      dataIndex: 'totalSalesAmount',
+      render: (value) => <Typography.Text>${value.toFixed(2)}</Typography.Text>,
+    },
+    {
+      key: 'totalSalesCount',
+      title: 'No. of Purchases',
+      dataIndex: 'totalSalesCount',
+      render: (value) => <Typography.Text>{value}</Typography.Text>,
+      sorter: (a, b) => a.totalSalesCount - b.totalSalesCount,
+    },
+    {
+      key: 'totalAverageSales',
+      title: 'Avg. Sale Amount',
+      dataIndex: 'totalAverageSales',
+      render: (value) => <Typography.Text>${value.toFixed(2)}</Typography.Text>,
+    },
+    {
+      key: 'action',
+      title: 'Actions',
+      render: (_, record) => (
+        <Button
+          icon={<EyeOutlined />}
+          onClick={() => {
+            setSelectedCustomer(record);
+            setIsModalVisible(true);
+          }}
+        />
+      ),
+    },
+  ];
 
   return (
     <List
       breadcrumb={false}
       headerProps={{
-        extra: <ExportButton onClick={triggerExport} loading={isLoading} />,
+        extra: <Button loading={isLoading} icon={<SearchOutlined />} />,
       }}
     >
+      {/* Tabs for selecting customer segments */}
+      <Tabs
+        defaultActiveKey="ALL_CUSTOMERS"
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        style={{ marginBottom: 24 }}
+      >
+        <TabPane tab="All Customers" key="ALL_CUSTOMERS" />
+        <TabPane tab="Low Spend" key="LOW_SPEND" />
+        <TabPane tab="Mid Tier" key="MID_TIER" />
+        <TabPane tab="High Value" key="HIGH_VALUE" />
+      </Tabs>
+
+      {/* Display overall metrics cards only on All Customers tab */}
+      {activeTab === 'ALL_CUSTOMERS' && overallMetrics && (
+        <Row gutter={16} style={{ marginBottom: 24 }}>
+          <Col span={8}>
+            <Card title="Total Sales Amount" bordered>
+              <Typography.Text>
+                ${overallMetrics.totalSalesAmount.toFixed(2)}
+              </Typography.Text>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card title="Total Sales Count" bordered>
+              <Typography.Text>
+                {overallMetrics.totalSalesCount}
+              </Typography.Text>
+            </Card>
+          </Col>
+          <Col span={8}>
+            <Card title="Average Sale Amount" bordered>
+              <Typography.Text>
+                ${overallMetrics.totalAverageSales.toFixed(2)}
+              </Typography.Text>
+            </Card>
+          </Col>
+        </Row>
+      )}
+
+      {/* Table for displaying customers */}
       <Table
-        {...tableProps}
-        rowKey="id"
-        scroll={{ x: true }}
+        rowKey="customerId"
+        columns={columns}
+        dataSource={customers}
+        loading={isLoading}
         pagination={{
-          ...tableProps.pagination,
+          pageSize: 10,
+          total: customers.length,
           showTotal: (total) => (
-            <PaginationTotal total={total} entityName="users" />
+            <PaginationTotal total={total} entityName="customers" />
           ),
         }}
-      >
-        <Table.Column
-          key="id"
-          dataIndex="id"
-          title="ID #"
-          render={(value) => (
-            <Typography.Text
-              style={{
-                whiteSpace: "nowrap",
-              }}
-            >
-              #{value}
-            </Typography.Text>
-          )}
-          filterIcon={(filtered) => (
-            // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-            <SearchOutlined
-              style={{
-                color: filtered ? token.colorPrimary : undefined,
-              }}
-            />
-          )}
-          defaultFilteredValue={getDefaultFilter("orderNumber", filters, "eq")}
-          filterDropdown={(props) => (
-            <FilterDropdown {...props}>
-              <InputNumber
-                addonBefore="#"
-                style={{ width: "100%" }}
-                placeholder={t("orders.filter.id.placeholder")}
-              />
-            </FilterDropdown>
-          )}
-        />
-        <Table.Column
-          align="center"
-          key="avatar"
-          dataIndex={["avatar"]}
-          title={t("users.fields.avatar.label")}
-          render={(value) => <Avatar src={value[0].url} />}
-        />
-        <Table.Column
-          key="fullName"
-          dataIndex="fullName"
-          title={t("users.fields.name")}
-          defaultFilteredValue={getDefaultFilter(
-            "fullName",
-            filters,
-            "contains",
-          )}
-          filterDropdown={(props) => (
-            <FilterDropdown {...props}>
-              <Input
-                style={{ width: "100%" }}
-                placeholder={t("users.filter.name.placeholder")}
-              />
-            </FilterDropdown>
-          )}
-        />
-        <Table.Column
-          key="gsm"
-          dataIndex="gsm"
-          title={t("users.fields.gsm")}
-          defaultFilteredValue={getDefaultFilter("gsm", filters, "eq")}
-          filterDropdown={(props) => (
-            <FilterDropdown {...props}>
-              <Input
-                style={{ width: "100%" }}
-                placeholder={t("users.filter.gsm.placeholder")}
-              />
-            </FilterDropdown>
-          )}
-        />
-        <Table.Column
-          key="createdAt"
-          dataIndex="createdAt"
-          title={t("users.fields.createdAt")}
-          render={(value) => <DateField value={value} format="LLL" />}
-          sorter
-        />
-        <Table.Column
-          key="isActive"
-          dataIndex="isActive"
-          title={t("users.fields.isActive.label")}
-          render={(value) => {
-            return <UserStatus value={value} />;
-          }}
-          sorter
-          defaultSortOrder={getDefaultSortOrder("isActive", sorters)}
-          defaultFilteredValue={getDefaultFilter("isActive", filters, "eq")}
-          filterDropdown={(props) => (
-            <FilterDropdown {...props}>
-              <Select
-                style={{ width: "100%" }}
-                placeholder={t("users.filter.isActive.placeholder")}
-              >
-                <Select.Option value="true">
-                  {t("users.fields.isActive.true")}
-                </Select.Option>
-                <Select.Option value="false">
-                  {t("users.fields.isActive.false")}
-                </Select.Option>
-              </Select>
-            </FilterDropdown>
-          )}
-        />
-        <Table.Column<IUser>
-          fixed="right"
-          title={t("table.actions")}
-          render={(_, record) => (
-            <Button
-              // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              icon={<EyeOutlined />}
-              onClick={() => {
-                return go({
-                  to: `${showUrl("users", record.id)}`,
-                  query: {
-                    to: pathname,
-                  },
-                  options: {
-                    keepQuery: true,
-                  },
-                  type: "replace",
-                });
-              }}
-            />
-          )}
-        />
-      </Table>
-      {children}
+      />
+
+      {/* Modal for displaying full purchase history */}
+      {selectedCustomer && (
+        <Modal
+          title={`Purchase History for Customer #${selectedCustomer.customerId}`}
+          visible={isModalVisible}
+          onCancel={handleModalClose}
+          footer={[
+            <Button key="close" onClick={handleModalClose}>
+              Close
+            </Button>,
+          ]}
+        >
+          <ul>
+            {selectedCustomer.purchaseHistory.map((purchase) => (
+              <li key={purchase.salesId}>
+                <Typography.Text>
+                  {purchase.product} - {purchase.totalPrice}
+                </Typography.Text>
+              </li>
+            ))}
+          </ul>
+        </Modal>
+      )}
     </List>
   );
 };
