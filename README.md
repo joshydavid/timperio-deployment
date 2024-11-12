@@ -55,3 +55,23 @@ http://localhost:8080/swagger-ui/index.html
 ## Acknowledgements
 
 Developed by Team 5
+
+<a href="https://www.linkedin.com/in/joshydavid/">
+  <img src="https://github.com/user-attachments/assets/4dfe0c89-8ced-4e08-bcf3-6261bdbb956d" width="80">
+</a> &nbsp;
+
+<a href="https://www.linkedin.com/in/derricklkh/">
+  <img src="https://github.com/user-attachments/assets/2db4b711-b7d0-4368-8d12-6449c3fa2aa2" width="80">
+</a> &nbsp;
+
+<a href="https://www.linkedin.com/in/shawn-ng-yh/">
+  <img src="https://github.com/user-attachments/assets/6bd4f3a7-6784-402a-b891-03d91e15d705" width="80">
+</a> &nbsp;
+
+<a href="https://www.linkedin.com/in/ivynyak/">
+  <img src="https://github.com/user-attachments/assets/24522f87-6fb8-4b48-94d8-8022eb571e96" width="80">
+</a> &nbsp;
+
+<a href="https://www.linkedin.com/in/liawjunyi/">
+  <img src="https://github.com/user-attachments/assets/24522f87-6fb8-4b48-94d8-8022eb571e96" width="80">
+</a>
