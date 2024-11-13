@@ -1,15 +1,17 @@
 package com.Timperio.controller;
 
-import com.Timperio.models.User;
-import com.Timperio.dto.LoginUserDto;
-import com.Timperio.responses.LoginResponse;
-import com.Timperio.service.impl.AuthService;
-import com.Timperio.service.impl.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.Timperio.dto.LoginUserDto;
+import com.Timperio.enums.Role;
+import com.Timperio.models.User;
+import com.Timperio.responses.LoginResponse;
+import com.Timperio.service.impl.AuthService;
+import com.Timperio.service.impl.JwtService;
 
 @RequestMapping("/api/v1/auth")
 @RestController
@@ -25,12 +27,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
+        Role userRole = authenticatedUser.getRole();
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
         LoginResponse response = new LoginResponse();
         response.setToken(jwtToken);
         response.setExpiresIn(3600);
+        response.setRole(userRole);
 
         return ResponseEntity.ok(response);
     }
