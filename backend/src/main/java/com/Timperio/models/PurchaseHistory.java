@@ -37,7 +37,7 @@ public class PurchaseHistory {
     @JdbcType(PostgreSQLEnumJdbcType.class)
     private SalesType salesType;
 
-    @Column(name = "channel_type", nullable = false)
+    @Column(name = "channel_type", nullable = true)
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
     private ChannelType channelType;
@@ -50,7 +50,7 @@ public class PurchaseHistory {
     @JsonIgnore
     private Customer customer;
 
-    @Column(name = "zip_code", nullable = false)
+    @Column(name = "zip_code", nullable = true)
     private Integer zipCode;
 
     @Column(name = "shipping_method", nullable = false)

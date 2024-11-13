@@ -35,7 +35,6 @@
    DB_URL=jdbc:postgresql://localhost:5432/timperiodb
    DB_USERNAME=postgres
    DB_PASSWORD=root
-   PYTHON_DB_URL=postgresql://postgres:root@localhost:5432/timperiodb
    JWT_SECRET_KEY={JWT_SECRET_KEY}
    SERVER=//localhost:5173
    MAILCHIMP_API_KEY={MAILCHIMP_API_KEY}
@@ -47,12 +46,26 @@
    VITE_SERVER=http://localhost:8080
    ```
 
-6. Run the project in development environment
+4. Run the project in development environment
 
    ```
    frontend - npm run dev
    backend - mvn spring-boot:run
    ```
+
+5. Login credentials
+
+    | Role        | Email                  | Password        |
+    | :--------   | :-------               | :-------------- |
+    | `ADMIN`     | `admin@timperio.com`     | password123     |
+    | `MARKETING` | `marketing@timperio.com` | password123     |
+    | `SALES`     | `sales@timperio.com`     | password123     |
+
+6. Populate local database
+
+  ```http
+  POST /api/v1/import-data
+  ```
 
 ## API Documentation
 

@@ -9,9 +9,14 @@ import com.Timperio.enums.ChannelType;
 import com.Timperio.enums.SalesType;
 import com.Timperio.enums.ShippingMethod;
 import com.Timperio.models.PurchaseHistory;
+import com.Timperio.models.Customer;
+
+import org.apache.poi.ss.usermodel.Row;
 
 public interface PurchaseHistoryService {
     public List<PurchaseHistory> findAll();
+
+    public PurchaseHistory createPurchaseHistory(Row row, Customer customer);
 
     public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, SalesType salesType,
             LocalDate salesDate, BigDecimal minPrice, BigDecimal maxPrice);

@@ -1,5 +1,0 @@
-pandas
-SQLAlchemy
-python-dotenv
-openpyxl
-psycopg2

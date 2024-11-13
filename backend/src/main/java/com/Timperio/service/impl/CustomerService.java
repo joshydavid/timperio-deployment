@@ -10,6 +10,8 @@ public interface CustomerService {
 
     public void populateCustomersFromHistoryPurchases();
 
+    public Customer createCustomer(Integer customerId);
+
     public Iterable<Customer> getAllCustomers();
 
     public Customer getCustomer(Integer customerId);

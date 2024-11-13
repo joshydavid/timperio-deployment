@@ -18,7 +18,7 @@ import com.Timperio.service.impl.CustomerService;
 import com.Timperio.service.impl.PurchaseHistoryService;
 
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;;
+import jakarta.transaction.Transactional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -60,6 +60,18 @@ public class CustomerServiceImpl implements CustomerService {
                         .executeUpdate();
             }
         }
+    }
+
+    @Override
+    public Customer createCustomer(Integer customerId) {
+        Customer newCustomer = new Customer();
+        String customerEmail = String.format("jane_doe_%d@yopmail.com", customerId);
+        newCustomer.setCustomerId(customerId);
+        newCustomer.setCustomerEmail(customerEmail);
+        newCustomer.setTotalSpending(0.0);
+
+        customerRepository.save(newCustomer);
+        return newCustomer;
     }
 
     @Override
