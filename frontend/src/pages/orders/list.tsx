@@ -16,9 +16,31 @@ import {
 import axios from "axios";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+
+const SALES_TYPE = [
+  {
+    name: "Direct - B2C",
+    value: "DIRECT_B2C",
+  },
+  {
+    name: "Direct - B2B",
+    value: "DIRECT_B2B",
+  },
+  {
+    name: "Marketing",
+    value: "MARKETING",
+  },
+  {
+    name: "Wholesale",
+    value: "WHOLESALER",
+  },
+  {
+    name: "Consignment",
+    value: "CONSIGNMENT",
+  },
+];
 
 export const OrderList = () => {
   const t = useTranslate();
@@ -34,18 +56,44 @@ export const OrderList = () => {
 
   const exportData = async () => {
     const formValues = form.getFieldsValue();
-    const { customerId, productPrice, salesType, salesDate } = formValues;
-    const [minPrice, maxPrice] = productPrice;
+    const {
+      customerId = null,
+      productPrice = null,
+      salesType = null,
+      salesDate = null,
+    } = formValues;
 
-    const [startDate, endDate] = salesDate;
-    const startDateString = startDate.format("YYYY-MM-DD");
-    const endDateString = endDate.format("YYYY-MM-DD");
+    let minPrice = null;
+    let maxPrice = null;
+    if (Array.isArray(productPrice) && productPrice.length === 2) {
+      [minPrice, maxPrice] = productPrice;
+    }
 
-    // TODO: Export filtered data
+    let startDateString = "";
+    let endDateString = "";
+    if (salesDate) {
+      const [startDate, endDate] = salesDate;
+      startDateString = startDate.format("YYYY-MM-DD");
+      endDateString = endDate.format("YYYY-MM-DD");
+    }
+
+    let sanitisedSalesType = "";
+    if (salesType) {
+      sanitisedSalesType = salesType.join(",");
+    }
+
+    let queryParams: any = [];
+
+    if (customerId) queryParams.push(`customerId=${customerId}`);
+    if (startDateString) queryParams.push(`salesDate=${startDateString}`);
+    if (minPrice != null) queryParams.push(`minPrice=${minPrice}`);
+    if (maxPrice != null) queryParams.push(`maxPrice=${maxPrice}`);
+    if (sanitisedSalesType) queryParams.push(`salesType=${sanitisedSalesType}`);
+    queryParams = queryParams.join("&");
 
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_SERVER}/api/v1/export`,
+        `${import.meta.env.VITE_SERVER}/api/v1/export?${queryParams}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
@@ -187,7 +235,7 @@ export const OrderList = () => {
           }) => (
             <div style={{ padding: 8 }}>
               <Input
-                placeholder={t("orders.filter.customerId.placeholder")}
+                placeholder={t("Search Customer ID")}
                 style={{ width: "100%" }}
                 value={selectedKeys[0]}
                 onChange={(e) => {
@@ -229,41 +277,41 @@ export const OrderList = () => {
           key="product"
           dataIndex="product"
           title={t("orders.fields.products")}
-          filterDropdown={({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-          }) => (
-            <div style={{ padding: 8 }}>
-              <Input
-                placeholder={t("orders.filter.product.placeholder")}
-                style={{ width: "100%" }}
-                value={selectedKeys[0]}
-                onChange={(e) => {
-                  setSelectedKeys(e.target.value ? [e.target.value] : []);
-                }}
-                onPressEnter={() => confirm()}
-              />
-              <div style={{ marginTop: 8 }}>
-                <Button
-                  onClick={() => clearFilters()}
-                  size="small"
-                  style={{ width: 90, marginRight: 8 }}
-                >
-                  Clear
-                </Button>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => confirm()}
-                  style={{ width: 90 }}
-                >
-                  Apply
-                </Button>
-              </div>
-            </div>
-          )}
+          //   filterDropdown={({
+          //     setSelectedKeys,
+          //     selectedKeys,
+          //     confirm,
+          //     clearFilters,
+          //   }) => (
+          //     <div style={{ padding: 8 }}>
+          //       <Input
+          //         placeholder={t("Search Product")}
+          //         style={{ width: "100%" }}
+          //         value={selectedKeys[0]}
+          //         onChange={(e) => {
+          //           setSelectedKeys(e.target.value ? [e.target.value] : []);
+          //         }}
+          //         onPressEnter={() => confirm()}
+          //       />
+          //       <div style={{ marginTop: 8 }}>
+          //         <Button
+          //           onClick={() => clearFilters()}
+          //           size="small"
+          //           style={{ width: 90, marginRight: 8 }}
+          //         >
+          //           Clear
+          //         </Button>
+          //         <Button
+          //           type="primary"
+          //           size="small"
+          //           onClick={() => confirm()}
+          //           style={{ width: 90 }}
+          //         >
+          //           Apply
+          //         </Button>
+          //       </div>
+          //     </div>
+          //   )}
           onFilter={(value, record) => {
             return value ? record.product.toLowerCase().includes(value) : true;
           }}
@@ -273,7 +321,7 @@ export const OrderList = () => {
           key="totalPrice"
           dataIndex="totalPrice"
           title={t("orders.fields.amount")}
-          render={(value) => `SGD ${value.toFixed(2)}`}
+          render={(value) => `SGD $${value.toFixed(2)}`}
           filterDropdown={({
             setSelectedKeys,
             selectedKeys,
@@ -331,6 +379,10 @@ export const OrderList = () => {
             <div style={{ padding: 8 }}>
               <RangePicker
                 style={{ width: "100%" }}
+                defaultValue={[
+                  dayjs("2019-01-01", "YYYY-MM-DD"),
+                  dayjs("2024-01-01", "YYYY-MM-DD"),
+                ]}
                 // @ts-ignore
                 value={selectedKeys[0]}
                 onChange={(dates) => {
@@ -391,12 +443,13 @@ export const OrderList = () => {
                   confirm();
                   fetchFilteredData("salesType", selectedKeys.join(","));
                 }}
+                placeholder="Select"
               >
-                <Select.Option value="DIRECT_B2B">DIRECT_B2B</Select.Option>
-                <Select.Option value="DIRECT_B2C">DIRECT_B2C</Select.Option>
-                <Select.Option value="CONSIGNMENT">CONSIGNMENT</Select.Option>
-                <Select.Option value="MARKETING">MARKETING</Select.Option>
-                <Select.Option value="WHOLESALER">WHOLESALER</Select.Option>
+                {SALES_TYPE.map(({ name, value }, i) => (
+                  <Select.Option key={i} value={value}>
+                    {name}
+                  </Select.Option>
+                ))}
               </Select>
               <div style={{ marginTop: 8 }}>
                 <Button
@@ -431,64 +484,52 @@ export const OrderList = () => {
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         onOk={() => form.submit()}
-        okText="Create"
+        okText="Export"
         cancelText="Cancel"
       >
-        <Form form={form} layout="vertical" onFinish={exportData}>
-          <Form.Item
-            name="customerId"
-            label="Customer ID"
-            rules={[{ required: true, message: "Please enter a Customer ID" }]}
-          >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={exportData}
+          style={{ marginTop: 20 }}
+        >
+          <Form.Item name="customerId" label="Customer ID">
             <InputNumber
               placeholder="Enter Customer ID"
               style={{ width: "100%" }}
             />
           </Form.Item>
 
-          <Form.Item
-            name="saleType"
-            label="Sale Type"
-            rules={[{ required: true, message: "Please select a Sale Type" }]}
-          >
-            <Select placeholder="Select Sale Type">
-              <Option value="Marketing">Marketing</Option>
-              <Option value="Direct-B2C">Direct - B2C</Option>
-              <Option value="Direct-B2B">Direct - B2B</Option>
-              <Option value="Wholesale">Wholesale</Option>
+          <Form.Item name="salesType" label="Sales Type">
+            <Select placeholder="Select Sale Type" mode="multiple">
+              {SALES_TYPE.map(({ name, value }, i) => (
+                <Select.Option key={i} value={value}>
+                  {name}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
 
-          <Form.Item
-            name="productPrice"
-            label="Product Price"
-            rules={[{ required: true, message: "Please select a value range" }]}
-          >
+          <Form.Item name="productPrice" label="Product Price">
             <Slider
               min={0}
-              max={1000}
+              max={10000}
               step={100}
               range
-              defaultValue={[100, 1000]}
+              defaultValue={[0, 10000]}
               marks={{
-                0: "0",
-                1000: "1000",
+                0: "$0",
+                10000: "$10,000",
               }}
             />
           </Form.Item>
 
-          <Form.Item
-            name="salesDate"
-            label="Sales Date"
-            rules={[
-              { required: false, message: "Please select a sales date range" },
-            ]}
-          >
+          <Form.Item name="salesDate" label="Sales Date">
             <RangePicker
               style={{ width: "100%" }}
               defaultValue={[
+                dayjs("2019-01-01", "YYYY-MM-DD"),
                 dayjs("2024-01-01", "YYYY-MM-DD"),
-                dayjs("2024-12-31", "YYYY-MM-DD"),
               ]}
               format="YYYY-MM-DD"
             />

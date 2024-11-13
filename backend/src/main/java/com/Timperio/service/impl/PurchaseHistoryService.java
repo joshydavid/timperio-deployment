@@ -18,7 +18,7 @@ public interface PurchaseHistoryService {
 
     public PurchaseHistory createPurchaseHistory(Row row, Customer customer);
 
-    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, SalesType salesType,
+    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, List<SalesType> salesType,
             LocalDate salesDate, BigDecimal minPrice, BigDecimal maxPrice);
 
     public List<PurchaseHistory> findByCustomerId(Integer id);

@@ -24,7 +24,7 @@ public class PurchaseHistoryExportServiceImpl implements PurchaseHistoryExportSe
     private PurchaseHistoryService purchaseHistoryService;
 
     @Override
-    public void writePurchaseHistoriesToCsv(Integer customerId, SalesType salesType, LocalDate salesDate,
+    public void writePurchaseHistoriesToCsv(Integer customerId, List<SalesType> salesType, LocalDate salesDate,
             BigDecimal minPrice, BigDecimal maxPrice,
             HttpServletResponse response)
             throws Exception {
@@ -36,14 +36,14 @@ public class PurchaseHistoryExportServiceImpl implements PurchaseHistoryExportSe
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"purchase_history.csv\"");
         try (PrintWriter writer = response.getWriter(); CSVWriter csvWriter = new CSVWriter(writer)) {
 
-            String[] header = { "Customer Id", "Sales Type", "Total Price", "Sales Date"
-            };
+            String[] header = { "Customer ID", "Sales ID", "Sales Type", "Total Price", "Sales Date" };
             csvWriter.writeNext(header);
 
             for (PurchaseHistoryDto history : purchaseHistories) {
                 String salesTypeSanitised = (history.getSalesType() != null) ? history.getSalesType().toString()
                         : "UNKNOWN";
                 String[] data = {
+                        String.valueOf(history.getSalesId()),
                         String.valueOf(history.getCustomerId()),
                         salesTypeSanitised,
                         String.valueOf(history.getTotalPrice()),

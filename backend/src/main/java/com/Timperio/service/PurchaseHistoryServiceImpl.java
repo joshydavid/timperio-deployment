@@ -5,16 +5,17 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.apache.poi.ss.usermodel.*;
 
 import com.Timperio.dto.PurchaseHistoryDto;
 import com.Timperio.enums.ChannelType;
 import com.Timperio.enums.SalesType;
 import com.Timperio.enums.ShippingMethod;
-import com.Timperio.models.PurchaseHistory;
 import com.Timperio.models.Customer;
+import com.Timperio.models.PurchaseHistory;
 import com.Timperio.repository.PurchaseHistoryRepository;
 import com.Timperio.service.impl.PurchaseHistoryService;
 
@@ -89,7 +90,7 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
     }
 
     @Override
-    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, SalesType salesType,
+    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, List<SalesType> salesType,
             LocalDate salesDate, BigDecimal minPrice, BigDecimal maxPrice) {
         return purchaseHistoryRepository.findAllFilteredPurchaseHistories(customerId, salesType, salesDate, minPrice,
                 maxPrice);

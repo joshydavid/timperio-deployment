@@ -30,7 +30,7 @@ public class PurchaseHistoryController {
 
     @GetMapping()
     public List<PurchaseHistoryDto> getAllSalesData(@RequestParam(required = false) Integer customerId,
-            @RequestParam(required = false) SalesType salesType, LocalDate salesDate, BigDecimal minPrice,
+            @RequestParam(required = false) List<SalesType> salesType, LocalDate salesDate, BigDecimal minPrice,
             BigDecimal maxPrice) {
         return this.purchaseHistoryService.findAllFilteredPurchaseHistories(customerId,
                 salesType, salesDate, minPrice,

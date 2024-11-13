@@ -23,13 +23,13 @@ public interface PurchaseHistoryRepository extends CrudRepository<PurchaseHistor
     @Query("SELECT new com.Timperio.dto.PurchaseHistoryDto(p.customer.customerId, p.salesId, p.product, p.salesType, p.totalPrice, p.salesDate) "
             + "FROM PurchaseHistory p "
             + "WHERE (:customerId IS NULL OR p.customer.customerId = :#{#customerId}) "
-            + "AND (:salesType IS NULL OR p.salesType = :#{#salesType})"
+            + "AND (:salesType IS NULL OR p.salesType IN :#{#salesType})"
             + "AND (TRUE = :#{#salesDate == null} or p.salesDate = :#{#salesDate})"
             + "AND (:minPrice IS NULL OR p.totalPrice >= :#{#minPrice})"
             + "AND (:maxPrice IS NULL OR p.totalPrice <= :#{#maxPrice})")
     List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(
             @Param("customerId") Integer customerId,
-            @Param("salesType") SalesType salesType,
+            @Param("salesType") List<SalesType> salesType,
             @Param("salesDate") LocalDate salesDate,
             @Param("minPrice") BigDecimal minPrice,
             @Param("maxPrice") BigDecimal maxPrice);
