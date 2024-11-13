@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useTranslate, useNavigation, useGo } from '@refinedev/core';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { useGo, useNavigation, useTranslate } from "@refinedev/core";
 import {
   Button,
-  Modal,
   Form,
   Input,
+  message,
+  Modal,
+  Popconfirm,
   Select,
   Table,
   Typography,
-  message,
-  Popconfirm,
-} from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import type { ICourier } from '../../interfaces';
+} from "antd";
+import axios from "axios";
+import React, { useState } from "react";
+import type { ICourier } from "../../interfaces";
 
 const { Title } = Typography;
 
@@ -35,22 +35,25 @@ export const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('token_timperio');
+      const token = localStorage.getItem("token_timperio");
       if (!token) {
-        throw new Error('No token found in localStorage');
+        throw new Error("No token found in localStorage");
       }
 
-      const response = await axios.get(`${import.meta.env.VITE_SERVER}/api/v1/user`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER}/api/v1/user`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setUsers(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        console.error('Unauthorized, please log in again');
+        console.error("Unauthorized, please log in again");
       } else {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching user data:", error);
       }
     }
   };
@@ -65,15 +68,15 @@ export const UserManagement = () => {
     try {
       await axios.post(`${import.meta.env.VITE_SERVER}/api/v1/user`, values, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+          Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
         },
       });
-      message.success('User created successfully');
+      message.success("User created successfully");
       form.resetFields();
       setIsModalVisible(false);
       fetchUsers(); // Refresh the user list
     } catch (error) {
-      message.error('Failed to create user');
+      message.error("Failed to create user");
     }
   };
 
@@ -87,28 +90,30 @@ export const UserManagement = () => {
   // Handle user update
   const handleEditUser = async (values: any) => {
     if (!editingUser) return;
-    console.log(localStorage.getItem('token_timperio'));
+    console.log(localStorage.getItem("token_timperio"));
 
     try {
       await axios.put(
-        `${import.meta.env.VITE_SERVER}/api/v1/user/admin/${editingUser.userId}`,
+        `${import.meta.env.VITE_SERVER}/api/v1/user/admin/${
+          editingUser.userId
+        }`,
         values,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+            Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
           },
         }
       );
-      message.success('User updated successfully');
+      message.success("User updated successfully");
       setIsEditModalVisible(false);
       fetchUsers(); // Refresh the user list
     } catch (error) {
       if (error.status == 403) {
         message.error(
-          'User is an admin account. You cannot update user details.'
+          "User is an admin account. You cannot update user details."
         );
       } else {
-        message.error('Failed to update user');
+        message.error("Failed to update user");
         console.log(values);
       }
     }
@@ -117,28 +122,36 @@ export const UserManagement = () => {
   // Handle user deletion
   const handleDeleteUser = async (userId: string) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_SERVER}/api/v1/user/id/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
-        },
-      });
-      message.success('User deleted successfully');
+      await axios.delete(
+        `${import.meta.env.VITE_SERVER}/api/v1/user/id/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
+          },
+        }
+      );
+      message.success("User deleted successfully");
       fetchUsers(); // Refresh the user list
     } catch (error) {
-      message.error('Failed to delete user');
+      message.error("Failed to delete user");
     }
   };
 
   return (
     <div>
-      <Title level={3}>{t('User Management')}</Title>
+      <Title level={3}>{t("User Management")}</Title>
       <Button
         type="primary"
-        icon={<PlusOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+        icon={
+          <PlusOutlined
+            onPointerEnterCapture={undefined}
+            onPointerLeaveCapture={undefined}
+          />
+        }
         onClick={showCreateUserModal}
-        style={{ float: 'right', marginBottom: '16px' }}
+        style={{ float: "right", marginBottom: "16px" }}
       >
-        {t('Add New User')}
+        {t("Add New User")}
       </Button>
 
       {/* Table displaying users */}
@@ -151,7 +164,7 @@ export const UserManagement = () => {
           title="Status"
           dataIndex="enabled"
           key="enabled"
-          render={(enabled) => (enabled ? 'Enabled' : 'Disabled')}
+          render={(enabled) => (enabled ? "Enabled" : "Disabled")}
         />
         <Table.Column
           title="Actions"
@@ -159,7 +172,12 @@ export const UserManagement = () => {
           render={(_, record: ICourier) => (
             <div>
               <Button
-                icon={<EditOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+                icon={
+                  <EditOutlined
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}
+                  />
+                }
                 onClick={() => showEditModal(record)}
                 style={{ marginRight: 8 }}
               >
@@ -171,7 +189,15 @@ export const UserManagement = () => {
                 okText="Yes"
                 cancelText="No"
               >
-                <Button icon={<DeleteOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />} danger>
+                <Button
+                  icon={
+                    <DeleteOutlined
+                      onPointerEnterCapture={undefined}
+                      onPointerLeaveCapture={undefined}
+                    />
+                  }
+                  danger
+                >
                   Delete
                 </Button>
               </Popconfirm>
@@ -180,7 +206,6 @@ export const UserManagement = () => {
         />
       </Table>
 
-      {/* Modal for creating a new user */}
       <Modal
         title="Create New User"
         visible={isModalVisible}
@@ -196,17 +221,17 @@ export const UserManagement = () => {
             rules={[
               {
                 required: true,
-                type: 'email',
-                message: 'Please enter a valid email',
+                type: "email",
+                message: "Please enter a valid email",
               },
             ]}
           >
-            <Input />
+            <Input placeholder="joshy@timperio.com" />
           </Form.Item>
           <Form.Item
             name="password"
             label="Password"
-            rules={[{ required: true, message: 'Please enter a password' }]}
+            rules={[{ required: true, message: "Please enter a password" }]}
           >
             <Input.Password />
           </Form.Item>
@@ -217,14 +242,14 @@ export const UserManagement = () => {
               { required: true, message: "Please enter the user's name" },
             ]}
           >
-            <Input />
+            <Input placeholder="Joshua" />
           </Form.Item>
           <Form.Item
             name="role"
             label="Role"
-            rules={[{ required: true, message: 'Please select a role' }]}
+            rules={[{ required: true, message: "Please select a role" }]}
           >
-            <Select>
+            <Select placeholder="Marketing">
               <Select.Option value="MARKETING">Marketing</Select.Option>
               <Select.Option value="SALES">Sales</Select.Option>
               <Select.Option value="ADMIN">Admin</Select.Option>
@@ -249,8 +274,8 @@ export const UserManagement = () => {
             rules={[
               {
                 required: true,
-                type: 'email',
-                message: 'Please enter a valid email',
+                type: "email",
+                message: "Please enter a valid email",
               },
             ]}
           >
@@ -259,7 +284,7 @@ export const UserManagement = () => {
           <Form.Item
             name="password"
             label="Password"
-            rules={[{ required: true, message: 'Please enter a password' }]}
+            rules={[{ required: true, message: "Please enter a password" }]}
           >
             <Input.Password />
           </Form.Item>
@@ -275,7 +300,7 @@ export const UserManagement = () => {
           <Form.Item
             name="role"
             label="Role"
-            rules={[{ required: true, message: 'Please select a role' }]}
+            rules={[{ required: true, message: "Please select a role" }]}
           >
             <Select>
               <Select.Option value="MARKETING">Marketing</Select.Option>

@@ -1,46 +1,30 @@
-import {
-  Row,
-  Col,
-  theme,
-  Dropdown,
-  type MenuProps,
-  Button,
-  Flex,
-  DatePicker,
-  Card,
-} from 'antd';
-import { useTranslation } from 'react-i18next';
+import { Card, Col, DatePicker, Flex, Row, theme, type MenuProps } from "antd";
+import { useTranslation } from "react-i18next";
 
-import {
-  CardWithPlot,
-  DailyRevenue,
-  DailyOrders,
-  NewCustomers,
-  AllOrdersMap,
-  OrderTimeline,
-  RecentOrders,
-  TrendingMenu,
-  CardWithContent,
-  TrendUpIcon,
-  TrendDownIcon,
-} from '../../components';
 import {
   ClockCircleOutlined,
   DollarCircleOutlined,
-  DownOutlined,
   RiseOutlined,
   ShoppingOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
+import {
+  AllOrdersMap,
+  CardWithContent,
+  CardWithPlot,
+  DailyOrders,
+  DailyRevenue,
+  TrendDownIcon,
+  TrendingMenu,
+  TrendUpIcon,
+} from "../../components";
 
-import { useMemo, useState } from 'react';
-import { List, NumberField } from '@refinedev/antd';
-import { useApiUrl, useCustom } from '@refinedev/core';
-import dayjs from 'dayjs';
-import type { ISalesChart } from '../../interfaces';
-import DateRangePicker from './daterangepicker'; // Import the DateRangePicker component
+import { List, NumberField } from "@refinedev/antd";
+import { useApiUrl, useCustom } from "@refinedev/core";
+import dayjs from "dayjs";
+import { useMemo, useState } from "react";
+import type { ISalesChart } from "../../interfaces";
 
-type DateFilter = 'lastWeek' | 'lastMonth';
+type DateFilter = "lastWeek" | "lastMonth";
 
 const DATE_FILTERS: Record<
   DateFilter,
@@ -50,12 +34,12 @@ const DATE_FILTERS: Record<
   }
 > = {
   lastWeek: {
-    text: 'lastWeek',
-    value: 'lastWeek',
+    text: "lastWeek",
+    value: "lastWeek",
   },
   lastMonth: {
-    text: 'lastMonth',
-    value: 'lastMonth',
+    text: "lastMonth",
+    value: "lastMonth",
   },
 };
 
@@ -65,28 +49,28 @@ export const DashboardPage: React.FC = () => {
   const API_URL = useApiUrl();
 
   const [selectedDateRange, setSelectedDateRange] = useState({
-    start: dayjs('2022-01-01').format('YYYY-MM-DD'), // Start of the year
-    end: dayjs().format('2022-02-01'), // Default: today
+    start: dayjs("2022-01-01").format("YYYY-MM-DD"), // Start of the year
+    end: dayjs().format("2022-02-01"), // Default: today
   });
 
   const handleDateChange = (dates: any) => {
     if (dates) {
       setSelectedDateRange({
-        start: dates[0].format('YYYY-MM-DD'),
-        end: dates[1].format('YYYY-MM-DD'),
+        start: dates[0].format("YYYY-MM-DD"),
+        end: dates[1].format("YYYY-MM-DD"),
       });
     }
   };
 
-  const dateFilters: MenuProps['items'] = useMemo(() => {
-    const filters = ['lastWeek', 'lastMonth']; // Example of filters
+  const dateFilters: MenuProps["items"] = useMemo(() => {
+    const filters = ["lastWeek", "lastMonth"]; // Example of filters
     return filters.map((filter) => ({
       key: filter,
       label: t(`dashboard.filter.date.${filter}`),
       onClick: () => {
         setSelectedDateRange({
-          start: dayjs().subtract(1, 'month').startOf('day').format(),
-          end: dayjs().endOf('day').format(),
+          start: dayjs().subtract(1, "month").startOf("day").format(),
+          end: dayjs().endOf("day").format(),
         });
       },
     }));
@@ -113,20 +97,20 @@ export const DashboardPage: React.FC = () => {
   const dateFilterQuery = useMemo(() => {
     const now = dayjs();
     switch (selecetedDateFilter) {
-      case 'lastWeek':
+      case "lastWeek":
         return {
-          start: now.subtract(6, 'days').startOf('day').format(),
-          end: now.endOf('day').format(),
+          start: now.subtract(6, "days").startOf("day").format(),
+          end: now.endOf("day").format(),
         };
-      case 'lastMonth':
+      case "lastMonth":
         return {
-          start: now.subtract(1, 'month').startOf('day').format(),
-          end: now.endOf('day').format(),
+          start: now.subtract(1, "month").startOf("day").format(),
+          end: now.endOf("day").format(),
         };
       default:
         return {
-          start: now.subtract(7, 'days').startOf('day').format(),
-          end: now.endOf('day').format(),
+          start: now.subtract(7, "days").startOf("day").format(),
+          end: now.endOf("day").format(),
         };
     }
   }, [selecetedDateFilter]);
@@ -137,7 +121,7 @@ export const DashboardPage: React.FC = () => {
     trend: number;
   }>({
     url: `${API_URL}/dailyRevenue`,
-    method: 'get',
+    method: "get",
     config: {
       query: dateFilterQuery,
     },
@@ -149,7 +133,7 @@ export const DashboardPage: React.FC = () => {
     trend: number;
   }>({
     url: `${API_URL}/dailyOrders`,
-    method: 'get',
+    method: "get",
     config: {
       query: dateFilterQuery,
     },
@@ -161,7 +145,7 @@ export const DashboardPage: React.FC = () => {
     trend: number;
   }>({
     url: `${API_URL}/newCustomers`,
-    method: 'get',
+    method: "get",
     config: {
       query: dateFilterQuery,
     },
@@ -179,9 +163,9 @@ export const DashboardPage: React.FC = () => {
       const date = dayjs(revenue.date);
       return {
         timeUnix: date.unix(),
-        timeText: date.format('DD MMM YYYY'),
+        timeText: date.format("DD MMM YYYY"),
         value: revenue.value,
-        state: 'Daily Revenue',
+        state: "Daily Revenue",
       };
     });
 
@@ -199,9 +183,9 @@ export const DashboardPage: React.FC = () => {
       const date = dayjs(order.date);
       return {
         timeUnix: date.unix(),
-        timeText: date.format('DD MMM YYYY'),
+        timeText: date.format("DD MMM YYYY"),
         value: order.value,
-        state: 'Daily Orders',
+        state: "Daily Orders",
       };
     });
 
@@ -219,9 +203,9 @@ export const DashboardPage: React.FC = () => {
       const date = dayjs(customer.date);
       return {
         timeUnix: date.unix(),
-        timeText: date.format('DD MMM YYYY'),
+        timeText: date.format("DD MMM YYYY"),
         value: customer.value,
-        state: 'New Customers',
+        state: "New Customers",
       };
     });
 
@@ -233,7 +217,7 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <List
-      title={t('dashboard.overview.title')}
+      title={t("dashboard.overview.title")}
       headerButtons={() => (
         // <Dropdown menu={{ items: dateFilters }}>
         //   <Button>
@@ -263,19 +247,22 @@ export const DashboardPage: React.FC = () => {
               <CardWithPlot
                 icon={
                   <DollarCircleOutlined
-                                      style={{
-                                          fontSize: 14,
-                                          color: token.colorPrimary,
-                                      }} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                  />
+                    style={{
+                      fontSize: 14,
+                      color: token.colorPrimary,
+                    }}
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}
+                  />
                 }
-                title={t('Revenue')}
+                title={t("Revenue")}
                 rightSlot={
                   <Flex align="center" gap={8}>
                     <NumberField
                       value={revenue.trend}
                       options={{
-                        style: 'currency',
-                        currency: 'USD',
+                        style: "currency",
+                        currency: "USD",
                       }}
                     />
                     {revenue.trend > 0 ? <TrendUpIcon /> : <TrendDownIcon />}
@@ -307,7 +294,7 @@ export const DashboardPage: React.FC = () => {
                     {orders.trend > 0 ? <TrendUpIcon /> : <TrendDownIcon />}
                   </Flex>
                 }
-                title={t('Orders')}
+                title={t("Orders")}
               >
                 <DailyOrders
                   height={170}
@@ -321,13 +308,16 @@ export const DashboardPage: React.FC = () => {
                 bodyStyle={{
                   padding: 0,
                 }}
-                title={t('dashboard.trendingProducts.title')}
+                title={t("dashboard.trendingProducts.title")}
                 extra={
                   <RiseOutlined
-                        style={{
-                            fontSize: 14,
-                            color: token.colorPrimary,
-                        }} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                  />
+                    style={{
+                      fontSize: 14,
+                      color: token.colorPrimary,
+                    }}
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}
+                  />
                 }
               >
                 <TrendingMenu
@@ -417,8 +407,8 @@ export const DashboardPage: React.FC = () => {
         <Col xl={5} lg={15} md={24} sm={24} xs={24}>
           <CardWithContent
             bodyStyles={{
-              height: '415px',
-              overflow: 'scroll',
+              height: "415px",
+              overflow: "scroll",
               padding: 0,
             }}
             icon={
@@ -430,7 +420,7 @@ export const DashboardPage: React.FC = () => {
                 }}
               />
             }
-            title={t('Top Spending Customers')}
+            title={t("Top Spending Customers")}
           >
             <AllOrdersMap selectedDateRange={selectedDateRange} />
           </CardWithContent>

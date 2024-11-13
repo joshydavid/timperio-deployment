@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import dayjs from 'dayjs';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import dayjs from "dayjs";
+import axios from "axios";
 
 interface DateRangePickerProps {
   selectedDateRange: { start: string; end: string };
@@ -14,7 +14,6 @@ export const TrendingMenu = ({
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch the trending products data and filter based on selected date range
   const fetchTrendingData = async (start: dayjs.Dayjs, end: dayjs.Dayjs) => {
     setLoading(true);
     try {
@@ -22,7 +21,7 @@ export const TrendingMenu = ({
         `${import.meta.env.VITE_SERVER}/api/v1/purchaseHistory`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+            Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
           },
         }
       );
@@ -31,8 +30,8 @@ export const TrendingMenu = ({
         (acc: any[], product: any) => {
           const productDate = dayjs(product.salesDate);
           if (
-            (start && productDate.isBefore(start, 'day')) ||
-            (end && productDate.isAfter(end, 'day'))
+            (start && productDate.isBefore(start, "day")) ||
+            (end && productDate.isAfter(end, "day"))
           ) {
             return acc;
           }
@@ -60,7 +59,7 @@ export const TrendingMenu = ({
 
       setData(topProducts); // Set the top products to state
     } catch (error) {
-      console.error('Error fetching trending data:', error);
+      console.error("Error fetching trending data:", error);
     } finally {
       setLoading(false);
     }
@@ -80,7 +79,7 @@ export const TrendingMenu = ({
       ) : data.length === 0 ? (
         <div>No data available for the selected range.</div>
       ) : (
-        <div style={{ marginTop: '10px' }}>
+        <div style={{ marginTop: "10px" }}>
           <ol>
             {data.map((product, index) => (
               <li key={index}>

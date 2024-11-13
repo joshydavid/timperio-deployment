@@ -1,26 +1,25 @@
-import { EyeOutlined } from '@ant-design/icons';
-import { useTranslate } from '@refinedev/core';
+import { EyeOutlined } from "@ant-design/icons";
+import { useTranslate } from "@refinedev/core";
 import {
-    Button,
-    Card,
-    Col,
-    Input,
-    List,
-    Modal,
-    Row,
-    Table,
-    Tabs,
-    theme,
-    Typography
-} from 'antd';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { PaginationTotal } from '../../components';
+  Button,
+  Card,
+  Col,
+  Input,
+  List,
+  Modal,
+  Row,
+  Table,
+  Tabs,
+  theme,
+  Typography,
+} from "antd";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { PaginationTotal } from "../../components";
 
 const { TabPane } = Tabs;
 
 export const CustomerList = () => {
-
   const t = useTranslate();
   const { token } = theme.useToken();
 
@@ -28,7 +27,7 @@ export const CustomerList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [activeTab, setActiveTab] = useState('ALL_CUSTOMERS'); // Default to All Customers
+  const [activeTab, setActiveTab] = useState("ALL_CUSTOMERS"); // Default to All Customers
   const [overallMetrics, setOverallMetrics] = useState(null); // Holds the aggregate metrics data
 
   // Fetch customer data from the API
@@ -39,13 +38,13 @@ export const CustomerList = () => {
         `${import.meta.env.VITE_SERVER}/api/v1/customers/segment/${segment}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+            Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
           },
         }
       );
       await fetchMetrics(response.data);
     } catch (error) {
-      console.error('Error fetching customers:', error);
+      console.error("Error fetching customers:", error);
     } finally {
       setIsLoading(false);
     }
@@ -58,14 +57,14 @@ export const CustomerList = () => {
         `${import.meta.env.VITE_SERVER}/api/v1/customers`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+            Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
           },
         }
       );
       await fetchMetrics(response.data);
       await fetchOverallMetrics(); // Fetch aggregate metrics for All Customers
     } catch (error) {
-      console.error('Error fetching all customers:', error);
+      console.error("Error fetching all customers:", error);
     } finally {
       setIsLoading(false);
     }
@@ -77,11 +76,13 @@ export const CustomerList = () => {
       const updatedCustomers = await Promise.all(
         customersData.map(async (customer) => {
           const metricsResponse = await axios.get(
-            `${import.meta.env.VITE_SERVER}/api/v1/customers/metrics/${customer.customerId}`,
+            `${import.meta.env.VITE_SERVER}/api/v1/customers/metrics/${
+              customer.customerId
+            }`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem(
-                  'token_timperio'
+                  "token_timperio"
                 )}`,
               },
             }
@@ -96,7 +97,7 @@ export const CustomerList = () => {
       );
       setCustomers(updatedCustomers);
     } catch (error) {
-      console.error('Error fetching customer metrics:', error);
+      console.error("Error fetching customer metrics:", error);
     }
   };
 
@@ -107,19 +108,19 @@ export const CustomerList = () => {
         `${import.meta.env.VITE_SERVER}/api/v1/customers/metrics`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+            Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
           },
         }
       );
       setOverallMetrics(response.data);
     } catch (error) {
-      console.error('Error fetching overall metrics:', error);
+      console.error("Error fetching overall metrics:", error);
     }
   };
 
   // Fetch customers based on the active tab
   useEffect(() => {
-    if (activeTab === 'ALL_CUSTOMERS') {
+    if (activeTab === "ALL_CUSTOMERS") {
       fetchAllCustomers();
     } else {
       fetchCustomersBySegment(activeTab);
@@ -133,38 +134,51 @@ export const CustomerList = () => {
 
   const columns = [
     {
-      key: 'customerId',
-      dataIndex: 'customerId',
-      title: 'Customer ID',
+      key: "customerId",
+      dataIndex: "customerId",
+      title: "Customer ID",
       render: (value) => (
-        <Typography.Text style={{ whiteSpace: 'nowrap' }}>
+        <Typography.Text style={{ whiteSpace: "nowrap" }}>
           #{value}
         </Typography.Text>
       ),
       sorter: (a, b) => a.customerId - b.customerId,
     },
     {
-      key: 'customerEmail',
-      dataIndex: 'customerEmail',
-      title: 'Email',
+      key: "customerEmail",
+      dataIndex: "customerEmail",
+      title: "Email",
       filterDropdown: (props) => (
-        <Input {...props} placeholder={t('users.filter.email.placeholder')} />
+        <Input {...props} placeholder={t("users.filter.email.placeholder")} />
       ),
     },
     {
-      key: 'purchaseHistory',
-      title: 'Purchase History',
-      render: (_, record) => {
+      key: "purchaseHistory",
+      title: "Purchase History",
+      render: (_: any, record: any) => {
         const limitedPurchases = record.purchaseHistory.slice(0, 5);
+
         return (
           <ul>
-            {limitedPurchases.map((purchase) => (
-              <li key={purchase.salesId}>
-                <Typography.Text>
-                  {purchase.product} - {purchase.totalPrice}
-                </Typography.Text>
-              </li>
-            ))}
+            {limitedPurchases.map((purchase: any) => {
+              const { product, totalPrice } = purchase;
+              const sanitisedTotalPrice = `$${totalPrice.toFixed(2)}`;
+
+              if (limitedPurchases.length === 1) {
+                return (
+                  <Typography.Text key={purchase.salesId}>
+                    {product} - {sanitisedTotalPrice}
+                  </Typography.Text>
+                );
+              }
+              return (
+                <li key={purchase.salesId}>
+                  <Typography.Text>
+                    {product} - {sanitisedTotalPrice}
+                  </Typography.Text>
+                </li>
+              );
+            })}
             {record.purchaseHistory.length > 5 && (
               <Typography.Text style={{ color: token.colorPrimary }}>
                 + {record.purchaseHistory.length - 5} more
@@ -175,30 +189,37 @@ export const CustomerList = () => {
       },
     },
     {
-      key: 'totalSalesAmount',
-      title: 'Total Sales Amount',
-      dataIndex: 'totalSalesAmount',
-      render: (value) => <Typography.Text>${value.toFixed(2)}</Typography.Text>,
+      key: "totalSalesAmount",
+      title: "Total Sales Amount",
+      dataIndex: "totalSalesAmount",
+      render: (value: any) => <Typography>${value.toFixed(2)}</Typography>,
     },
     {
-      key: 'totalSalesCount',
-      title: 'No. of Purchases',
-      dataIndex: 'totalSalesCount',
-      render: (value) => <Typography.Text>{value}</Typography.Text>,
-      sorter: (a, b) => a.totalSalesCount - b.totalSalesCount,
+      key: "totalSalesCount",
+      title: "No. of Purchases",
+      dataIndex: "totalSalesCount",
+      render: (value: any) => <Typography.Text>{value}</Typography.Text>,
+      sorter: (a: any, b: any) => a.totalSalesCount - b.totalSalesCount,
     },
     {
-      key: 'totalAverageSales',
-      title: 'Avg. Sale Amount',
-      dataIndex: 'totalAverageSales',
-      render: (value) => <Typography.Text>${value.toFixed(2)}</Typography.Text>,
+      key: "totalAverageSales",
+      title: "Avg. Sale Amount",
+      dataIndex: "totalAverageSales",
+      render: (value: any) => (
+        <Typography.Text>${value.toFixed(2)}</Typography.Text>
+      ),
     },
     {
-      key: 'action',
-      title: 'Actions',
-      render: (_, record) => (
+      key: "action",
+      title: "Actions",
+      render: (_: any, record: any) => (
         <Button
-          icon={<EyeOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+          icon={
+            <EyeOutlined
+              onPointerEnterCapture={undefined}
+              onPointerLeaveCapture={undefined}
+            />
+          }
           onClick={() => {
             setSelectedCustomer(record);
             setIsModalVisible(true);
@@ -227,7 +248,7 @@ export const CustomerList = () => {
         <TabPane tab="High Value" key="HIGH_VALUE" />
       </Tabs>
 
-      {activeTab === 'ALL_CUSTOMERS' && overallMetrics && (
+      {activeTab === "ALL_CUSTOMERS" && overallMetrics && (
         <Row gutter={16} style={{ marginBottom: 24 }}>
           <Col span={8}>
             <Card title="Total Sales Amount" bordered>
@@ -253,7 +274,6 @@ export const CustomerList = () => {
         </Row>
       )}
 
-
       <Table
         rowKey="customerId"
         columns={columns}
@@ -268,7 +288,6 @@ export const CustomerList = () => {
         }}
       />
 
-
       {selectedCustomer && (
         <Modal
           title={`Purchase History for Customer #${selectedCustomer.customerId}`}
@@ -281,13 +300,17 @@ export const CustomerList = () => {
           ]}
         >
           <ul>
-            {selectedCustomer.purchaseHistory.map((purchase: any) => (
-              <li key={purchase.salesId}>
-                <Typography.Text>
-                  {purchase.product} - {purchase.totalPrice}
-                </Typography.Text>
-              </li>
-            ))}
+            {selectedCustomer.purchaseHistory.map((purchase: any) => {
+              const { salesId, product, totalPrice } = purchase;
+              const sanitisedTotalPrice = `$${totalPrice.toFixed(2)}`;
+              return (
+                <li key={salesId}>
+                  <Typography.Text>
+                    {product} - {sanitisedTotalPrice}
+                  </Typography.Text>
+                </li>
+              );
+            })}
           </ul>
         </Modal>
       )}

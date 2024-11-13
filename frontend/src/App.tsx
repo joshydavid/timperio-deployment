@@ -128,7 +128,7 @@ const App: React.FC = () => {
               //   },
               // },
               {
-                name: "UserManagement",
+                name: "Users",
                 list: "/UserManagement",
                 create: "/UserManagement/new",
                 edit: "/UserManagement/:id/edit",

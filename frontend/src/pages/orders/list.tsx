@@ -206,7 +206,7 @@ export const OrderList = () => {
           key="totalPrice"
           dataIndex="totalPrice"
           title={t("orders.fields.amount")}
-          render={(value) => `SGD ${value}`}
+          render={(value) => `SGD ${value.toFixed(2)}`}
           filterDropdown={({
             setSelectedKeys,
             selectedKeys,

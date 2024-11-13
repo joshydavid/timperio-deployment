@@ -1,12 +1,12 @@
-import { useShow, useNavigation } from "@refinedev/core";
+import { useNavigation, useShow } from "@refinedev/core";
 import { Flex, Grid } from "antd";
-import type { IUser } from "../../interfaces";
 import {
   CustomerInfoList,
   CustomerInfoSummary,
   CustomerOrderHistory,
   Drawer,
 } from "../../components";
+import type { IUser } from "../../interfaces";
 
 export const CustomerShow = () => {
   const { list } = useNavigation();
