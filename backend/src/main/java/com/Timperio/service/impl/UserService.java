@@ -17,13 +17,13 @@ public interface UserService {
 
     public User updateUserAdmin(Integer userId, CreateUpdateUserAdminDto input);
 
-    public List<User> findAll();
+    public List<UserDto> findAll();
 
-    public User findByUserId(Integer userId);
+    public UserDto findByUserId(Integer userId);
 
-    public Optional<User> findByUserEmail(String userEmail);
+    public Optional<UserDto> findByUserEmail(String userEmail);
 
-    public Optional<User> findByName(String userName);
+    public Optional<UserDto> findByName(String userName);
 
-    public List<User> findByRole(Role role);
+    public List<UserDto> findByRole(Role role);
 }

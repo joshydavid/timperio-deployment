@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import com.Timperio.enums.*;
 import com.Timperio.models.*;
 import com.Timperio.dto.*;
@@ -119,24 +120,42 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDto> findAll() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(this::convertToUserDto)
+                .collect(Collectors.toList());
     }
 
-    public User findByUserId(Integer userId) {
-        return userRepository.findByUserId(userId);
+    public UserDto findByUserId(Integer userId) {
+        User user = userRepository.findByUserId(userId);
+        return convertToUserDto(user);
     }
 
-    public Optional<User> findByUserEmail(String userEmail) {
-        return userRepository.findByUserEmail(userEmail);
+    public Optional<UserDto> findByUserEmail(String userEmail) {
+        return userRepository.findByUserEmail(userEmail)
+                         .map(this::convertToUserDto);
     }
 
-    public Optional<User> findByName(String userName) {
-        return userRepository.findByName(userName);
+    public Optional<UserDto> findByName(String userName) {
+        return userRepository.findByName(userName)
+                        .map(this::convertToUserDto);
     }
 
-    public List<User> findByRole(Role role) {
-        return userRepository.findByRole(role);
+    public List<UserDto> findByRole(Role role) {
+        List<User> users = userRepository.findByRole(role);
+        return users.stream()
+                .map(this::convertToUserDto)
+                .collect(Collectors.toList());
+    }
+
+    private UserDto convertToUserDto(User user) {
+        UserDto userDTO = new UserDto();
+        userDTO.setUserId(user.getUserId());
+        userDTO.setUserEmail(user.getUserEmail());
+        userDTO.setName(user.getName());
+        userDTO.setRole(user.getRole());
+        return userDTO;
     }
 
 }

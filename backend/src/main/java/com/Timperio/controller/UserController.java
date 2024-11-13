@@ -76,39 +76,31 @@ public class UserController {
     }
 
     @GetMapping()
-    public List<User> getUsers() {
+    public List<UserDto> getUsers() {
         return this.userService.findAll();
     }
 
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable Integer userId) {
+    public UserDto getUser(@PathVariable Integer userId) {
         return this.userService.findByUserId(userId);
     }
 
     @GetMapping("/email/{userEmail}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String userEmail) {
-        Optional<User> optionalUser = userService.findByUserEmail(userEmail);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return ResponseEntity.ok(user); // Return user with HTTP 200 OK
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 Not Found
-        }
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable String userEmail) {
+        Optional<UserDto> optionalUserDto = userService.findByUserEmail(userEmail);
+        return optionalUserDto.map(ResponseEntity::ok)
+                        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/name/{userName}")
-    public ResponseEntity<User> getUserByName(@PathVariable String name) {
-        Optional<User> optionalUser = userService.findByName(name);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return ResponseEntity.ok(user); // Return user with HTTP 200 OK
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 Not Found
-        }
+    public ResponseEntity<UserDto> getUserByName(@PathVariable String name) {
+        Optional<UserDto> optionalUserDto = userService.findByName(name);
+        return optionalUserDto.map(ResponseEntity::ok)
+                          .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/role/{role}")
-    public List<User> getUsersByRole(@PathVariable Role role) {
+    public List<UserDto> getUsersByRole(@PathVariable Role role) {
         return this.userService.findByRole(role);
     }
 
