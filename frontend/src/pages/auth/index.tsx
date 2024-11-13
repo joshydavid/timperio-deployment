@@ -1,6 +1,6 @@
-import { AuthPage as AntdAuthPage, type AuthProps } from '@refinedev/antd';
-import { Flex } from 'antd';
-import { Link } from 'react-router-dom';
+import { AuthPage as AntdAuthPage, type AuthProps } from "@refinedev/antd";
+import { Flex } from "antd";
+import { Link } from "react-router-dom";
 
 const authWrapperProps = {
   // style: {
@@ -15,7 +15,7 @@ const renderAuthContent = (content: React.ReactNode) => {
     <div
       style={{
         maxWidth: 408,
-        margin: 'auto',
+        margin: "auto",
       }}
     >
       <Link to="/">
@@ -28,12 +28,12 @@ const renderAuthContent = (content: React.ReactNode) => {
           }}
         >
           <img
-            src="/images/timperioLogo.png" // Adjust path if necessary
+            src="/images/timperioLogo.png"
             alt="Finefoods Logo"
             style={{
               width: 264,
             }}
-          />{' '}
+          />{" "}
         </Flex>
       </Link>
       {content}
