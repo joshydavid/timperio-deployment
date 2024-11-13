@@ -28,7 +28,6 @@ export const UserManagement = () => {
   const [editingUser, setEditingUser] = useState<ICourier | null>(null);
   const [form] = Form.useForm();
 
-  // Fetch users on component mount
   React.useEffect(() => {
     fetchUsers();
   }, []);
@@ -58,12 +57,10 @@ export const UserManagement = () => {
     }
   };
 
-  // Show create user modal
   const showCreateUserModal = () => {
     setIsModalVisible(true);
   };
 
-  // Handle modal submission for creating a new user
   const handleCreateUser = async (values: any) => {
     try {
       await axios.post(`${import.meta.env.VITE_SERVER}/api/v1/user`, values, {

@@ -37,11 +37,9 @@ import { OrderList, OrderShow } from "./pages/orders";
 import "@refinedev/antd/dist/reset.css";
 
 const App: React.FC = () => {
-  // This hook is used to automatically login the user.
-  // We use this hook to skip the login page and demonstrate the application more quickly.
   const { loading } = useAutoLoginForDemo();
 
-  const API_URL = ""; // Update API URL
+  const API_URL = "";
   const dataProvider = jsonServerDataProvider(API_URL);
 
   const { t, i18n } = useTranslation();
@@ -81,9 +79,9 @@ const App: React.FC = () => {
                 },
               },
               {
-                name: "orders", // Change name from orders to purchaseHistory
-                list: "/purchaseHistory", // Update list route
-                show: "/purchaseHistory/:id", // Update show route
+                name: "orders",
+                list: "/purchaseHistory",
+                show: "/purchaseHistory/:id",
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <ShoppingOutlined />,
