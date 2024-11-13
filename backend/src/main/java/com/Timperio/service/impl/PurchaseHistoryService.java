@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Row;
+
 import com.Timperio.dto.PurchaseHistoryDto;
 import com.Timperio.enums.ChannelType;
 import com.Timperio.enums.SalesType;
 import com.Timperio.enums.ShippingMethod;
-import com.Timperio.models.PurchaseHistory;
 import com.Timperio.models.Customer;
-
-import org.apache.poi.ss.usermodel.Row;
+import com.Timperio.models.PurchaseHistory;
 
 public interface PurchaseHistoryService {
     public List<PurchaseHistory> findAll();
@@ -23,7 +23,7 @@ public interface PurchaseHistoryService {
 
     public List<PurchaseHistory> findByCustomerId(Integer id);
 
-    public List<PurchaseHistory> findBySalesType(SalesType salesType);
+    public List<PurchaseHistory> findBySalesType(List<SalesType> salesType);
 
     public List<PurchaseHistory> findByChannelType(ChannelType channelType);
 

@@ -30,13 +30,15 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
         purchase.setSalesId((int) row.getCell(0).getNumericCellValue());
         purchase.setSalesDate(row.getCell(1).getLocalDateTimeCellValue().toLocalDate());
 
-        if (row.getCell(2) == null || row.getCell(2).getStringCellValue() == null || row.getCell(2).getStringCellValue().trim().isEmpty()) {
+        if (row.getCell(2) == null || row.getCell(2).getStringCellValue() == null
+                || row.getCell(2).getStringCellValue().trim().isEmpty()) {
             purchase.setSalesType(null);
         } else {
             purchase.setSalesType(SalesType.valueOf(mapSalesType(row.getCell(2).getStringCellValue())));
         }
 
-        if (row.getCell(3) == null || row.getCell(3).getStringCellValue() == null || row.getCell(3).getStringCellValue().trim().isEmpty()) {
+        if (row.getCell(3) == null || row.getCell(3).getStringCellValue() == null
+                || row.getCell(3).getStringCellValue().trim().isEmpty()) {
             purchase.setChannelType(null);
         } else {
             purchase.setChannelType(ChannelType.valueOf(mapChannelType(row.getCell(3).getStringCellValue())));
@@ -44,7 +46,7 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
 
         purchase.setCustomerId((int) row.getCell(4).getNumericCellValue());
         purchase.setCustomer(customer);
-        
+
         if (row.getCell(5) != null && row.getCell(5).getCellType() == CellType.NUMERIC) {
             purchase.setZipCode((int) row.getCell(5).getNumericCellValue());
         } else {
@@ -99,7 +101,7 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
     }
 
     @Override
-    public List<PurchaseHistory> findBySalesType(SalesType salesType) {
+    public List<PurchaseHistory> findBySalesType(List<SalesType> salesType) {
         return purchaseHistoryRepository.findBySalesType(salesType);
     }
 

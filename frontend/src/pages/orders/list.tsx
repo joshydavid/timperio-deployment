@@ -24,6 +24,8 @@ export const OrderList = () => {
 
   const fetchFilteredData = async (filterType?: any, filterValue?: any) => {
     setLoading(true);
+    setData([]);
+
     try {
       let url = `${import.meta.env.VITE_SERVER}/api/v1/purchaseHistory`;
 

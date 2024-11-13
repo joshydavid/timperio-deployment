@@ -36,7 +36,8 @@ public interface PurchaseHistoryRepository extends CrudRepository<PurchaseHistor
 
     List<PurchaseHistory> findByCustomer_CustomerId(Integer customerId);
 
-    List<PurchaseHistory> findBySalesType(SalesType salesType);
+    @Query("SELECT p FROM PurchaseHistory p WHERE p.salesType IN :salesType")
+    List<PurchaseHistory> findBySalesType(@Param("salesType") List<SalesType> salesType);
 
     List<PurchaseHistory> findByChannelType(ChannelType channelType);
 
