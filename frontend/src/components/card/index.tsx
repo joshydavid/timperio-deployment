@@ -7,7 +7,7 @@ export const CardWithContent = (
     icon?: React.ReactNode;
     title: string;
     bodyStyles?: React.CSSProperties;
-  }>,
+  }>
 ) => {
   const { mode } = useConfigProvider();
 
@@ -23,7 +23,7 @@ export const CardWithContent = (
         },
       }}
       title={
-        <Space align="center" size={8}>
+        <Space align="center" size={18}>
           {props.icon}
           <Typography.Text
             style={{
@@ -46,7 +46,7 @@ export const CardWithPlot = (
     title: string;
     rightSlot?: React.ReactNode;
     bodyStyles?: React.CSSProperties;
-  }>,
+  }>
 ) => {
   return (
     <Card

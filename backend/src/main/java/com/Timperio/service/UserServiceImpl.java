@@ -21,9 +21,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(
-        UserRepository userRepository,
-        PasswordEncoder passwordEncoder
-    ) {
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -31,10 +30,10 @@ public class UserServiceImpl implements UserService {
     public User createUser(CreateUpdateUserAdminDto input) {
         User user = null;
         Role role = input.getRole();
-        
+
         switch (role) {
             case ADMIN:
-                user = new User(); 
+                user = new User();
                 user.setRole(Role.ADMIN);
                 break;
             case MARKETING:
@@ -48,7 +47,7 @@ public class UserServiceImpl implements UserService {
             default:
                 throw new InvalidRoleException("Invalid role: " + role);
         }
-    
+
         user.setName(input.getName());
         user.setUserEmail(input.getUserEmail());
         user.setPassword(passwordEncoder.encode(input.getPassword()));
@@ -56,21 +55,21 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public void deleteUserById(Integer userId){
+    public void deleteUserById(Integer userId) {
         try {
             User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+                    .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
             userRepository.delete(user);
         } catch (Exception e) {
             throw new RuntimeException(ErrorMessage.DELETE_USER_ERROR.getMessage());
         }
-        
+
     };
 
-    public void deleteUserByEmail(String userEmail){
+    public void deleteUserByEmail(String userEmail) {
         try {
             User user = userRepository.findByUserEmail(userEmail)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userEmail));
+                    .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userEmail));
             userRepository.delete(user);
         } catch (Exception e) {
             throw new RuntimeException(ErrorMessage.DELETE_USER_ERROR.getMessage());
@@ -79,8 +78,8 @@ public class UserServiceImpl implements UserService {
 
     public User updateUserAdmin(Integer userId, CreateUpdateUserAdminDto input) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
-        
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
         if (user.getRole() == Role.ADMIN) {
             throw new AdminAccountUpdateException(ErrorMessage.ADMIN_ACCOUNT_UPDATE_ERROR.getMessage());
         }
@@ -108,7 +107,7 @@ public class UserServiceImpl implements UserService {
 
     public User updateUser(Integer userId, UpdateUserDto input) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
         if (input.getName() != null) {
             user.setName(input.getName());
@@ -134,12 +133,12 @@ public class UserServiceImpl implements UserService {
 
     public Optional<UserDto> findByUserEmail(String userEmail) {
         return userRepository.findByUserEmail(userEmail)
-                         .map(this::convertToUserDto);
+                .map(this::convertToUserDto);
     }
 
     public Optional<UserDto> findByName(String userName) {
         return userRepository.findByName(userName)
-                        .map(this::convertToUserDto);
+                .map(this::convertToUserDto);
     }
 
     public List<UserDto> findByRole(Role role) {

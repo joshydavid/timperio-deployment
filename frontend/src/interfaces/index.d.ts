@@ -1,13 +1,13 @@
-import type { Dayjs } from 'dayjs';
+import type { Dayjs } from "dayjs";
 
 export interface IOrderChart {
   count: number;
   status:
-    | 'waiting'
-    | 'ready'
-    | 'on the way'
-    | 'delivered'
-    | 'could not be delivered';
+    | "waiting"
+    | "ready"
+    | "on the way"
+    | "delivered"
+    | "could not be delivered";
 }
 
 export interface IOrderTotalCount {
@@ -17,18 +17,18 @@ export interface IOrderTotalCount {
 
 export interface ISalesChart {
   date: string;
-  title?: 'Order Count' | 'Order Amount';
+  title?: "Order Count" | "Order Amount";
   value: number;
 }
 
 export interface IOrderSalesType {
   id: number;
   salesType:
-    | 'CONSIGNMENT'
-    | 'DIRECT_B2B'
-    | 'MARKETING'
-    | 'DIRECT_B2C'
-    | 'WHOLESALER';
+    | "CONSIGNMENT"
+    | "DIRECT_B2B"
+    | "MARKETING"
+    | "DIRECT_B2C"
+    | "WHOLESALER";
 }
 
 export interface IUser {
@@ -60,7 +60,7 @@ export interface IFile {
   name: string;
   percent: number;
   size: number;
-  status: 'error' | 'success' | 'done' | 'uploading' | 'removed';
+  status: "error" | "success" | "done" | "uploading" | "removed";
   type: string;
   uid: string;
   url: string;
@@ -84,7 +84,7 @@ export interface IStore {
 
 export interface ICourierStatus {
   id: number;
-  text: 'Available' | 'Offline' | 'On delivery';
+  text: "Available" | "Offline" | "On delivery";
 }
 
 export interface ICourier {
@@ -103,34 +103,34 @@ export interface ICourier {
   store: IStore;
   status: ICourierStatus;
   vehicle: IVehicle;
+  role: string;
 }
 
 export interface IOrder {
-    salesId: number;
-    salesDate: string;
-    salesType: string;
-    channelType: string;
-    customerId: number;
-    zipCode: number;
-    shippingMethod: string;
-    product: string;
-    unitPrice: number;
-    variant: number;
-    quantity: number;
-    totalPrice: number;
-    orderNumber: number;
-    record: any;
-    status: any;
-    id: any;
-    products: any;
-    user: any;
-    createdAt: any
-    courier: any
-    store: any
-    events: any
-    adress: any
-  }
-
+  salesId: number;
+  salesDate: string;
+  salesType: string;
+  channelType: string;
+  customerId: number;
+  zipCode: number;
+  shippingMethod: string;
+  product: string;
+  unitPrice: number;
+  variant: number;
+  quantity: number;
+  totalPrice: number;
+  orderNumber: number;
+  record: any;
+  status: any;
+  id: any;
+  products: any;
+  user: any;
+  createdAt: any;
+  courier: any;
+  store: any;
+  events: any;
+  adress: any;
+}
 
 export interface IProduct {
   id: number;
@@ -179,7 +179,7 @@ export interface IReview {
   user: IUser;
   star: number;
   createDate: string;
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   comment: string[];
 }
 

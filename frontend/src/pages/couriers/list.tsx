@@ -1,7 +1,9 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { useGo, useNavigation, useTranslate } from "@refinedev/core";
+import { List } from "@refinedev/antd";
+import { useTranslate } from "@refinedev/core";
 import {
   Button,
+  Col,
   Form,
   Input,
   message,
@@ -9,19 +11,16 @@ import {
   Popconfirm,
   Select,
   Table,
-  Typography,
 } from "antd";
+import { Typography } from "antd/lib";
 import axios from "axios";
 import React, { useState } from "react";
 import type { ICourier } from "../../interfaces";
 
-const { Title } = Typography;
+const { Text } = Typography;
 
 export const UserManagement = () => {
-  const go = useGo();
   const t = useTranslate();
-  const { createUrl } = useNavigation();
-
   const [users, setUsers] = useState<ICourier[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -71,20 +70,18 @@ export const UserManagement = () => {
       message.success("User created successfully");
       form.resetFields();
       setIsModalVisible(false);
-      fetchUsers(); // Refresh the user list
+      fetchUsers();
     } catch (error) {
       message.error("Failed to create user");
     }
   };
 
-  // Show edit modal with selected user's details
   const showEditModal = (user: ICourier) => {
     setEditingUser(user);
-    form.setFieldsValue(user); // Populate form with user details
+    form.setFieldsValue(user);
     setIsEditModalVisible(true);
   };
 
-  // Handle user update
   const handleEditUser = async (values: any) => {
     if (!editingUser) return;
     console.log(localStorage.getItem("token_timperio"));
@@ -103,7 +100,7 @@ export const UserManagement = () => {
       );
       message.success("User updated successfully");
       setIsEditModalVisible(false);
-      fetchUsers(); // Refresh the user list
+      fetchUsers();
     } catch (error) {
       if (error.status == 403) {
         message.error(
@@ -111,12 +108,10 @@ export const UserManagement = () => {
         );
       } else {
         message.error("Failed to update user");
-        console.log(values);
       }
     }
   };
 
-  // Handle user deletion
   const handleDeleteUser = async (userId: string) => {
     try {
       await axios.delete(
@@ -128,7 +123,7 @@ export const UserManagement = () => {
         }
       );
       message.success("User deleted successfully");
-      fetchUsers(); // Refresh the user list
+      fetchUsers();
     } catch (error) {
       message.error("Failed to delete user");
     }
@@ -136,23 +131,28 @@ export const UserManagement = () => {
 
   return (
     <div>
-      <Title level={3}>{t("User Management")}</Title>
-      <Button
-        type="primary"
-        icon={
-          <PlusOutlined
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
-          />
-        }
-        onClick={showCreateUserModal}
-        style={{ float: "right", marginBottom: "16px" }}
-      >
-        {t("Add New User")}
-      </Button>
+      <List
+        title="User Management"
+        headerButtons={() => (
+          <Col>
+            <Button
+              type="primary"
+              icon={
+                <PlusOutlined
+                  onPointerEnterCapture={undefined}
+                  onPointerLeaveCapture={undefined}
+                />
+              }
+              onClick={showCreateUserModal}
+              style={{ float: "right" }}
+            >
+              {t("Add New User")}
+            </Button>
+          </Col>
+        )}
+      />
 
-      {/* Table displaying users */}
-      <Table dataSource={users} rowKey="userId" pagination={{ pageSize: 5 }}>
+      <Table dataSource={users} rowKey="userId" pagination={{ pageSize: 10 }}>
         <Table.Column title="ID" dataIndex="userId" key="userId" />
         <Table.Column title="Name" dataIndex="name" key="name" />
         <Table.Column title="Email" dataIndex="userEmail" key="userEmail" />
@@ -163,43 +163,50 @@ export const UserManagement = () => {
           key="enabled"
           render={(enabled) => (enabled ? "Enabled" : "Disabled")}
         />
+
         <Table.Column
-          title="Actions"
-          key="actions"
-          render={(_, record: ICourier) => (
-            <div>
-              <Button
-                icon={
-                  <EditOutlined
-                    onPointerEnterCapture={undefined}
-                    onPointerLeaveCapture={undefined}
-                  />
-                }
-                onClick={() => showEditModal(record)}
-                style={{ marginRight: 8 }}
-              >
-                Edit
-              </Button>
-              <Popconfirm
-                title="Are you sure to delete this user?"
-                onConfirm={() => handleDeleteUser(record.userId)}
-                okText="Yes"
-                cancelText="No"
-              >
+          title="Action"
+          key="action"
+          render={(_, record: ICourier) => {
+            return record.role === "ADMIN" ? (
+              <>
+                <Text type="danger">Not Allowed to Edit</Text>
+              </>
+            ) : (
+              <div>
                 <Button
                   icon={
-                    <DeleteOutlined
+                    <EditOutlined
                       onPointerEnterCapture={undefined}
                       onPointerLeaveCapture={undefined}
                     />
                   }
-                  danger
+                  onClick={() => showEditModal(record)}
+                  style={{ marginRight: 8 }}
                 >
-                  Delete
+                  Edit
                 </Button>
-              </Popconfirm>
-            </div>
-          )}
+                <Popconfirm
+                  title="Are you sure to delete this user?"
+                  onConfirm={() => handleDeleteUser(record.userId)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button
+                    icon={
+                      <DeleteOutlined
+                        onPointerEnterCapture={undefined}
+                        onPointerLeaveCapture={undefined}
+                      />
+                    }
+                    danger
+                  >
+                    Delete
+                  </Button>
+                </Popconfirm>
+              </div>
+            );
+          }}
         />
       </Table>
 

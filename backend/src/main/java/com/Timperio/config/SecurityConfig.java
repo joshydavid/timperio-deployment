@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.Timperio.constant.AppConstant;
 import com.Timperio.enums.ErrorMessage;
 import com.Timperio.enums.Role;
 
@@ -44,11 +45,14 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/login", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers("/api/v1/purchaseHistory")
+                        .requestMatchers(AppConstant.API_VERSION + "/auth/login", "/v3/api-docs/**", "/swagger-ui/**")
+                        .permitAll()
+                        .requestMatchers(AppConstant.API_VERSION + "/purchaseHistory")
                         .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
-                        .requestMatchers("/api/v1/export")
+                        .requestMatchers(AppConstant.API_VERSION + "/export")
                         .hasRole(Role.MARKETING.toString())
+                        .requestMatchers(AppConstant.API_VERSION + "/customers")
+                        .hasRole(Role.SALES.toString())
                         .anyRequest().authenticated())
 
                 .exceptionHandling(exceptionHandling -> exceptionHandling

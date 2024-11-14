@@ -1,7 +1,9 @@
 import { ExportOutlined } from "@ant-design/icons";
+import { List } from "@refinedev/antd";
 import { useNavigation, useTranslate } from "@refinedev/core";
 import {
   Button,
+  Col,
   DatePicker,
   Form,
   Input,
@@ -116,7 +118,7 @@ export const OrderList = () => {
       form.resetFields();
       setIsModalVisible(false);
     } catch (error) {
-      message.error("Failed to create user");
+      message.error("Failed to export data");
     }
   };
 
@@ -150,20 +152,27 @@ export const OrderList = () => {
 
   return (
     <div>
-      <Button
-        type="primary"
-        danger
-        icon={
-          <ExportOutlined
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
-          />
-        }
-        onClick={showCreateUserModal}
-        style={{ float: "right", marginBottom: "16px" }}
-      >
-        {t("Export to CSV")}
-      </Button>
+      <List
+        title={t("Purchase History")}
+        headerButtons={() => (
+          <Col>
+            <Button
+              type="primary"
+              danger
+              icon={
+                <ExportOutlined
+                  onPointerEnterCapture={undefined}
+                  onPointerLeaveCapture={undefined}
+                />
+              }
+              onClick={showCreateUserModal}
+              style={{ float: "right", marginBottom: "16px" }}
+            >
+              {t("Export to CSV")}
+            </Button>
+          </Col>
+        )}
+      />
 
       <Table
         dataSource={data}
@@ -321,7 +330,7 @@ export const OrderList = () => {
           key="totalPrice"
           dataIndex="totalPrice"
           title={t("orders.fields.amount")}
-          render={(value) => `SGD $${value.toFixed(2)}`}
+          render={(value) => `$${value.toFixed(2)}`}
           filterDropdown={({
             setSelectedKeys,
             selectedKeys,

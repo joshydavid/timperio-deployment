@@ -1,11 +1,11 @@
 import { EyeOutlined } from "@ant-design/icons";
+import { List } from "@refinedev/antd";
 import { useTranslate } from "@refinedev/core";
 import {
   Button,
   Card,
   Col,
   Input,
-  List,
   Modal,
   Row,
   Table,
@@ -244,12 +244,7 @@ export const CustomerList = () => {
   ];
 
   return (
-    <List
-    //   breadcrumb={true}
-    //   headerProps={{
-    //     extra: <Button loading={isLoading} icon={<SearchOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />} />,
-    //   }}
-    >
+    <List title="Customers">
       <Tabs
         defaultActiveKey="ALL_CUSTOMERS"
         activeKey={activeTab}
@@ -266,31 +261,31 @@ export const CustomerList = () => {
         <Row gutter={16} style={{ marginBottom: 24 }}>
           <Col span={8}>
             <Card title="Total Sales Amount ($)" bordered>
-              <Typography.Paragraph>
+              <Typography.Title>
                 $
                 {overallMetrics.totalSalesAmount.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
-              </Typography.Paragraph>
+              </Typography.Title>
             </Card>
           </Col>
           <Col span={8}>
             <Card title="Total Sales Count" bordered>
-              <Typography.Text>
-                {overallMetrics.totalSalesCount}
-              </Typography.Text>
+              <Typography.Title>
+                {overallMetrics.totalSalesCount.toLocaleString()}
+              </Typography.Title>
             </Card>
           </Col>
           <Col span={8}>
             <Card title="Average Sale Amount ($)" bordered>
-              <Typography.Text>
+              <Typography.Title>
                 $
                 {overallMetrics.totalAverageSales.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
-              </Typography.Text>
+              </Typography.Title>
             </Card>
           </Col>
         </Row>
