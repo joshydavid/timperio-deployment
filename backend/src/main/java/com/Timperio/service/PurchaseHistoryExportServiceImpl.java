@@ -25,9 +25,7 @@ public class PurchaseHistoryExportServiceImpl implements PurchaseHistoryExportSe
 
     @Override
     public void writePurchaseHistoriesToCsv(Integer customerId, List<SalesType> salesType, LocalDate startDate,
-            LocalDate endDate,
-            BigDecimal minPrice, BigDecimal maxPrice,
-            HttpServletResponse response)
+            LocalDate endDate, BigDecimal minPrice, BigDecimal maxPrice, HttpServletResponse response)
             throws Exception {
 
         List<PurchaseHistoryDto> purchaseHistories = this.purchaseHistoryService
@@ -37,19 +35,16 @@ public class PurchaseHistoryExportServiceImpl implements PurchaseHistoryExportSe
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"purchase_history.csv\"");
         try (PrintWriter writer = response.getWriter(); CSVWriter csvWriter = new CSVWriter(writer)) {
 
-            String[] header = { "Customer ID", "Sales ID", "Sales Type", "Total Price", "Sales Date" };
+            String[] header = {"Customer ID", "Sales ID", "Sales Type", "Total Price", "Sales Date"};
             csvWriter.writeNext(header);
 
             for (PurchaseHistoryDto history : purchaseHistories) {
-                String salesTypeSanitised = (history.getSalesType() != null) ? history.getSalesType().toString()
+                String salesTypeSanitised = (history.getSalesType() != null)
+                        ? history.getSalesType().toString()
                         : "UNKNOWN";
-                String[] data = {
-                        String.valueOf(history.getCustomerId()),
-                        String.valueOf(history.getSalesId()),
-                        salesTypeSanitised,
-                        String.valueOf(String.format("%.2f", history.getTotalPrice())),
-                        history.getSalesDate().toString()
-                };
+                String[] data = {String.valueOf(history.getCustomerId()), String.valueOf(history.getSalesId()),
+                        salesTypeSanitised, String.valueOf(String.format("%.2f", history.getTotalPrice())),
+                        history.getSalesDate().toString()};
                 csvWriter.writeNext(data);
             }
         }

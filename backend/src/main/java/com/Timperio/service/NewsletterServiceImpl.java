@@ -60,8 +60,7 @@ public class NewsletterServiceImpl implements NewsletterService {
         String htmlContent = newsletterCampaignContentDTO.getHtmlContent();
 
         String datacenter = this.mailChimpConstant.getDatacenter();
-        String url = String.format(UrlConstant.MAILCHIMP_CAMPAIGNS_CONTENT, datacenter,
-                campaignId);
+        String url = String.format(UrlConstant.MAILCHIMP_CAMPAIGNS_CONTENT, datacenter, campaignId);
 
         String requestBody = String.format("{\"html\":\"%s\"}", htmlContent.replace("\"", "\\\""));
 
@@ -85,8 +84,7 @@ public class NewsletterServiceImpl implements NewsletterService {
 
         String datacenter = this.mailChimpConstant.getDatacenter();
         String campaignId = "a8be941ee5";
-        String url = String.format(UrlConstant.MAILCHIMP_CAMPAIGN_TEST, datacenter,
-                campaignId);
+        String url = String.format(UrlConstant.MAILCHIMP_CAMPAIGN_TEST, datacenter, campaignId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

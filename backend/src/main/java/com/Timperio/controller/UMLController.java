@@ -19,8 +19,7 @@ public class UMLController {
 
         String path = "src/main/resources/static/uml/timperio.drawio";
         Resource resource = new FileSystemResource(new File(path));
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"timperio.drawio\"")
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"timperio.drawio\"")
                 .body(resource);
     }
 }

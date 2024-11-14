@@ -6,12 +6,12 @@ import lombok.AllArgsConstructor;
 
 import com.Timperio.enums.*;
 
-@Data 
-@NoArgsConstructor 
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class CreateUpdateUserAdminDto {
-    private String userEmail;     
-    private String password;   
+    private String userEmail;
+    private String password;
     private String name;
     private Role role;
 }

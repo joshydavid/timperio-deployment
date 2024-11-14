@@ -1,9 +1,7 @@
 package com.Timperio.enums;
 
 public enum Role {
-    MARKETING("MARKETING"),
-    SALES("SALES"),
-    ADMIN("ADMIN");
+    MARKETING("MARKETING"), SALES("SALES"), ADMIN("ADMIN");
 
     private final String role;
 

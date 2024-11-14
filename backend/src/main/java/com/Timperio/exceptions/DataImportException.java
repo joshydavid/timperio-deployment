@@ -5,4 +5,3 @@ public class DataImportException extends RuntimeException {
         super(message, cause);
     }
 }
-

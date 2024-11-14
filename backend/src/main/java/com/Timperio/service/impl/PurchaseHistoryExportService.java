@@ -10,8 +10,5 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public interface PurchaseHistoryExportService {
     public void writePurchaseHistoriesToCsv(Integer customerId, List<SalesType> salesType, LocalDate startDate,
-            LocalDate endDate,
-            BigDecimal minPrice, BigDecimal maxPrice,
-            HttpServletResponse response)
-            throws Exception;
+            LocalDate endDate, BigDecimal minPrice, BigDecimal maxPrice, HttpServletResponse response) throws Exception;
 }

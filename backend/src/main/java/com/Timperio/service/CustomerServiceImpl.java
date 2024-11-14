@@ -125,14 +125,14 @@ public class CustomerServiceImpl implements CustomerService {
         Map<CustomerSegment, Integer> thresholds = calculateSegmentThresholds(customers);
 
         switch (customerSegment) {
-            case HIGH_VALUE:
+            case HIGH_VALUE :
                 return customers.subList(0, thresholds.get(CustomerSegment.HIGH_VALUE));
-            case MID_TIER:
+            case MID_TIER :
                 return customers.subList(thresholds.get(CustomerSegment.HIGH_VALUE),
                         thresholds.get(CustomerSegment.MID_TIER));
-            case LOW_SPEND:
+            case LOW_SPEND :
                 return customers.subList(thresholds.get(CustomerSegment.MID_TIER), totalCustomers);
-            default:
+            default :
                 return customers;
         }
     }

@@ -1,9 +1,7 @@
 package com.Timperio.enums;
 
 public enum CustomerSegment {
-    LOW_SPEND("LOW_SPEND"),
-    MID_TIER("MID_TIER"),
-    HIGH_VALUE("HIGH_VALUE");
+    LOW_SPEND("LOW_SPEND"), MID_TIER("MID_TIER"), HIGH_VALUE("HIGH_VALUE");
 
     private final String segment;
 

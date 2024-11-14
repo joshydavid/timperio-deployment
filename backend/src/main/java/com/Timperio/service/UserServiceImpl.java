@@ -20,9 +20,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -32,19 +30,19 @@ public class UserServiceImpl implements UserService {
         Role role = input.getRole();
 
         switch (role) {
-            case ADMIN:
+            case ADMIN :
                 user = new User();
                 user.setRole(Role.ADMIN);
                 break;
-            case MARKETING:
+            case MARKETING :
                 user = new User();
                 user.setRole(Role.MARKETING);
                 break;
-            case SALES:
+            case SALES :
                 user = new User();
                 user.setRole(Role.SALES);
                 break;
-            default:
+            default :
                 throw new InvalidRoleException(ErrorMessage.INVALID_ROLE.getMessage() + role);
         }
 
@@ -68,9 +66,8 @@ public class UserServiceImpl implements UserService {
 
     public void deleteUserByEmail(String userEmail) {
         try {
-            User user = userRepository.findByUserEmail(userEmail)
-                    .orElseThrow(
-                            () -> new UserNotFoundException(ErrorMessage.INVALID_USER_EMAIL.getMessage() + userEmail));
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow(
+                    () -> new UserNotFoundException(ErrorMessage.INVALID_USER_EMAIL.getMessage() + userEmail));
             userRepository.delete(user);
         } catch (Exception e) {
             throw new RuntimeException(ErrorMessage.DELETE_USER_ERROR.getMessage());
@@ -122,9 +119,7 @@ public class UserServiceImpl implements UserService {
 
     public List<UserDto> findAll() {
         List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(this::convertToUserDto)
-                .collect(Collectors.toList());
+        return users.stream().map(this::convertToUserDto).collect(Collectors.toList());
     }
 
     public UserDto findByUserId(Integer userId) {
@@ -133,20 +128,16 @@ public class UserServiceImpl implements UserService {
     }
 
     public Optional<UserDto> findByUserEmail(String userEmail) {
-        return userRepository.findByUserEmail(userEmail)
-                .map(this::convertToUserDto);
+        return userRepository.findByUserEmail(userEmail).map(this::convertToUserDto);
     }
 
     public Optional<UserDto> findByName(String userName) {
-        return userRepository.findByName(userName)
-                .map(this::convertToUserDto);
+        return userRepository.findByName(userName).map(this::convertToUserDto);
     }
 
     public List<UserDto> findByRole(Role role) {
         List<User> users = userRepository.findByRole(role);
-        return users.stream()
-                .map(this::convertToUserDto)
-                .collect(Collectors.toList());
+        return users.stream().map(this::convertToUserDto).collect(Collectors.toList());
     }
 
     private UserDto convertToUserDto(User user) {

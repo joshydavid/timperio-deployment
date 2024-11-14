@@ -27,17 +27,12 @@ public class CsvController {
 
     @GetMapping
     public void exportPurchaseHistoryToCsv(@RequestParam(required = false) Integer customerId,
-            @RequestParam(required = false) String salesType,
-            @RequestParam(required = false) LocalDate startDate,
-            @RequestParam(required = false) LocalDate endDate,
-            @RequestParam(required = false) BigDecimal minPrice,
-            @RequestParam(required = false) BigDecimal maxPrice,
-            HttpServletResponse response) throws Exception {
+            @RequestParam(required = false) String salesType, @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate, @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice, HttpServletResponse response) throws Exception {
 
         List<SalesType> salesTypeList = (salesType != null && !salesType.isEmpty())
-                ? Arrays.stream(salesType.split(","))
-                        .map(SalesType::valueOf)
-                        .collect(Collectors.toList())
+                ? Arrays.stream(salesType.split(",")).map(SalesType::valueOf).collect(Collectors.toList())
                 : null;
 
         this.purchaseHistoryExportService.writePurchaseHistoriesToCsv(customerId, salesTypeList, startDate, endDate,

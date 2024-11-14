@@ -30,18 +30,17 @@ public class DataImportServiceImpl implements DataImportService {
     public CustomerService customerService;
 
     @Autowired
-    private PurchaseHistoryService purchaseHistoryService; 
+    private PurchaseHistoryService purchaseHistoryService;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Transactional
     public void importData(String filePath) {
-        try (FileInputStream fis = new FileInputStream(filePath);
-             Workbook workbook = new XSSFWorkbook(fis)) {
+        try (FileInputStream fis = new FileInputStream(filePath); Workbook workbook = new XSSFWorkbook(fis)) {
 
             Sheet sheet = workbook.getSheet("Sales by product");
-            
+
             loadCustomers(sheet);
             List<PurchaseHistory> purchaseHistoryList = loadPurchaseHistory(sheet);
 
@@ -61,15 +60,18 @@ public class DataImportServiceImpl implements DataImportService {
                     List<PurchaseHistory> purchaseHistoryOfCustomerList = (List<PurchaseHistory>) purchaseHistoryOfCustomer;
                     customer.setPurchaseHistory(purchaseHistoryOfCustomerList);
                 } else {
-                    throw new InvalidPurchaseHistoryException("Expected purchase history to be a List<PurchaseHistory>, but got: " + purchaseHistoryOfCustomer.getClass().getName());
+                    throw new InvalidPurchaseHistoryException(
+                            "Expected purchase history to be a List<PurchaseHistory>, but got: "
+                                    + purchaseHistoryOfCustomer.getClass().getName());
                 }
-            
+
                 if (totalSpendingOfCustomer instanceof Double) {
                     Double totalSpending = (Double) totalSpendingOfCustomer;
                     BigDecimal roundedSpending = new BigDecimal(totalSpending).setScale(2, RoundingMode.HALF_UP);
                     customer.setTotalSpending(roundedSpending.doubleValue());
                 } else {
-                    throw new InvalidTotalSpendingException("Expected total spending to be a Double, but got: " + totalSpendingOfCustomer.getClass().getName());
+                    throw new InvalidTotalSpendingException("Expected total spending to be a Double, but got: "
+                            + totalSpendingOfCustomer.getClass().getName());
                 }
 
                 entityManager.merge(customer);
@@ -82,7 +84,8 @@ public class DataImportServiceImpl implements DataImportService {
         }
     }
 
-    private static Map<Integer, Map<String, Object>> reformatCustomerDetails(List<PurchaseHistory> purchaseHistoryList) {
+    private static Map<Integer, Map<String, Object>> reformatCustomerDetails(
+            List<PurchaseHistory> purchaseHistoryList) {
         Map<Integer, List<PurchaseHistory>> purchaseHistoryMap = new HashMap<>();
         Map<Integer, Double> totalSpendingMap = new HashMap<>();
 
@@ -143,10 +146,9 @@ public class DataImportServiceImpl implements DataImportService {
             uniqueCustomerIDs.add(customerId);
         }
 
-        for (int id: uniqueCustomerIDs) {
+        for (int id : uniqueCustomerIDs) {
             customerService.createCustomer(id);
         }
 
     }
 }
-

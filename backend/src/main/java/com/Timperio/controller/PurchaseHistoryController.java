@@ -31,11 +31,9 @@ public class PurchaseHistoryController {
     @GetMapping()
     public List<PurchaseHistoryDto> getAllSalesData(@RequestParam(required = false) Integer customerId,
             @RequestParam(required = false) List<SalesType> salesType, LocalDate startDate, LocalDate endDate,
-            BigDecimal minPrice,
-            BigDecimal maxPrice) {
-        return this.purchaseHistoryService.findAllFilteredPurchaseHistories(customerId,
-                salesType, startDate, endDate, minPrice,
-                maxPrice);
+            BigDecimal minPrice, BigDecimal maxPrice) {
+        return this.purchaseHistoryService.findAllFilteredPurchaseHistories(customerId, salesType, startDate, endDate,
+                minPrice, maxPrice);
     }
 
     @GetMapping("/customerId/{customerId}")
@@ -45,8 +43,7 @@ public class PurchaseHistoryController {
 
     @GetMapping("/salesType/{salesType}")
     public List<PurchaseHistory> getSalesDataByType(@PathVariable String salesType) {
-        List<SalesType> salesTypeList = Arrays.stream(salesType.split(","))
-                .map(SalesType::valueOf)
+        List<SalesType> salesTypeList = Arrays.stream(salesType.split(",")).map(SalesType::valueOf)
                 .collect(Collectors.toList());
 
         return this.purchaseHistoryService.findBySalesType(salesTypeList);

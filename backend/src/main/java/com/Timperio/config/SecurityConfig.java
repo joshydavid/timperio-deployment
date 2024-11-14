@@ -33,8 +33,7 @@ public class SecurityConfig {
     @Value("${SERVER}")
     private String serverUrl;
 
-    public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter,
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
             AuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -42,26 +41,20 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(UrlConstant.API_VERSION + "/auth/login", "/v3/api-docs/**", "/swagger-ui/**")
-                        .permitAll()
-                        .requestMatchers(UrlConstant.API_VERSION + "/purchaseHistory")
+                        .permitAll().requestMatchers(UrlConstant.API_VERSION + "/purchaseHistory")
                         .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
-                        .requestMatchers(UrlConstant.API_VERSION + "/export")
-                        .hasRole(Role.MARKETING.toString())
-                        .requestMatchers(UrlConstant.API_VERSION + "/customers/**")
-                        .hasRole(Role.SALES.toString())
-                        .requestMatchers(UrlConstant.API_VERSION + "/user")
-                        .hasRole(Role.ADMIN.toString())
-                        .anyRequest().authenticated())
+                        .requestMatchers(UrlConstant.API_VERSION + "/export").hasRole(Role.MARKETING.toString())
+                        .requestMatchers(UrlConstant.API_VERSION + "/customers/**").hasRole(Role.SALES.toString())
+                        .requestMatchers(UrlConstant.API_VERSION + "/user").hasRole(Role.ADMIN.toString()).anyRequest()
+                        .authenticated())
 
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .accessDeniedHandler(customAccessDeniedHandler())
-                        .authenticationEntryPoint(customAuthenticationEntryPoint()))
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(
+                        exceptionHandling -> exceptionHandling.accessDeniedHandler(customAccessDeniedHandler())
+                                .authenticationEntryPoint(customAuthenticationEntryPoint()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
@@ -79,8 +72,7 @@ public class SecurityConfig {
     private AccessDeniedHandler customAccessDeniedHandler() {
         return (request, response, accessDeniedException) -> {
             response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.getWriter()
-                    .write(ErrorMessage.FORBIDDEN.getMessage());
+            response.getWriter().write(ErrorMessage.FORBIDDEN.getMessage());
         };
     }
 

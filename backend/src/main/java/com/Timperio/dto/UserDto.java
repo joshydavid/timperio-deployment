@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 
 import com.Timperio.enums.*;
 
-@Data 
-@NoArgsConstructor 
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
     private Integer userId;
