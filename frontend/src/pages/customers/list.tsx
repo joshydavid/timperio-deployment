@@ -248,9 +248,9 @@ export const CustomerList = () => {
         style={{ marginBottom: 24 }}
       >
         <TabPane tab="All Customers" key="ALL_CUSTOMERS" />
-        <TabPane tab="Low Spend" key="LOW_SPEND" />
-        <TabPane tab="Mid Tier" key="MID_TIER" />
-        <TabPane tab="High Value" key="HIGH_VALUE" />
+        <TabPane tab="Low Spend (Bottom 20%)" key="LOW_SPEND" />
+        <TabPane tab="Mid Tier (Between 10% and 80%)" key="MID_TIER" />
+        <TabPane tab="High Value (Top 10%)" key="HIGH_VALUE" />
       </Tabs>
 
       {activeTab === "ALL_CUSTOMERS" && overallMetrics && (

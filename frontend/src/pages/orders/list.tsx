@@ -118,7 +118,11 @@ export const OrderList = () => {
       form.resetFields();
       setIsModalVisible(false);
     } catch (error) {
-      message.error("Failed to export data");
+      if (error.status == 403) {
+        message.error(
+          "You do not have the required permissions to perform this request"
+        );
+      }
     }
   };
 
