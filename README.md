@@ -90,9 +90,9 @@ Developed by Team 5
 </a> &nbsp;
 
 <a href="https://www.linkedin.com/in/ivynyak/">
-  <img src="https://github.com/user-attachments/assets/24522f87-6fb8-4b48-94d8-8022eb571e96" width="80">
+  <img src="https://github.com/user-attachments/assets/1aafcebd-61ae-4cb1-b8be-cf8e99b4fa66" width="80">
 </a> &nbsp;
 
 <a href="https://www.linkedin.com/in/liawjunyi/">
-  <img src="https://github.com/user-attachments/assets/24522f87-6fb8-4b48-94d8-8022eb571e96" width="80">
+  <img src="https://github.com/user-attachments/assets/e4ad01cf-c1ef-4042-899d-6a9f3156485a" width="80">
 </a>
