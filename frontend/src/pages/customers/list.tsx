@@ -27,11 +27,10 @@ export const CustomerList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [activeTab, setActiveTab] = useState("ALL_CUSTOMERS"); // Default to All Customers
-  const [overallMetrics, setOverallMetrics] = useState(null); // Holds the aggregate metrics data
+  const [activeTab, setActiveTab] = useState("ALL_CUSTOMERS");
+  const [overallMetrics, setOverallMetrics] = useState(null);
 
-  // Fetch customer data from the API
-  const fetchCustomersBySegment = async (segment) => {
+  const fetchCustomersBySegment = async (segment: any) => {
     try {
       setIsLoading(true);
       const response = await axios.get(
@@ -62,7 +61,7 @@ export const CustomerList = () => {
         }
       );
       await fetchMetrics(response.data);
-      await fetchOverallMetrics(); // Fetch aggregate metrics for All Customers
+      await fetchOverallMetrics();
     } catch (error) {
       console.error("Error fetching all customers:", error);
     } finally {
@@ -70,11 +69,10 @@ export const CustomerList = () => {
     }
   };
 
-  // Fetch metrics for each customer and add it to the customers data
-  const fetchMetrics = async (customersData) => {
+  const fetchMetrics = async (customersData: any) => {
     try {
       const updatedCustomers = await Promise.all(
-        customersData.map(async (customer) => {
+        customersData.map(async (customer: any) => {
           const metricsResponse = await axios.get(
             `${import.meta.env.VITE_SERVER}/api/v1/customers/metrics/${
               customer.customerId
@@ -101,7 +99,6 @@ export const CustomerList = () => {
     }
   };
 
-  // Fetch aggregate metrics for All Customers tab
   const fetchOverallMetrics = async () => {
     try {
       const response = await axios.get(
@@ -118,7 +115,6 @@ export const CustomerList = () => {
     }
   };
 
-  // Fetch customers based on the active tab
   useEffect(() => {
     if (activeTab === "ALL_CUSTOMERS") {
       fetchAllCustomers();

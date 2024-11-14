@@ -51,7 +51,7 @@ public class SecurityConfig {
                         .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
                         .requestMatchers(AppConstant.API_VERSION + "/export")
                         .hasRole(Role.MARKETING.toString())
-                        .requestMatchers(AppConstant.API_VERSION + "/customers")
+                        .requestMatchers(AppConstant.API_VERSION + "/customers/**")
                         .hasRole(Role.SALES.toString())
                         .anyRequest().authenticated())
 
