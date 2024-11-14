@@ -16,6 +16,7 @@ import { Typography } from "antd/lib";
 import axios from "axios";
 import React, { useState } from "react";
 import type { ICourier } from "../../interfaces";
+import { upperCase } from "lodash";
 
 const { Text } = Typography;
 
@@ -157,12 +158,12 @@ export const UserManagement = () => {
         <Table.Column title="Name" dataIndex="name" key="name" />
         <Table.Column title="Email" dataIndex="userEmail" key="userEmail" />
         <Table.Column title="Role" dataIndex="role" key="role" />
-        <Table.Column
+        {/* <Table.Column
           title="Status"
           dataIndex="enabled"
           key="enabled"
           render={(enabled) => (enabled ? "Enabled" : "Disabled")}
-        />
+        /> */}
 
         <Table.Column
           title="Action"
@@ -170,7 +171,9 @@ export const UserManagement = () => {
           render={(_, record: ICourier) => {
             return record.role === "ADMIN" ? (
               <>
-                <Text type="danger">Not Allowed to Edit</Text>
+                <Text type="danger" style={{ textTransform: "uppercase" }}>
+                  Not Allowed to Edit
+                </Text>
               </>
             ) : (
               <div>

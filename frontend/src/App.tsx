@@ -25,7 +25,6 @@ import "dayjs/locale/de";
 
 import { useTranslation } from "react-i18next";
 import { Header, Title } from "./components";
-import { BikeWhiteIcon } from "./components/icons";
 import { ConfigProvider } from "./context";
 import { useAutoLoginForDemo } from "./hooks";
 import { AuthPage } from "./pages/auth";
@@ -133,7 +132,7 @@ const App: React.FC = () => {
                 show: "/UserManagement/:id",
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <BikeWhiteIcon />,
+                  icon: <UserOutlined />,
                 },
               },
             ]}
