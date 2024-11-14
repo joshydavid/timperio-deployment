@@ -44,9 +44,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/login").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers(("/swagger-ui/**")).permitAll()
+                        .requestMatchers("/api/v1/auth/login", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers("/api/v1/purchaseHistory")
                         .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
                         .requestMatchers("/api/v1/export")
