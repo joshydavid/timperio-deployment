@@ -19,7 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.Timperio.constant.AppConstant;
+import com.Timperio.constant.UrlConstant;
 import com.Timperio.enums.ErrorMessage;
 import com.Timperio.enums.Role;
 
@@ -45,15 +45,15 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(AppConstant.API_VERSION + "/auth/login", "/v3/api-docs/**", "/swagger-ui/**")
+                        .requestMatchers(UrlConstant.API_VERSION + "/auth/login", "/v3/api-docs/**", "/swagger-ui/**")
                         .permitAll()
-                        .requestMatchers(AppConstant.API_VERSION + "/purchaseHistory")
+                        .requestMatchers(UrlConstant.API_VERSION + "/purchaseHistory")
                         .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
-                        .requestMatchers(AppConstant.API_VERSION + "/export")
+                        .requestMatchers(UrlConstant.API_VERSION + "/export")
                         .hasRole(Role.MARKETING.toString())
-                        .requestMatchers(AppConstant.API_VERSION + "/customers/**")
+                        .requestMatchers(UrlConstant.API_VERSION + "/customers/**")
                         .hasRole(Role.SALES.toString())
-                        .requestMatchers(AppConstant.API_VERSION + "/user")
+                        .requestMatchers(UrlConstant.API_VERSION + "/user")
                         .hasRole(Role.ADMIN.toString())
                         .anyRequest().authenticated())
 

@@ -8,7 +8,7 @@ import com.Timperio.models.Metric;
 
 public interface CustomerService {
 
-    public void populateCustomersFromHistoryPurchases();
+    // public void populateCustomersFromHistoryPurchases();
 
     public Customer createCustomer(Integer customerId);
 

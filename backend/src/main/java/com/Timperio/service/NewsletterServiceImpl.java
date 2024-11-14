@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.Timperio.config.MailChimpConstant;
+import com.Timperio.constant.UrlConstant;
 import com.Timperio.dto.NewsletterCampaignContentDTO;
 import com.Timperio.dto.NewsletterRequestDTO;
 import com.Timperio.service.impl.NewsletterService;
@@ -28,7 +29,7 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     public ResponseEntity<String> healthCheck() {
         String datacenter = this.mailChimpConstant.getDatacenter();
-        String url = String.format("https://%s.api.mailchimp.com/3.0/ping", datacenter);
+        String url = String.format(UrlConstant.MAILCHIMP_PING, datacenter);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -42,7 +43,7 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     public ResponseEntity<String> getCampaigns() {
         String datacenter = this.mailChimpConstant.getDatacenter();
-        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns", datacenter);
+        String url = String.format(UrlConstant.MAILCHIMP_CAMPAIGNS, datacenter);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -59,7 +60,7 @@ public class NewsletterServiceImpl implements NewsletterService {
         String htmlContent = newsletterCampaignContentDTO.getHtmlContent();
 
         String datacenter = this.mailChimpConstant.getDatacenter();
-        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns/%s/content", datacenter,
+        String url = String.format(UrlConstant.MAILCHIMP_CAMPAIGNS_CONTENT, datacenter,
                 campaignId);
 
         String requestBody = String.format("{\"html\":\"%s\"}", htmlContent.replace("\"", "\\\""));
@@ -84,7 +85,7 @@ public class NewsletterServiceImpl implements NewsletterService {
 
         String datacenter = this.mailChimpConstant.getDatacenter();
         String campaignId = "a8be941ee5";
-        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns/%s/actions/test", datacenter,
+        String url = String.format(UrlConstant.MAILCHIMP_CAMPAIGN_TEST, datacenter,
                 campaignId);
 
         HttpHeaders headers = new HttpHeaders();

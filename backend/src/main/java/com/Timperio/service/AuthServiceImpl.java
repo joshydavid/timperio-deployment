@@ -15,20 +15,17 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthServiceImpl(
-        UserRepository userRepository,
-        AuthenticationManager authenticationManager
-    ) {
+            UserRepository userRepository,
+            AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
     }
 
     public User authenticate(LoginUserDto input) {
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                    input.getUserEmail(),
-                    input.getPassword()
-            )
-        );
+                new UsernamePasswordAuthenticationToken(
+                        input.getUserEmail(),
+                        input.getPassword()));
 
         return userRepository.findByUserEmail(input.getUserEmail())
                 .orElseThrow();

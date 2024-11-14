@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
                 user.setRole(Role.SALES);
                 break;
             default:
-                throw new InvalidRoleException("Invalid role: " + role);
+                throw new InvalidRoleException(ErrorMessage.INVALID_ROLE.getMessage() + role);
         }
 
         user.setName(input.getName());
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(Integer userId) {
         try {
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+                    .orElseThrow(() -> new UserNotFoundException(ErrorMessage.INVALID_USER_ID.getMessage() + userId));
             userRepository.delete(user);
         } catch (Exception e) {
             throw new RuntimeException(ErrorMessage.DELETE_USER_ERROR.getMessage());
@@ -69,7 +69,8 @@ public class UserServiceImpl implements UserService {
     public void deleteUserByEmail(String userEmail) {
         try {
             User user = userRepository.findByUserEmail(userEmail)
-                    .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userEmail));
+                    .orElseThrow(
+                            () -> new UserNotFoundException(ErrorMessage.INVALID_USER_EMAIL.getMessage() + userEmail));
             userRepository.delete(user);
         } catch (Exception e) {
             throw new RuntimeException(ErrorMessage.DELETE_USER_ERROR.getMessage());
@@ -78,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
     public User updateUserAdmin(Integer userId, CreateUpdateUserAdminDto input) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessage.INVALID_USER_ID.getMessage() + userId));
 
         if (user.getRole() == Role.ADMIN) {
             throw new AdminAccountUpdateException(ErrorMessage.ADMIN_ACCOUNT_UPDATE_ERROR.getMessage());
@@ -107,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
     public User updateUser(Integer userId, UpdateUserDto input) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException(ErrorMessage.INVALID_USER_ID.getMessage() + userId));
 
         if (input.getName() != null) {
             user.setName(input.getName());
