@@ -192,7 +192,15 @@ export const CustomerList = () => {
       key: "totalSalesAmount",
       title: "Total Sales Amount",
       dataIndex: "totalSalesAmount",
-      render: (value: any) => <Typography>${value.toFixed(2)}</Typography>,
+      render: (value: any) => (
+        <Typography>
+          $
+          {value.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Typography>
+      ),
     },
     {
       key: "totalSalesCount",
@@ -206,7 +214,13 @@ export const CustomerList = () => {
       title: "Avg. Sale Amount",
       dataIndex: "totalAverageSales",
       render: (value: any) => (
-        <Typography.Text>${value.toFixed(2)}</Typography.Text>
+        <Typography.Text>
+          $
+          {value.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Typography.Text>
       ),
     },
     {
@@ -251,10 +265,14 @@ export const CustomerList = () => {
       {activeTab === "ALL_CUSTOMERS" && overallMetrics && (
         <Row gutter={16} style={{ marginBottom: 24 }}>
           <Col span={8}>
-            <Card title="Total Sales Amount" bordered>
-              <Typography.Text>
-                ${overallMetrics.totalSalesAmount.toFixed(2)}
-              </Typography.Text>
+            <Card title="Total Sales Amount ($)" bordered>
+              <Typography.Paragraph>
+                $
+                {overallMetrics.totalSalesAmount.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </Typography.Paragraph>
             </Card>
           </Col>
           <Col span={8}>
@@ -265,9 +283,13 @@ export const CustomerList = () => {
             </Card>
           </Col>
           <Col span={8}>
-            <Card title="Average Sale Amount" bordered>
+            <Card title="Average Sale Amount ($)" bordered>
               <Typography.Text>
-                ${overallMetrics.totalAverageSales.toFixed(2)}
+                $
+                {overallMetrics.totalAverageSales.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </Typography.Text>
             </Card>
           </Col>

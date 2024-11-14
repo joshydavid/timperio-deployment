@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import dayjs from 'dayjs';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import dayjs from "dayjs";
+import axios from "axios";
 
 interface Props {
   selectedDateRange: { start: string; end: string };
@@ -18,7 +18,7 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
         `${import.meta.env.VITE_SERVER}/api/v1/purchaseHistory`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+            Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
           },
         }
       );
@@ -27,8 +27,8 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
       const aggregatedData = response.data.reduce((acc: any[], order: any) => {
         const orderDate = dayjs(order.salesDate);
         if (
-          (start && orderDate.isBefore(start, 'day')) ||
-          (end && orderDate.isAfter(end, 'day'))
+          (start && orderDate.isBefore(start, "day")) ||
+          (end && orderDate.isAfter(end, "day"))
         ) {
           return acc;
         }
@@ -57,7 +57,7 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
 
       setTopCustomers(topCustomersArray);
     } catch (error) {
-      console.error('Error fetching top customers:', error);
+      console.error("Error fetching top customers:", error);
     } finally {
       setLoading(false);
     }
@@ -77,7 +77,7 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
       ) : topCustomers.length === 0 ? (
         <div>No data available for the selected range.</div>
       ) : (
-        <div style={{ marginTop: '10px' }}>
+        <div style={{ marginTop: "10px" }}>
           <ol>
             {topCustomers.map((customer, index) => (
               <li key={customer.customerId}>
