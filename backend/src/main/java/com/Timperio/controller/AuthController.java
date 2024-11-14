@@ -12,7 +12,7 @@ import com.Timperio.enums.Role;
 import com.Timperio.models.User;
 import com.Timperio.responses.LoginResponse;
 import com.Timperio.service.impl.AuthService;
-import com.Timperio.service.impl.JwtService;;
+import com.Timperio.service.impl.JwtService;
 
 @RequestMapping(UrlConstant.API_VERSION + "/auth")
 @RestController
