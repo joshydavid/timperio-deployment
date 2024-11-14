@@ -6,14 +6,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Timperio.constant.UrlConstant;
 import com.Timperio.dto.LoginUserDto;
 import com.Timperio.enums.Role;
 import com.Timperio.models.User;
 import com.Timperio.responses.LoginResponse;
 import com.Timperio.service.impl.AuthService;
-import com.Timperio.service.impl.JwtService;
+import com.Timperio.service.impl.JwtService;;
 
-@RequestMapping("/api/v1/auth")
+@RequestMapping(UrlConstant.API_VERSION + "/auth")
 @RestController
 public class AuthController {
     private final JwtService jwtService;

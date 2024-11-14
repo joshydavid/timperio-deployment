@@ -12,13 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Timperio.constant.UrlConstant;
 import com.Timperio.enums.SalesType;
 import com.Timperio.service.impl.PurchaseHistoryExportService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+@RequestMapping(UrlConstant.API_VERSION + "/export")
 @RestController
-@RequestMapping("/api/v1/export")
+
 public class CsvController {
     @Autowired
     private PurchaseHistoryExportService purchaseHistoryExportService;

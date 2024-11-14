@@ -539,14 +539,7 @@ export const OrderList = () => {
           </Form.Item>
 
           <Form.Item name="salesDate" label="Sales Date">
-            <RangePicker
-              style={{ width: "100%" }}
-              defaultValue={[
-                dayjs("2019-01-01", "YYYY-MM-DD"),
-                dayjs("2024-01-01", "YYYY-MM-DD"),
-              ]}
-              format="YYYY-MM-DD"
-            />
+            <RangePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
           </Form.Item>
         </Form>
       </Modal>

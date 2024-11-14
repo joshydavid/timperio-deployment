@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Timperio.constant.UrlConstant;
 import com.Timperio.enums.CustomerSegment;
 import com.Timperio.models.Customer;
 import com.Timperio.models.Metric;
 import com.Timperio.service.impl.CustomerService;
 
+@RequestMapping(UrlConstant.API_VERSION + "/customers")
 @RestController
-@RequestMapping("/api/v1/customers")
 public class CustomerController {
 
     @Autowired

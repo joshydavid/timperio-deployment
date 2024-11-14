@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Timperio.constant.UrlConstant;
 import com.Timperio.dto.PurchaseHistoryDto;
 import com.Timperio.enums.ChannelType;
 import com.Timperio.enums.SalesType;
@@ -20,9 +21,8 @@ import com.Timperio.enums.ShippingMethod;
 import com.Timperio.models.PurchaseHistory;
 import com.Timperio.service.impl.PurchaseHistoryService;
 
+@RequestMapping(UrlConstant.API_VERSION + "/purchaseHistory")
 @RestController
-@RequestMapping("/api/v1/purchaseHistory")
-
 public class PurchaseHistoryController {
 
     @Autowired
