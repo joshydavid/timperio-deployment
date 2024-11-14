@@ -87,7 +87,8 @@ export const OrderList = () => {
     let queryParams: any = [];
 
     if (customerId) queryParams.push(`customerId=${customerId}`);
-    if (startDateString) queryParams.push(`salesDate=${startDateString}`);
+    if (startDateString) queryParams.push(`startDate=${startDateString}`);
+    if (endDateString) queryParams.push(`endDate=${endDateString}`);
     if (minPrice != null) queryParams.push(`minPrice=${minPrice}`);
     if (maxPrice != null) queryParams.push(`maxPrice=${maxPrice}`);
     if (sanitisedSalesType) queryParams.push(`salesType=${sanitisedSalesType}`);

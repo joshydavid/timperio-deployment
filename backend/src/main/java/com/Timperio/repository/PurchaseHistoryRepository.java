@@ -20,17 +20,18 @@ public interface PurchaseHistoryRepository extends CrudRepository<PurchaseHistor
 
     List<PurchaseHistory> findAll();
 
-    @Query("SELECT new com.Timperio.dto.PurchaseHistoryDto(p.customer.customerId, p.salesId, p.product, p.salesType, p.totalPrice, p.salesDate) "
+    @Query("SELECT new com.Timperio.dto.PurchaseHistoryDto(p.customerId, p.salesId, p.product, p.salesType, p.totalPrice, p.salesDate) "
             + "FROM PurchaseHistory p "
-            + "WHERE (:customerId IS NULL OR p.customer.customerId = :#{#customerId}) "
+            + "WHERE (:customerId IS NULL OR p.customerId = :#{#customerId}) "
             + "AND (:salesType IS NULL OR p.salesType IN :#{#salesType})"
-            + "AND (TRUE = :#{#salesDate == null} or p.salesDate = :#{#salesDate})"
+            + "AND (TRUE = :#{#startDate == null} OR TRUE = :#{#endDate == null} OR p.salesDate BETWEEN :#{#startDate} AND :#{#endDate})"
             + "AND (:minPrice IS NULL OR p.totalPrice >= :#{#minPrice})"
             + "AND (:maxPrice IS NULL OR p.totalPrice <= :#{#maxPrice})")
     List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(
             @Param("customerId") Integer customerId,
             @Param("salesType") List<SalesType> salesType,
-            @Param("salesDate") LocalDate salesDate,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
             @Param("minPrice") BigDecimal minPrice,
             @Param("maxPrice") BigDecimal maxPrice);
 

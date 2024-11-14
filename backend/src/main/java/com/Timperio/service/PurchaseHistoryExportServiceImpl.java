@@ -24,13 +24,14 @@ public class PurchaseHistoryExportServiceImpl implements PurchaseHistoryExportSe
     private PurchaseHistoryService purchaseHistoryService;
 
     @Override
-    public void writePurchaseHistoriesToCsv(Integer customerId, List<SalesType> salesType, LocalDate salesDate,
+    public void writePurchaseHistoriesToCsv(Integer customerId, List<SalesType> salesType, LocalDate startDate,
+            LocalDate endDate,
             BigDecimal minPrice, BigDecimal maxPrice,
             HttpServletResponse response)
             throws Exception {
 
         List<PurchaseHistoryDto> purchaseHistories = this.purchaseHistoryService
-                .findAllFilteredPurchaseHistories(customerId, salesType, salesDate, minPrice, maxPrice);
+                .findAllFilteredPurchaseHistories(customerId, salesType, startDate, endDate, minPrice, maxPrice);
 
         response.setContentType("text/csv");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"purchase_history.csv\"");
@@ -43,10 +44,10 @@ public class PurchaseHistoryExportServiceImpl implements PurchaseHistoryExportSe
                 String salesTypeSanitised = (history.getSalesType() != null) ? history.getSalesType().toString()
                         : "UNKNOWN";
                 String[] data = {
-                        String.valueOf(history.getSalesId()),
                         String.valueOf(history.getCustomerId()),
+                        String.valueOf(history.getSalesId()),
                         salesTypeSanitised,
-                        String.valueOf(history.getTotalPrice()),
+                        String.valueOf(String.format("%.2f", history.getTotalPrice())),
                         history.getSalesDate().toString()
                 };
                 csvWriter.writeNext(data);

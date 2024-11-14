@@ -91,8 +91,9 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
 
     @Override
     public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, List<SalesType> salesType,
-            LocalDate salesDate, BigDecimal minPrice, BigDecimal maxPrice) {
-        return purchaseHistoryRepository.findAllFilteredPurchaseHistories(customerId, salesType, salesDate, minPrice,
+            LocalDate startDate, LocalDate endDate, BigDecimal minPrice, BigDecimal maxPrice) {
+        return purchaseHistoryRepository.findAllFilteredPurchaseHistories(customerId, salesType, startDate, endDate,
+                minPrice,
                 maxPrice);
     }
 
