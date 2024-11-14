@@ -1,9 +1,9 @@
-import { Suspense, useEffect, useState } from 'react';
-import { useTranslate } from '@refinedev/core';
-import { Area, type AreaConfig } from '@ant-design/plots';
-import dayjs from 'dayjs';
-import axios from 'axios';
-import { useConfigProvider } from '../../../context';
+import { Suspense, useEffect, useState } from "react";
+import { useTranslate } from "@refinedev/core";
+import { Area, type AreaConfig } from "@ant-design/plots";
+import dayjs from "dayjs";
+import axios from "axios";
+import { useConfigProvider } from "../../../context";
 
 type Props = {
   height: number;
@@ -25,14 +25,14 @@ export const DailyRevenue = ({ height, selectedDateRange }: Props) => {
         `${import.meta.env.VITE_SERVER}/api/v1/purchaseHistory`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+            Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
           },
         }
       );
 
       // Aggregate the total revenue per day
       const aggregatedData = response.data.reduce((acc: any[], order: any) => {
-        const date = dayjs(order.salesDate).format('YYYY-MM-DD');
+        const date = dayjs(order.salesDate).format("YYYY-MM-DD");
         const existingEntry = acc.find((entry) => entry.timeText === date);
 
         if (existingEntry) {
@@ -45,12 +45,12 @@ export const DailyRevenue = ({ height, selectedDateRange }: Props) => {
 
       // Filter data to only include the selected date range
       const filteredData = aggregatedData.filter((entry) =>
-        dayjs(entry.timeText).isBetween(start, end, null, '[]')
+        dayjs(entry.timeText).isBetween(start, end, null, "[]")
       );
 
       setData(filteredData); // Set the filtered data
     } catch (error) {
-      console.error('Error fetching revenue data:', error);
+      console.error("Error fetching revenue data:", error);
     } finally {
       setLoading(false);
     }
@@ -66,8 +66,8 @@ export const DailyRevenue = ({ height, selectedDateRange }: Props) => {
   const config: AreaConfig = {
     isStack: false,
     data: data, // Use the local data state
-    xField: 'timeText',
-    yField: 'value',
+    xField: "timeText",
+    yField: "value",
     animation: true,
     startOnZero: false,
     smooth: true,
@@ -76,7 +76,7 @@ export const DailyRevenue = ({ height, selectedDateRange }: Props) => {
       range: [0, 1],
       label: {
         formatter: (v) => {
-          return dayjs(v).format('MM/DD');
+          return dayjs(v).format("MM/DD");
         },
       },
     },
@@ -90,22 +90,22 @@ export const DailyRevenue = ({ height, selectedDateRange }: Props) => {
     tooltip: {
       formatter: (data) => {
         return {
-          name: t('dashboard.revenue.title'),
-          value: new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
+          name: t("dashboard.revenue.title"),
+          value: new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
           }).format(data.value),
         };
       },
     },
     theme: mode,
     areaStyle: () => {
-      return mode === 'dark'
-        ? { fill: 'l(270) 0:#15171B 0.5:#1677FF 1:#1677FF' }
-        : { fill: 'l(270) 0:#ffffff 0.5:#D3EBFF 1:#1677FF' };
+      return mode === "dark"
+        ? { fill: "l(270) 0:#15171B 0.5:#1677FF 1:#1677FF" }
+        : { fill: "l(270) 0:#ffffff 0.5:#D3EBFF 1:#1677FF" };
     },
     color: () => {
-      return mode === 'dark' ? '#65A9F3' : '#1677FF';
+      return mode === "dark" ? "#65A9F3" : "#1677FF";
     },
   };
 

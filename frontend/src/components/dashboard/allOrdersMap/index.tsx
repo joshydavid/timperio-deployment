@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import dayjs from "dayjs";
 import axios from "axios";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 
 interface Props {
   selectedDateRange: { start: string; end: string };
@@ -10,7 +10,6 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
   const [topCustomers, setTopCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch the orders and filter based on selected date range
   const fetchTopCustomers = async (start: dayjs.Dayjs, end: dayjs.Dayjs) => {
     setLoading(true);
     try {
@@ -23,7 +22,6 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
         }
       );
 
-      // Aggregate spending data per customer
       const aggregatedData = response.data.reduce((acc: any[], order: any) => {
         const orderDate = dayjs(order.salesDate);
         if (
@@ -50,7 +48,6 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
         return acc;
       }, []);
 
-      // Sort by total spending in descending order and get top 10 customers
       const topCustomersArray = aggregatedData
         .sort((a, b) => b.totalSpending - a.totalSpending)
         .slice(0, 10);
@@ -63,7 +60,6 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
     }
   };
 
-  // Effect hook to fetch data when selectedDateRange changes
   useEffect(() => {
     const start = dayjs(selectedDateRange.start);
     const end = dayjs(selectedDateRange.end);
@@ -75,7 +71,9 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
       {loading ? (
         <div>Loading...</div>
       ) : topCustomers.length === 0 ? (
-        <div>No data available for the selected range.</div>
+        <div style={{ padding: 20 }}>
+          No data available for the selected range.
+        </div>
       ) : (
         <div style={{ marginTop: "10px" }}>
           <ol>

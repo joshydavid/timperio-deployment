@@ -77,7 +77,9 @@ export const TrendingMenu = ({
       {loading ? (
         <div>Loading...</div>
       ) : data.length === 0 ? (
-        <div>No data available for the selected range.</div>
+        <div style={{ padding: 20 }}>
+          No data available for the selected range.
+        </div>
       ) : (
         <div style={{ marginTop: "10px" }}>
           <ol>
