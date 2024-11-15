@@ -19,4 +19,5 @@ public class PurchaseHistoryDto {
     private SalesType salesType;
     private Double totalPrice;
     private LocalDate salesDate;
+    private Integer quantity;
 }

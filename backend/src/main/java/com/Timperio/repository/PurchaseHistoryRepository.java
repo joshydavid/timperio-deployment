@@ -20,7 +20,7 @@ public interface PurchaseHistoryRepository extends CrudRepository<PurchaseHistor
 
     List<PurchaseHistory> findAll();
 
-    @Query("SELECT new com.Timperio.dto.PurchaseHistoryDto(p.customerId, p.salesId, p.product, p.salesType, p.totalPrice, p.salesDate) "
+    @Query("SELECT new com.Timperio.dto.PurchaseHistoryDto(p.customerId, p.salesId, p.product, p.salesType, p.totalPrice, p.salesDate, p.quantity) "
             + "FROM PurchaseHistory p " + "WHERE (:customerId IS NULL OR p.customerId = :#{#customerId}) "
             + "AND (:salesType IS NULL OR p.salesType IN :#{#salesType})"
             + "AND (TRUE = :#{#startDate == null} OR TRUE = :#{#endDate == null} OR p.salesDate BETWEEN :#{#startDate} AND :#{#endDate})"
