@@ -524,13 +524,17 @@ export const OrderList = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item name="productPrice" label="Product Price">
+          <Form.Item
+            name="productPrice"
+            label="Product Price"
+            style={{ width: "100%" }}
+          >
             <Slider
               min={0}
               max={10000}
-              step={100}
+              step={50}
               range
-              defaultValue={[0, 10000]}
+              defaultValue={[0, 5000]}
               marks={{
                 0: "$0",
                 10000: "$10,000",
