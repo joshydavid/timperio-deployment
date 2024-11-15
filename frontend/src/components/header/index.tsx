@@ -185,7 +185,7 @@ export const Header: React.FC = () => {
           <Avatar size={16} src={`/images/flags/${lang}.svg`} />
         </span>
       ),
-      label: lang === "en" ? "English" : "German",
+      label: lang === "en" ? "English" : "Grman",
     }));
 
   return (
@@ -252,7 +252,9 @@ export const Header: React.FC = () => {
               <Text ellipsis className={styles.userName}>
                 {user?.name} ({role})
               </Text>
-              <Avatar size="large" src={user?.avatar} alt={user?.name} />
+              <Avatar size="large" alt={user?.name}>
+                {user?.name.charAt(0)}
+              </Avatar>
             </Space>
           </Space>
         </Col>
