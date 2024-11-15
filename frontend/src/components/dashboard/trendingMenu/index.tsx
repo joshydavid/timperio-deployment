@@ -93,13 +93,13 @@ export const TrendingMenu = ({
         >
           {data.map((product, index) => (
             <div key={index} style={{ display: "flex", alignItems: "center" }}>
-              <Typography.Text style={{ marginRight: "3px" }}>
-                {product.product} -
-              </Typography.Text>
               <Statistic
                 value={product.count}
                 formatter={formatWithoutDollarSign as any}
               />
+              <Typography.Text style={{ marginLeft: "9px" }}>
+                {product.product}
+              </Typography.Text>
             </div>
           ))}
         </div>
