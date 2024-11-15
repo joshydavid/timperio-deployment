@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
-import dayjs from "dayjs";
+import { Typography } from "antd";
+import { Statistic } from "antd/lib";
 import axios from "axios";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { formatWithoutDollarSign } from "../../../helper";
 
 interface DateRangePickerProps {
   selectedDateRange: { start: string; end: string };
@@ -81,14 +84,24 @@ export const TrendingMenu = ({
           No data available for the selected range.
         </div>
       ) : (
-        <div style={{ marginTop: "10px" }}>
-          <ol>
-            {data.map((product, index) => (
-              <li key={index}>
-                <strong>{product.product}</strong> - Sold: {product.count}
-              </li>
-            ))}
-          </ol>
+        <div
+          style={{
+            paddingLeft: "20px",
+            marginTop: "10px",
+            marginBottom: "10px",
+          }}
+        >
+          {data.map((product, index) => (
+            <div key={index} style={{ display: "flex", alignItems: "center" }}>
+              <Typography.Text style={{ marginRight: "3px" }}>
+                {product.product} -
+              </Typography.Text>
+              <Statistic
+                value={product.count}
+                formatter={formatWithoutDollarSign as any}
+              />
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -8,6 +8,7 @@ import {
   Input,
   Modal,
   Row,
+  Statistic,
   Table,
   Tabs,
   theme,
@@ -16,6 +17,7 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { PaginationTotal } from "../../components";
+import { formatter, formatWithoutDollarSign } from "../../helper";
 
 const { TabPane } = Tabs;
 
@@ -257,31 +259,26 @@ export const CustomerList = () => {
         <Row gutter={16} style={{ marginBottom: 24 }}>
           <Col span={8}>
             <Card title="Total Sales Amount ($)" bordered>
-              <Typography.Title>
-                $
-                {overallMetrics.totalSalesAmount.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </Typography.Title>
+              <Statistic
+                value={overallMetrics.totalSalesAmount}
+                formatter={formatter}
+              />
             </Card>
           </Col>
           <Col span={8}>
             <Card title="Total Sales Count" bordered>
-              <Typography.Title>
-                {overallMetrics.totalSalesCount.toLocaleString()}
-              </Typography.Title>
+              <Statistic
+                value={overallMetrics.totalSalesCount}
+                formatter={formatWithoutDollarSign as any}
+              />
             </Card>
           </Col>
           <Col span={8}>
-            <Card title="Average Sale Amount ($)" bordered>
-              <Typography.Title>
-                $
-                {overallMetrics.totalAverageSales.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </Typography.Title>
+            <Card title="Average Sales Amount ($)" bordered>
+              <Statistic
+                value={overallMetrics.totalAverageSales}
+                formatter={formatter}
+              />
             </Card>
           </Col>
         </Row>

@@ -77,7 +77,7 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
       ) : (
         <div style={{ marginTop: "10px" }}>
           <ol>
-            {topCustomers.map((customer, index) => (
+            {topCustomers.map((customer) => (
               <li key={customer.customerId}>
                 <strong>{`Customer ID: ${customer.customerId}`}</strong>
                 <br />

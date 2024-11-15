@@ -308,7 +308,7 @@ export const DashboardPage: React.FC = () => {
                 bodyStyle={{
                   padding: 0,
                 }}
-                title={t("dashboard.trendingProducts.title")}
+                title={t("Trending Products Sold")}
                 extra={
                   <RiseOutlined
                     style={{
