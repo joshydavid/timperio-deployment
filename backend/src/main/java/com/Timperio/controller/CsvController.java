@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Timperio.constant.UrlConstant;
+import com.Timperio.dto.PurchaseHistoryExportDto;
 import com.Timperio.enums.SalesType;
 import com.Timperio.service.impl.PurchaseHistoryExportService;
 
@@ -35,8 +36,13 @@ public class CsvController {
                 ? Arrays.stream(salesType.split(",")).map(SalesType::valueOf).collect(Collectors.toList())
                 : null;
 
-        this.purchaseHistoryExportService.writePurchaseHistoriesToCsv(customerId, salesTypeList, startDate, endDate,
-                minPrice, maxPrice, response);
+        PurchaseHistoryExportDto requestData = new PurchaseHistoryExportDto();
+        requestData.setCustomerId(customerId);
+        requestData.setSalesType(salesTypeList);
+        requestData.setMinPrice(minPrice);
+        requestData.setMaxPrice(maxPrice);
+
+        this.purchaseHistoryExportService.writePurchaseHistoriesToCsv(requestData, response);
     }
 
 }
