@@ -7,6 +7,6 @@ export const formatWithoutDollarSign = (
 
 export const formatter = (value: number) => (
   <>
-    $ <CountUp end={value} separator="," decimals={2} />
+    $<CountUp end={value} separator="," decimals={2} />
   </>
 );
