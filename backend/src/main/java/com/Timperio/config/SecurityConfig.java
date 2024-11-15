@@ -48,7 +48,10 @@ public class SecurityConfig {
                         .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
                         .requestMatchers(UrlConstant.API_VERSION + "/export").hasRole(Role.MARKETING.toString())
                         .requestMatchers(UrlConstant.API_VERSION + "/customers/**").hasRole(Role.SALES.toString())
-                        .requestMatchers(UrlConstant.API_VERSION + "/user").hasRole(Role.ADMIN.toString()).anyRequest()
+                        .requestMatchers(UrlConstant.API_VERSION + "/user").hasRole(Role.ADMIN.toString())
+                        .requestMatchers(UrlConstant.API_VERSION + "/newsletter/**")
+                        .hasAnyRole(Role.ADMIN.toString(), Role.MARKETING.toString())
+                        .anyRequest()
                         .authenticated())
 
                 .exceptionHandling(
