@@ -157,7 +157,7 @@ export const OrderList = () => {
 
   return (
     <div>
-      <List
+     <List
         title={t("Purchase History")}
         headerButtons={() => (
           <Col>
@@ -182,7 +182,6 @@ export const OrderList = () => {
       <Table
         dataSource={data}
         rowKey="salesId"
-        loading={loading}
         onRow={(record) => ({
           onClick: () => {
             show("orders", record.salesId);

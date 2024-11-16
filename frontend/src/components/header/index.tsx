@@ -23,7 +23,7 @@ import {
   theme,
   Typography,
   type MenuProps,
-} from "antd";
+} from 'antd';
 
 import debounce from "lodash/debounce";
 import { useTranslation } from "react-i18next";
@@ -63,20 +63,20 @@ export const Header: React.FC = () => {
 
   const renderTitle = (title: string) => (
     <div className={styles.headerTitle}>
-      <Text style={{ fontSize: "16px" }}>{title}</Text>
-      <Link to={`/${title.toLowerCase()}`}>{t("search.more")}</Link>
+      <Text style={{ fontSize: '16px' }}>{title}</Text>
+      <Link to={`/${title.toLowerCase()}`}>{t('search.more')}</Link>
     </div>
   );
 
   const renderItem = (title: string, imageUrl: string, link: string) => ({
     value: title,
     label: (
-      <Link to={link} style={{ display: "flex", alignItems: "center" }}>
+      <Link to={link} style={{ display: 'flex', alignItems: 'center' }}>
         {imageUrl && (
           <Avatar
             size={32}
             src={imageUrl}
-            style={{ minWidth: "32px", marginRight: "16px" }}
+            style={{ minWidth: '32px', marginRight: '16px' }}
           />
         )}
         <Text>{title}</Text>
@@ -84,13 +84,13 @@ export const Header: React.FC = () => {
     ),
   });
 
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>('');
   const [options, setOptions] = useState<IOptions[]>([]);
 
   const { refetch: refetchOrders } = useList<IOrder>({
-    resource: "orders",
+    resource: 'orders',
     config: {
-      filters: [{ field: "q", operator: "contains", value }],
+      filters: [{ field: 'q', operator: 'contains', value }],
     },
     queryOptions: {
       enabled: false,
@@ -117,9 +117,9 @@ export const Header: React.FC = () => {
   });
 
   const { refetch: refetchStores } = useList<IStore>({
-    resource: "stores",
+    resource: 'stores',
     config: {
-      filters: [{ field: "q", operator: "contains", value }],
+      filters: [{ field: 'q', operator: 'contains', value }],
     },
     queryOptions: {
       enabled: false,
@@ -141,9 +141,9 @@ export const Header: React.FC = () => {
   });
 
   const { refetch: refetchCouriers } = useList<ICourier>({
-    resource: "couriers",
+    resource: 'couriers',
     config: {
-      filters: [{ field: "q", operator: "contains", value }],
+      filters: [{ field: 'q', operator: 'contains', value }],
     },
     queryOptions: {
       enabled: false,
@@ -175,7 +175,7 @@ export const Header: React.FC = () => {
     refetchStores();
   }, [value]);
 
-  const menuItems: MenuProps["items"] = [...(i18n.languages || [])]
+  const menuItems: MenuProps['items'] = [...(i18n.languages || [])]
     .sort()
     .map((lang: string) => ({
       key: lang,
@@ -192,20 +192,20 @@ export const Header: React.FC = () => {
     <AntdHeader
       style={{
         backgroundColor: token.colorBgElevated,
-        padding: "0 24px",
+        padding: '0 24px',
       }}
     >
       <Row
         align="middle"
         style={{
-          justifyContent: screens.sm ? "space-between" : "end",
+          justifyContent: screens.sm ? 'space-between' : 'end',
         }}
       >
         <Col xs={0} sm={8} md={12}>
           <AutoComplete
             style={{
-              width: "100%",
-              maxWidth: "550px",
+              width: '100%',
+              maxWidth: '550px',
             }}
             options={options}
             filterOption={false}
@@ -231,7 +231,7 @@ export const Header: React.FC = () => {
               <Button onClick={(e) => e.preventDefault()}>
                 <Space>
                   <Text className={styles.languageSwitchText}>
-                    {currentLocale === "en" ? "English" : "German"}
+                    {currentLocale === 'en' ? 'English' : 'German'}
                   </Text>
                   {/* @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66 */}
                   <DownOutlined className={styles.languageSwitchIcon} />
@@ -242,9 +242,9 @@ export const Header: React.FC = () => {
             <Button
               className={styles.themeSwitch}
               type="text"
-              icon={mode === "light" ? <IconMoon /> : <IconSun />}
+              icon={mode === 'light' ? <IconMoon /> : <IconSun />}
               onClick={() => {
-                setMode(mode === "light" ? "dark" : "light");
+                setMode(mode === 'light' ? 'dark' : 'light');
               }}
             />
 

@@ -32,7 +32,12 @@ public class NewsletterController {
         return this.newsletterService.getCampaigns();
     }
 
-    @PutMapping("/setCampaignContent")
+    @GetMapping("/getTemplates")
+    public ResponseEntity<String> getTemplates() {
+        return this.newsletterService.getCampaignContent();
+    }
+
+    @PutMapping("/setTemplates")
     public ResponseEntity<String> setCampaignContent(
             @RequestBody NewsletterCampaignContentDTO newsletterCampaignContentDTO) {
         return this.newsletterService.setCampaignContent(newsletterCampaignContentDTO);

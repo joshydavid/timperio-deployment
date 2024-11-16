@@ -15,7 +15,7 @@ const renderAuthContent = (content: React.ReactNode) => {
     <div
       style={{
         maxWidth: 408,
-        margin: "auto",
+        margin: 'auto',
       }}
     >
       <Flex

@@ -10,7 +10,10 @@ public interface NewsletterService {
 
     ResponseEntity<String> getCampaigns();
 
+    ResponseEntity<String> getCampaignContent();
+
     ResponseEntity<String> setCampaignContent(NewsletterCampaignContentDTO newsletterCampaignContentDTO);
 
     ResponseEntity<String> sendNewsletter(NewsletterRequestDTO newsletterRequestDTO);
+
 }

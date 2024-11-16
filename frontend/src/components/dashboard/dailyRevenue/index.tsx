@@ -90,22 +90,22 @@ export const DailyRevenue = ({ height, selectedDateRange }: Props) => {
     tooltip: {
       formatter: (data) => {
         return {
-          name: t("dashboard.revenue.title"),
-          value: new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
+          name: t('dashboard.revenue.title'),
+          value: new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
           }).format(data.value),
         };
       },
     },
     theme: mode,
     areaStyle: () => {
-      return mode === "dark"
-        ? { fill: "l(270) 0:#15171B 0.5:#1677FF 1:#1677FF" }
-        : { fill: "l(270) 0:#ffffff 0.5:#D3EBFF 1:#1677FF" };
+      return mode === 'dark'
+        ? { fill: 'l(270) 0:#15171B 0.5:#1677FF 1:#1677FF' }
+        : { fill: 'l(270) 0:#ffffff 0.5:#D3EBFF 1:#1677FF' };
     },
     color: () => {
-      return mode === "dark" ? "#65A9F3" : "#1677FF";
+      return mode === 'dark' ? '#65A9F3' : '#1677FF';
     },
   };
 

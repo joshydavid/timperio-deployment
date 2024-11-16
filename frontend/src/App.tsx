@@ -21,7 +21,7 @@ import React from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider } from "./authProvider";
 
-import "dayjs/locale/de";
+import 'dayjs/locale/de';
 
 import { useTranslation } from "react-i18next";
 import { Header, Title } from "./components";
@@ -33,7 +33,7 @@ import { CustomerList, CustomerShow } from "./pages/customers";
 import { DashboardPage } from "./pages/dashboard";
 import { OrderList, OrderShow } from "./pages/orders";
 
-import "@refinedev/antd/dist/reset.css";
+import '@refinedev/antd/dist/reset.css';
 
 const App: React.FC = () => {
   const { loading } = useAutoLoginForDemo();
@@ -69,10 +69,10 @@ const App: React.FC = () => {
             notificationProvider={useNotificationProvider}
             resources={[
               {
-                name: "dashboard",
-                list: "/",
+                name: 'dashboard',
+                list: '/',
                 meta: {
-                  label: "Dashboard",
+                  label: 'Dashboard',
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <DashboardOutlined />,
                 },
@@ -86,9 +86,9 @@ const App: React.FC = () => {
                 },
               },
               {
-                name: "users",
-                list: "/customers",
-                show: "/customers/:id",
+                name: 'users',
+                list: '/customers',
+                show: '/customers/:id',
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <UserOutlined />,
@@ -146,9 +146,9 @@ const App: React.FC = () => {
                     <ThemedLayoutV2 Header={Header} Title={Title}>
                       <div
                         style={{
-                          maxWidth: "1200px",
-                          marginLeft: "auto",
-                          marginRight: "auto",
+                          maxWidth: '1200px',
+                          marginLeft: 'auto',
+                          marginRight: 'auto',
                         }}
                       >
                         <Outlet />

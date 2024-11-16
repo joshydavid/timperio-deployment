@@ -23,6 +23,8 @@ export const authProvider: AuthProvider = {
       );
 
       const { token: newToken, expiresIn, role } = response.data;
+      console.log(response.data);
+      
       loggedInEmail = email;
       localStorage.setItem(EMAIL, loggedInEmail);
 
@@ -70,7 +72,7 @@ export const authProvider: AuthProvider = {
     loggedInEmail = "";
     return {
       success: true,
-      redirectTo: "/login",
+      redirectTo: '/login',
     };
   },
   check: async () => {
@@ -94,7 +96,7 @@ export const authProvider: AuthProvider = {
         name: "Token expired or not found",
       },
       logout: true,
-      redirectTo: "/login",
+      redirectTo: '/login',
     };
   },
   getIdentity: async () => {
