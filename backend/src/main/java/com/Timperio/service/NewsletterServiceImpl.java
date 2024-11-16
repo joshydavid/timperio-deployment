@@ -1,5 +1,18 @@
 package com.Timperio.service;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.stream.Stream;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -7,30 +20,17 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import com.Timperio.config.MailChimpConstant;
 import com.Timperio.constant.UrlConstant;
 import com.Timperio.dto.NewsletterCampaignContentDTO;
 import com.Timperio.dto.NewsletterRequestDTO;
-import com.Timperio.service.impl.NewsletterService;
 import com.Timperio.enums.CustomerSegment;
 import com.Timperio.models.Customer;
+import com.Timperio.service.impl.NewsletterService;
+
 import lombok.AllArgsConstructor;
-
-import java.net.Authenticator;
-import java.util.Arrays;
-import java.util.stream.Stream;
-import java.util.Properties;
-import javax.mail.*;
-import javax.mail.internet.*;
-
-import okhttp3.*;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 @Service
 @AllArgsConstructor
@@ -77,16 +77,13 @@ public class NewsletterServiceImpl implements NewsletterService {
         String campaignId = "7aa95eea65";
 
         String datacenter = this.mailChimpConstant.getDatacenter();
-        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns/%s/content",
-                datacenter,
-                campaignId);
+        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns/%s/content", datacenter, campaignId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBasicAuth("anystring", this.mailChimpConstant.getAPI_KEY());
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET,
-                entity, String.class);
+        ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
         if (exchange.getStatusCode().is2xxSuccessful()) {
             return exchange;
@@ -130,8 +127,7 @@ public class NewsletterServiceImpl implements NewsletterService {
         System.out.println("emails: " + Arrays.toString(emails));
         System.out.println(Arrays.toString(additionalEmails));
 
-        String[] allEmails = Stream.concat(Arrays.stream(emails),
-                Arrays.stream(additionalEmails))
+        String[] allEmails = Stream.concat(Arrays.stream(emails), Arrays.stream(additionalEmails))
                 .toArray(String[]::new);
 
         Properties props = new Properties();
