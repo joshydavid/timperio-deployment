@@ -18,8 +18,8 @@ import {
 import axios from "axios";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { END_DATE, START_DATE } from "../../constant";
 const { RangePicker } = DatePicker;
-const { Option } = Select;
 
 const SALES_TYPE = [
   {
@@ -222,7 +222,9 @@ export const OrderList = () => {
                 <Button
                   type="primary"
                   size="small"
-                  onClick={() => confirm()}
+                  onClick={() => {
+                    confirm();
+                  }}
                   style={{ width: 90 }}
                 >
                   Apply
@@ -257,6 +259,9 @@ export const OrderList = () => {
                 }}
                 onPressEnter={() => {
                   confirm();
+                  form.setFieldsValue({
+                    customerId: Number(selectedKeys[0]),
+                  });
                   fetchFilteredData("customerId", selectedKeys[0]);
                 }}
               />
@@ -276,6 +281,9 @@ export const OrderList = () => {
                   size="small"
                   onClick={() => {
                     confirm();
+                    form.setFieldsValue({
+                      customerId: Number(selectedKeys[0]),
+                    });
                     fetchFilteredData("customerId", selectedKeys[0]);
                   }}
                   style={{ width: 90 }}
@@ -393,17 +401,16 @@ export const OrderList = () => {
             <div style={{ padding: 8 }}>
               <RangePicker
                 style={{ width: "100%" }}
-                defaultValue={[
-                  dayjs("2019-01-01", "YYYY-MM-DD"),
-                  dayjs("2024-01-01", "YYYY-MM-DD"),
-                ]}
+                defaultValue={[START_DATE, END_DATE]}
                 // @ts-ignore
                 value={selectedKeys[0]}
                 onChange={(dates) => {
                   // @ts-ignore
                   setSelectedKeys(dates ? [dates] : []);
                 }}
-                onPressEnter={() => confirm()}
+                onPressEnter={() => {
+                  confirm();
+                }}
               />
               <div style={{ marginTop: 8 }}>
                 <Button
@@ -455,6 +462,9 @@ export const OrderList = () => {
                 }}
                 onKeyDown={() => {
                   confirm();
+                  form.setFieldsValue({
+                    salesType: selectedKeys,
+                  });
                   fetchFilteredData("salesType", selectedKeys.join(","));
                 }}
                 placeholder="Select"
@@ -481,6 +491,10 @@ export const OrderList = () => {
                   size="small"
                   onClick={() => {
                     confirm();
+                    form.setFieldsValue({
+                      salesType: selectedKeys,
+                    });
+
                     fetchFilteredData("salesType", selectedKeys.join(","));
                   }}
                   style={{ width: 90 }}
@@ -528,13 +542,13 @@ export const OrderList = () => {
             name="productPrice"
             label="Product Price"
             style={{ width: "100%" }}
+            initialValue={[0, 5000]}
           >
             <Slider
               min={0}
               max={10000}
               step={50}
               range
-              defaultValue={[0, 5000]}
               marks={{
                 0: "$0",
                 10000: "$10,000",
@@ -542,7 +556,11 @@ export const OrderList = () => {
             />
           </Form.Item>
 
-          <Form.Item name="salesDate" label="Sales Date">
+          <Form.Item
+            name="salesDate"
+            label="Sales Date"
+            initialValue={[START_DATE, END_DATE]}
+          >
             <RangePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
           </Form.Item>
         </Form>
