@@ -1,20 +1,25 @@
-import { Typography } from "antd";
-import { Statistic } from "antd/lib";
+import { Table, Typography, Spin, Statistic } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { formatWithoutDollarSign } from "../../../helper";
+import type { ColumnsType } from "antd/es/table/interface";
 
 interface DateRangePickerProps {
   selectedDateRange: { start: string; end: string };
   height: number;
 }
 
+interface DataType {
+  key: number; // Unique key for each row
+  product: string; // Product name
+  count: number; // Quantity of the product
+}
+
 export const TrendingMenu = ({
   selectedDateRange,
   height,
 }: DateRangePickerProps) => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<DataType[]>([]); // Typed state for data
   const [loading, setLoading] = useState(false);
 
   const fetchTrendingData = async (start: dayjs.Dayjs, end: dayjs.Dayjs) => {
@@ -30,7 +35,7 @@ export const TrendingMenu = ({
       );
 
       const aggregatedData = response.data.reduce(
-        (acc: any[], product: any) => {
+        (acc: DataType[], product: any) => {
           const productDate = dayjs(product.salesDate);
           if (
             (start && productDate.isBefore(start, "day")) ||
@@ -40,14 +45,15 @@ export const TrendingMenu = ({
           }
 
           const existingProduct = acc.find(
-            (entry) => entry.product === product.product // Update to check `product` field
+            (entry) => entry.product === product.product
           );
 
           if (existingProduct) {
             existingProduct.count += 1;
           } else {
             acc.push({
-              product: product.product, // Store product name
+              key: acc.length, // Ensure unique key
+              product: product.product,
               count: 1,
             });
           }
@@ -60,7 +66,7 @@ export const TrendingMenu = ({
         .sort((a, b) => b.count - a.count) // Sort by highest count
         .slice(0, 5); // Get top 5 products
 
-      setData(topProducts); // Set the top products to state
+      setData(topProducts);
     } catch (error) {
       console.error("Error fetching trending data:", error);
     } finally {
@@ -68,41 +74,47 @@ export const TrendingMenu = ({
     }
   };
 
-  // Effect hook to fetch data when selectedDateRange changes
   useEffect(() => {
     const start = dayjs(selectedDateRange.start);
     const end = dayjs(selectedDateRange.end);
     fetchTrendingData(start, end);
   }, [selectedDateRange]);
 
+  // Define columns with proper typing
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "Product",
+      dataIndex: "product",
+      key: "product",
+    },
+    {
+      title: "Qty",
+      dataIndex: "count",
+      key: "count",
+      align: "center",
+      render: (count: number) => (
+        <Statistic value={count} valueStyle={{ fontSize: "14px" }} />
+      ),
+    },
+  ];
+
   return (
     <div>
       {loading ? (
-        <div>Loading...</div>
+        <div style={{ textAlign: "center", padding: "20px" }}>
+          <Spin size="large" />
+        </div>
       ) : data.length === 0 ? (
-        <div style={{ padding: 20 }}>
+        <div style={{ padding: 20, textAlign: "center" }}>
           No data available for the selected range.
         </div>
       ) : (
-        <div
-          style={{
-            paddingLeft: "20px",
-            marginTop: "10px",
-            marginBottom: "10px",
-          }}
-        >
-          {data.map((product, index) => (
-            <div key={index} style={{ display: "flex", alignItems: "center" }}>
-              <Statistic
-                value={product.count}
-                formatter={formatWithoutDollarSign as any}
-              />
-              <Typography.Text style={{ marginLeft: "9px" }}>
-                {product.product}
-              </Typography.Text>
-            </div>
-          ))}
-        </div>
+        <Table<DataType>
+          dataSource={data}
+          columns={columns}
+          pagination={false}
+          style={{ margin: "10px 20px" }}
+        />
       )}
     </div>
   );

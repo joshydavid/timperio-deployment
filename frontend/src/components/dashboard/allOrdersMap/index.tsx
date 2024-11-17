@@ -1,3 +1,4 @@
+import { Table, Typography, Spin } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -66,26 +67,48 @@ export const AllOrdersMap: React.FC<Props> = ({ selectedDateRange }) => {
     fetchTopCustomers(start, end);
   }, [selectedDateRange]);
 
+  const columns = [
+    {
+      title: "Customer ID",
+      dataIndex: "customerId",
+      key: "customerId",
+      render: (customerId: string) => (
+        <Typography.Text strong>{customerId}</Typography.Text>
+      ),
+    },
+    {
+      title: "Total Amount",
+      dataIndex: "totalSpending",
+      key: "totalSpending",
+      render: (totalSpending: number) => (
+        <Typography.Text>${totalSpending.toFixed(2)}</Typography.Text>
+      ),
+    },
+  ];
+
+  const dataSource = topCustomers.map((customer, index) => ({
+    key: index, // Unique key for each row
+    customerId: customer.customerId,
+    totalSpending: customer.totalSpending,
+  }));
+
   return (
     <div>
       {loading ? (
-        <div>Loading...</div>
+        <div style={{ textAlign: "center", padding: "20px" }}>
+          <Spin size="large" />
+        </div>
       ) : topCustomers.length === 0 ? (
-        <div style={{ padding: 20 }}>
+        <div style={{ padding: 20, textAlign: "center" }}>
           No data available for the selected range.
         </div>
       ) : (
-        <div style={{ marginTop: "10px" }}>
-          <ol>
-            {topCustomers.map((customer) => (
-              <li key={customer.customerId}>
-                <strong>{`Customer ID: ${customer.customerId}`}</strong>
-                <br />
-                Total Spending: ${customer.totalSpending.toFixed(2)}
-              </li>
-            ))}
-          </ol>
-        </div>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false} // Optional: Disable pagination for small datasets
+          style={{ marginTop: "10px" }}
+        />
       )}
     </div>
   );

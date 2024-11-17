@@ -18,6 +18,8 @@ import {
   TrendUpIcon,
 } from "../../components";
 
+import { SalesTypePieChart } from "../../components/dashboard/salesTypePie";
+
 import { List, NumberField } from "@refinedev/antd";
 import { useApiUrl, useCustom } from "@refinedev/core";
 import dayjs from "dayjs";
@@ -25,8 +27,7 @@ import { useMemo, useState } from "react";
 import { END_DATE, START_DATE } from "../../constant";
 import type { ISalesChart } from "../../interfaces";
 
-
-type DateFilter = 'lastWeek' | 'lastMonth';
+type DateFilter = "lastWeek" | "lastMonth";
 
 const DATE_FILTERS: Record<
   DateFilter,
@@ -36,12 +37,12 @@ const DATE_FILTERS: Record<
   }
 > = {
   lastWeek: {
-    text: 'lastWeek',
-    value: 'lastWeek',
+    text: "lastWeek",
+    value: "lastWeek",
   },
   lastMonth: {
-    text: 'lastMonth',
-    value: 'lastMonth',
+    text: "lastMonth",
+    value: "lastMonth",
   },
 };
 
@@ -99,20 +100,20 @@ export const DashboardPage: React.FC = () => {
   const dateFilterQuery = useMemo(() => {
     const now = dayjs();
     switch (selecetedDateFilter) {
-      case 'lastWeek':
+      case "lastWeek":
         return {
-          start: now.subtract(6, 'days').startOf('day').format(),
-          end: now.endOf('day').format(),
+          start: now.subtract(6, "days").startOf("day").format(),
+          end: now.endOf("day").format(),
         };
-      case 'lastMonth':
+      case "lastMonth":
         return {
-          start: now.subtract(1, 'month').startOf('day').format(),
-          end: now.endOf('day').format(),
+          start: now.subtract(1, "month").startOf("day").format(),
+          end: now.endOf("day").format(),
         };
       default:
         return {
-          start: now.subtract(7, 'days').startOf('day').format(),
-          end: now.endOf('day').format(),
+          start: now.subtract(7, "days").startOf("day").format(),
+          end: now.endOf("day").format(),
         };
     }
   }, [selecetedDateFilter]);
@@ -123,7 +124,7 @@ export const DashboardPage: React.FC = () => {
     trend: number;
   }>({
     url: `${API_URL}/dailyRevenue`,
-    method: 'get',
+    method: "get",
     config: {
       query: dateFilterQuery,
     },
@@ -135,7 +136,7 @@ export const DashboardPage: React.FC = () => {
     trend: number;
   }>({
     url: `${API_URL}/dailyOrders`,
-    method: 'get',
+    method: "get",
     config: {
       query: dateFilterQuery,
     },
@@ -147,7 +148,7 @@ export const DashboardPage: React.FC = () => {
     trend: number;
   }>({
     url: `${API_URL}/newCustomers`,
-    method: 'get',
+    method: "get",
     config: {
       query: dateFilterQuery,
     },
@@ -165,9 +166,9 @@ export const DashboardPage: React.FC = () => {
       const date = dayjs(revenue.date);
       return {
         timeUnix: date.unix(),
-        timeText: date.format('DD MMM YYYY'),
+        timeText: date.format("DD MMM YYYY"),
         value: revenue.value,
-        state: 'Daily Revenue',
+        state: "Daily Revenue",
       };
     });
 
@@ -185,9 +186,9 @@ export const DashboardPage: React.FC = () => {
       const date = dayjs(order.date);
       return {
         timeUnix: date.unix(),
-        timeText: date.format('DD MMM YYYY'),
+        timeText: date.format("DD MMM YYYY"),
         value: order.value,
-        state: 'Daily Orders',
+        state: "Daily Orders",
       };
     });
 
@@ -205,9 +206,9 @@ export const DashboardPage: React.FC = () => {
       const date = dayjs(customer.date);
       return {
         timeUnix: date.unix(),
-        timeText: date.format('DD MMM YYYY'),
+        timeText: date.format("DD MMM YYYY"),
         value: customer.value,
-        state: 'New Customers',
+        state: "New Customers",
       };
     });
 
@@ -219,17 +220,8 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <List
-      title={t('dashboard.overview.title')}
+      title={t("dashboard.overview.title")}
       headerButtons={() => (
-        // <Dropdown menu={{ items: dateFilters }}>
-        //   <Button>
-        //     {t(
-        //       `dashboard.filter.date.${DATE_FILTERS[selecetedDateFilter].text}`
-        //     )}
-        //     {/* @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66 */}
-        //     <DownOutlined />
-        //   </Button>
-        // </Dropdown>
         <Col>
           <DatePicker.RangePicker
             format="YYYY-MM-DD"
@@ -245,7 +237,7 @@ export const DashboardPage: React.FC = () => {
       <Row gutter={[16, 16]}>
         <Col xl={{ span: 19 }}>
           <Row gutter={[16, 16]}>
-            <Col xl={{ span: 24 }} lg={24} md={24} sm={24} xs={24}>
+            <Col xl={{ span: 12 }} lg={24} md={24} sm={24} xs={24}>
               <CardWithPlot
                 icon={
                   <DollarCircleOutlined
@@ -258,22 +250,30 @@ export const DashboardPage: React.FC = () => {
                   />
                 }
                 title={t("Revenue")}
-                rightSlot={
-                  <Flex align="center" gap={8}>
-                    <NumberField
-                      value={revenue.trend}
-                      options={{
-                        style: 'currency',
-                        currency: 'USD',
-                      }}
-                    />
-                    {revenue.trend > 0 ? <TrendUpIcon /> : <TrendDownIcon />}
-                  </Flex>
-                }
               >
                 <DailyRevenue
                   height={170}
                   // data={revenue.data}
+                  selectedDateRange={selectedDateRange}
+                />
+              </CardWithPlot>
+            </Col>
+            <Col xl={{ span: 12 }} lg={24} md={24} sm={24} xs={24}>
+              <CardWithPlot
+                icon={
+                  <DollarCircleOutlined
+                    style={{
+                      fontSize: 14,
+                      color: token.colorPrimary,
+                    }}
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}
+                  />
+                }
+                title={t("Sales Type Revenue")}
+              >
+                <SalesTypePieChart
+                  height={170}
                   selectedDateRange={selectedDateRange}
                 />
               </CardWithPlot>
@@ -328,88 +328,12 @@ export const DashboardPage: React.FC = () => {
                 />
               </Card>
             </Col>
-            {/* <Col xl={{ span: 7 }} lg={12} md={24} sm={24} xs={24}>
-              <CardWithPlot
-                icon={
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  <UserOutlined
-                    style={{
-                      fontSize: 14,
-                      color: token.colorPrimary,
-                    }}
-                  />
-                }
-                title={t('dashboard.newCustomers.title')}
-                rightSlot={
-                  <Flex align="center" gap={8}>
-                    <NumberField
-                      value={newCustomers.trend}
-                      options={{
-                        style: 'percent',
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      }}
-                    />
-                    {newCustomers.trend > 0 ? (
-                      <TrendUpIcon />
-                    ) : (
-                      <TrendDownIcon />
-                    )}
-                  </Flex>
-                }
-              >
-                <NewCustomers height={170} data={newCustomers.data} />
-              </CardWithPlot>
-            </Col>
-          </Row>
-        </Col> */}
-
-            {/* <Col xl={9} lg={9} md={24} sm={24} xs={24}>
-          <CardWithContent
-            bodyStyles={{
-              height: '430px',
-              overflow: 'hidden',
-              padding: 0,
-            }}
-            icon={
-              // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              <ClockCircleOutlined
-                style={{
-                  fontSize: 14,
-                  color: token.colorPrimary,
-                }}
-              />
-            }
-            title={t('dashboard.timeline.title')}
-          >
-            <OrderTimeline height={'432px'} />
-          </CardWithContent>
-        </Col> */}
-            {/* <Col xl={15} lg={15} md={24} sm={24} xs={24}>
-          <CardWithContent
-            bodyStyles={{
-              padding: '1px 0px 0px 0px',
-            }}
-            icon={
-              // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              <ShoppingOutlined
-                style={{
-                  fontSize: 14,
-                  color: token.colorPrimary,
-                }}
-              />
-            }
-            title={t('dashboard.recentOrders.title')}
-          >
-            <RecentOrders />
-          </CardWithContent>
-        </Col> */}
           </Row>
         </Col>
         <Col xl={5} lg={15} md={24} sm={24} xs={24}>
           <CardWithContent
             bodyStyles={{
-              height: "415px",
+              // height: "20",
               overflow: "scroll",
               padding: 0,
             }}

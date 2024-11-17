@@ -13,6 +13,7 @@ import {
   Tabs,
   theme,
   Typography,
+  Tag,
 } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -170,15 +171,24 @@ export const CustomerList = () => {
                 );
               }
               return (
-                <li key={purchase.salesId}>
-                  <Typography.Text>
+                <li
+                  key={purchase.salesId}
+                  style={{ listStyle: "none", marginBottom: "4" }}
+                >
+                  <Tag>
                     {product} - {sanitisedTotalPrice}
-                  </Typography.Text>
+                  </Tag>
                 </li>
               );
             })}
             {record.purchaseHistory.length > 5 && (
-              <Typography.Text style={{ color: token.colorPrimary }}>
+              <Typography.Text
+                style={{ color: token.colorPrimary, cursor: "pointer" }}
+                onClick={() => {
+                  setSelectedCustomer(record);
+                  setIsModalVisible(true);
+                }}
+              >
                 + {record.purchaseHistory.length - 5} more
               </Typography.Text>
             )}
@@ -221,24 +231,24 @@ export const CustomerList = () => {
         </Typography.Text>
       ),
     },
-    {
-      key: "action",
-      title: "Actions",
-      render: (_: any, record: any) => (
-        <Button
-          icon={
-            <EyeOutlined
-              onPointerEnterCapture={undefined}
-              onPointerLeaveCapture={undefined}
-            />
-          }
-          onClick={() => {
-            setSelectedCustomer(record);
-            setIsModalVisible(true);
-          }}
-        />
-      ),
-    },
+    // {
+    //   key: "action",
+    //   title: "Actions",
+    //   render: (_: any, record: any) => (
+    //     <Button
+    //       icon={
+    //         <EyeOutlined
+    //           onPointerEnterCapture={undefined}
+    //           onPointerLeaveCapture={undefined}
+    //         />
+    //       }
+    //       onClick={() => {
+    //         setSelectedCustomer(record);
+    //         setIsModalVisible(true);
+    //       }}
+    //     />
+    //   ),
+    // },
   ];
 
   return (
@@ -297,31 +307,52 @@ export const CustomerList = () => {
           ),
         }}
       />
-
       {selectedCustomer && (
         <Modal
           title={`Purchase History for Customer #${selectedCustomer.customerId}`}
           visible={isModalVisible}
           onCancel={handleModalClose}
+          width={"80vw"}
           footer={[
             <Button key="close" onClick={handleModalClose}>
               Close
             </Button>,
           ]}
         >
-          <ul>
-            {selectedCustomer.purchaseHistory.map((purchase: any) => {
-              const { salesId, product, totalPrice } = purchase;
-              const sanitisedTotalPrice = `$${totalPrice.toFixed(2)}`;
-              return (
-                <li key={salesId}>
-                  <Typography.Text>
-                    {product} - {sanitisedTotalPrice}
-                  </Typography.Text>
-                </li>
-              );
-            })}
-          </ul>
+          <Table
+            dataSource={selectedCustomer.purchaseHistory.map(
+              (purchase: any) => ({
+                key: purchase.salesId, // Use a unique identifier as the key
+                product: purchase.product,
+                quantity: purchase.quantity,
+                totalPrice: `$${purchase.totalPrice.toFixed(2)}`, // Format the price
+                salesDate: purchase.salesDate,
+              })
+            )}
+            columns={[
+              {
+                title: "Product",
+                dataIndex: "product",
+                key: "product",
+              },
+              {
+                title: "Quantity",
+                dataIndex: "quantity",
+                key: "quantity",
+              },
+              {
+                title: "Total Price",
+                dataIndex: "totalPrice",
+                key: "totalPrice",
+              },
+              {
+                title: "Sales Date",
+                dataIndex: "salesDate",
+                key: "salesDate",
+              },
+            ]}
+            pagination={false} // Optional: Disable pagination if not needed
+          />
         </Modal>
       )}
     </List>
