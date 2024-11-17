@@ -1,5 +1,9 @@
 # IS442 T5 Timperio Project
 
+<img src="https://github.com/user-attachments/assets/92955185-f02a-4a74-9ef9-f8ce820e0dcf" width="600">
+<br>
+<br>
+
 ## Tech Stack
 
 - [React.js](https://react.dev)

@@ -1,5 +1,9 @@
 # IS442 T5 Timperio Project
 
+<img src="https://github.com/user-attachments/assets/92955185-f02a-4a74-9ef9-f8ce820e0dcf" width="600">
+<br>
+<br>
+
 ## Tech Stack
 
 - [React.js](https://react.dev)
@@ -16,11 +20,6 @@
    ```
 
 2. Install dependencies
-
-   ```
-   cd frontend
-   npm install
-   ```
 
    ```
    cd backend
@@ -40,16 +39,9 @@
    MAILCHIMP_API_KEY={MAILCHIMP_API_KEY}
    ```
 
-   create the file `.env` at `frontend/.env`
-
-   ```
-   VITE_SERVER=http://localhost:8080
-   ```
-
 4. Run the project in development environment
 
    ```
-   frontend - npm run dev
    backend - mvn spring-boot:run
    ```
 
