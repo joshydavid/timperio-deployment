@@ -88,18 +88,3 @@ Developed by Team 5
 <a href="https://www.linkedin.com/in/liawjunyi/">
   <img src="https://github.com/user-attachments/assets/e4ad01cf-c1ef-4042-899d-6a9f3156485a" width="80">
 </a>
-
-
-pending items
-
-derrick
-1. finish up newsletter (FE)
-2. hide tabs according to role
-3. deploy backend
-
-ivyn
-1. update permission dynamically (BE)
-    - get (resources available, and which roles have access to them)
-    - put (tag roles to resources)
-
-2. integrate the above w FE (josh)
