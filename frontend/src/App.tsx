@@ -21,19 +21,20 @@ import React from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider } from "./authProvider";
 
-import 'dayjs/locale/de';
+import "dayjs/locale/de";
 
 import { useTranslation } from "react-i18next";
 import { Header, Title } from "./components";
 import { ConfigProvider } from "./context";
 import { useAutoLoginForDemo } from "./hooks";
 import { AuthPage } from "./pages/auth";
-import { CourierCreate, CourierEdit, UserManagement } from "./pages/couriers";
 import { CustomerList, CustomerShow } from "./pages/customers";
 import { DashboardPage } from "./pages/dashboard";
 import { OrderList, OrderShow } from "./pages/orders";
+import { CourierCreate, CourierEdit, UserManagement } from "./pages/users";
 
-import '@refinedev/antd/dist/reset.css';
+import "@refinedev/antd/dist/reset.css";
+import { PermissionManagement } from "./pages/permission";
 
 const App: React.FC = () => {
   const { loading } = useAutoLoginForDemo();
@@ -69,10 +70,10 @@ const App: React.FC = () => {
             notificationProvider={useNotificationProvider}
             resources={[
               {
-                name: 'dashboard',
-                list: '/',
+                name: "dashboard",
+                list: "/",
                 meta: {
-                  label: 'Dashboard',
+                  label: "Dashboard",
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <DashboardOutlined />,
                 },
@@ -86,9 +87,9 @@ const App: React.FC = () => {
                 },
               },
               {
-                name: 'users',
-                list: '/customers',
-                show: '/customers/:id',
+                name: "users",
+                list: "/customers",
+                show: "/customers/:id",
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <UserOutlined />,
@@ -125,10 +126,19 @@ const App: React.FC = () => {
               // },
               {
                 name: "Users",
-                list: "/UserManagement",
-                create: "/UserManagement/new",
-                edit: "/UserManagement/:id/edit",
-                show: "/UserManagement/:id",
+                list: "/userManagement",
+                create: "/userManagement/new",
+                edit: "/userManagement/:id/edit",
+                show: "/userManagement/:id",
+                meta: {
+                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+                  icon: <UserOutlined />,
+                },
+              },
+              {
+                name: "Permission",
+                list: "/permission",
+                show: "/customers/:id",
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <UserOutlined />,
@@ -146,9 +156,9 @@ const App: React.FC = () => {
                     <ThemedLayoutV2 Header={Header} Title={Title}>
                       <div
                         style={{
-                          maxWidth: '1200px',
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
+                          maxWidth: "1200px",
+                          marginLeft: "auto",
+                          marginRight: "auto",
                         }}
                       >
                         <Outlet />
@@ -168,33 +178,16 @@ const App: React.FC = () => {
                   <Route path=":id" element={<CustomerShow />} />
                 </Route>
 
-                {/* <Route
-                  path="/products"
-                  element={
-                    <ProductList>
-                      <Outlet />
-                    </ProductList>
-                  }
-                >
-                  <Route path="new" element={<ProductCreate />} />
-                  <Route path=":id" element={<ProductShow />} />
-                  <Route path=":id/edit" element={<ProductEdit />} />
-                </Route> */}
-
-                {/* <Route path="/stores">
-                  <Route index element={<StoreList />} />
-                  <Route path="new" element={<StoreCreate />} />
-                  <Route path=":id/edit" element={<StoreEdit />} />
-                </Route> */}
-
-                {/* <Route path="/categories" element={<CategoryList />} /> */}
-
-                <Route path="/UserManagement">
+                <Route path="/userManagement">
                   <Route path="" element={<UserManagement />}>
                     <Route path="new" element={<CourierCreate />} />
                   </Route>
 
                   <Route path=":id/edit" element={<CourierEdit />} />
+                </Route>
+
+                <Route path="/permission">
+                  <Route path="" element={<PermissionManagement />} />
                 </Route>
               </Route>
 

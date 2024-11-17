@@ -16,7 +16,6 @@ import { Typography } from "antd/lib";
 import axios from "axios";
 import React, { useState } from "react";
 import type { ICourier } from "../../interfaces";
-import { upperCase } from "lodash";
 
 const { Text } = Typography;
 
@@ -145,7 +144,7 @@ export const UserManagement = () => {
                 />
               }
               onClick={showCreateUserModal}
-              style={{ float: "right" }}
+              style={{ float: "right", backgroundColor: "#014214" }}
             >
               {t("Add New User")}
             </Button>
@@ -194,6 +193,11 @@ export const UserManagement = () => {
                   onConfirm={() => handleDeleteUser(record.userId)}
                   okText="Yes"
                   cancelText="No"
+                  okButtonProps={{
+                    style: {
+                      backgroundColor: "#014214",
+                    },
+                  }}
                 >
                   <Button
                     icon={
@@ -220,6 +224,11 @@ export const UserManagement = () => {
         onOk={() => form.submit()}
         okText="Create"
         cancelText="Cancel"
+        okButtonProps={{
+          style: {
+            backgroundColor: "#014214",
+          },
+        }}
       >
         <Form form={form} layout="vertical" onFinish={handleCreateUser}>
           <Form.Item
