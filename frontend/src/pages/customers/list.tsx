@@ -310,7 +310,7 @@ export const CustomerList = () => {
       {selectedCustomer && (
         <Modal
           title={`Purchase History for Customer #${selectedCustomer.customerId}`}
-          visible={isModalVisible}
+          open={isModalVisible}
           onCancel={handleModalClose}
           width={"80vw"}
           footer={[

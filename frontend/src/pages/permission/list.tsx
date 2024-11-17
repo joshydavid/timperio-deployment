@@ -1,6 +1,6 @@
 import { EditOutlined } from "@ant-design/icons";
 import { List } from "@refinedev/antd";
-import { Button, Form, Input, message, Modal, Select, Table } from "antd";
+import { Button, Form, message, Modal, Select, Table } from "antd";
 import { Typography } from "antd/lib";
 import axios from "axios";
 import React, { useState } from "react";
@@ -10,10 +10,10 @@ import type { ICourier } from "../../interfaces";
 // TODO: fetch from backend
 const dataSource = [
   { action: "VIEW PURCHASE HISTORY", role: [Role.MARKETING] },
-  { action: "VIEW CUSTOMERS", role: ["SALES"] },
-  { action: "ALLOW EXPORT", role: ["MARKETING"] },
-  { action: "NEWSLETTER MANAGEMENT", role: ["MARKETING", "ADMIN"] },
-  { action: "VIEW, CREATE, DELETE USER", role: ["ADMIN"] },
+  { action: "VIEW CUSTOMERS", role: [Role.SALES] },
+  { action: "ALLOW EXPORT", role: [Role.MARKETING] },
+  { action: "NEWSLETTER MANAGEMENT", role: [Role.MARKETING, Role.ADMIN] },
+  { action: "VIEW, CREATE, DELETE USER", role: [Role.ADMIN] },
 ];
 
 export const PermissionManagement = () => {
@@ -30,7 +30,7 @@ export const PermissionManagement = () => {
     setIsEditModalVisible(true);
   };
 
-  const handleEditUser = async (values: any) => {
+  const handleEditPermission = async (values: any) => {
     if (!editingUser) return;
     try {
       await axios.put(
@@ -44,16 +44,10 @@ export const PermissionManagement = () => {
           },
         }
       );
-      message.success("User updated successfully");
+      message.success("Permission updated successfully");
       setIsEditModalVisible(false);
     } catch (error) {
-      if (error.status == 403) {
-        message.error(
-          "User is an admin account. You cannot update user details."
-        );
-      } else {
-        message.error("Failed to update user");
-      }
+      message.error("Failed to update permission");
     }
   };
 
@@ -96,62 +90,10 @@ export const PermissionManagement = () => {
   return (
     <div>
       <List title="Permission" />
-      <Table dataSource={dataSource} columns={columns} />
-      <Modal
-        title="Create New User"
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        onOk={() => form.submit()}
-        okText="Create"
-        cancelText="Cancel"
-      >
-        <Form form={form} layout="vertical" onFinish={() => {}}>
-          <Form.Item
-            name="userEmail"
-            label="Email"
-            rules={[
-              {
-                required: true,
-                type: "email",
-                message: "Please enter a valid email",
-              },
-            ]}
-          >
-            <Input placeholder="joshy@timperio.com" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Please enter a password" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[
-              { required: true, message: "Please enter the user's name" },
-            ]}
-          >
-            <Input placeholder="Joshua" />
-          </Form.Item>
-          <Form.Item
-            name="role"
-            label="Role"
-            rules={[{ required: true, message: "Please select a role" }]}
-          >
-            <Select placeholder="Marketing">
-              <Select.Option value="MARKETING">Marketing</Select.Option>
-              <Select.Option value="SALES">Sales</Select.Option>
-              <Select.Option value="ADMIN">Admin</Select.Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
-
+      <Table dataSource={dataSource} columns={columns} pagination={false} />
       <Modal
         title="Update Permission"
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
         onCancel={() => setIsEditModalVisible(false)}
         onOk={() => form.submit()}
         okText="Update"
@@ -162,11 +104,10 @@ export const PermissionManagement = () => {
           },
         }}
       >
-        <Form form={form} layout="vertical" onFinish={handleEditUser}>
+        <Form form={form} layout="vertical" onFinish={handleEditPermission}>
           <Form.Item>
             <Typography.Text> VIEW PURCHASE HISTORY</Typography.Text>
           </Form.Item>
-
           <Form.Item
             name="role"
             label="Assign to these roles:"

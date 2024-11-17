@@ -511,7 +511,7 @@ export const OrderList = () => {
 
       <Modal
         title="Export to CSV"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         onOk={() => form.submit()}
         okText="Export"
