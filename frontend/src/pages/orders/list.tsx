@@ -157,13 +157,12 @@ export const OrderList = () => {
 
   return (
     <div>
-     <List
+      <List
         title={t("Purchase History")}
         headerButtons={() => (
           <Col>
             <Button
               type="primary"
-              danger
               icon={
                 <ExportOutlined
                   onPointerEnterCapture={undefined}
