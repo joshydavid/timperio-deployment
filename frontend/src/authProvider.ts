@@ -6,6 +6,7 @@ import { disableAutoLogin, enableAutoLogin } from "./hooks";
 export const TOKEN_KEY = "token_timperio";
 export const EXPIRES_IN_KEY = "token_expiry";
 export const EMAIL = "loggedInEmail";
+export const ROLE = "role";
 
 let logoutTimer: NodeJS.Timeout | null = null;
 let loggedInEmail: string;
@@ -23,7 +24,6 @@ export const authProvider: AuthProvider = {
       );
 
       const { token: newToken, expiresIn, role } = response.data;
-      console.log(response.data);
       
       loggedInEmail = email;
       localStorage.setItem(EMAIL, loggedInEmail);
@@ -34,7 +34,7 @@ export const authProvider: AuthProvider = {
         String(Date.now() + expiresIn * 1000)
       );
 
-      localStorage.setItem("role", role);
+      localStorage.setItem(ROLE, role);
 
       notification.success({
         message: "Login Successful",
@@ -42,10 +42,10 @@ export const authProvider: AuthProvider = {
       });
 
       startLogoutTimer(expiresIn * 1000);
-
+      const redirectRoute = role == "ADMIN"? "/userManagement": role == "MARKETING" ? "/newsletter" : "/"
       return {
         success: true,
-        redirectTo: "/",
+        redirectTo: redirectRoute,
       };
     } catch (error) {
       // notification.error({
@@ -78,11 +78,46 @@ export const authProvider: AuthProvider = {
   check: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
     const expiry = localStorage.getItem(EXPIRES_IN_KEY);
-
+    const role = localStorage.getItem(ROLE);
+    const injectedStyle = document.getElementById("dynamic-role-style");
+    if (injectedStyle) {
+      injectedStyle.remove();
+    }
     if (token) {
       if (expiry && Date.now() < parseInt(expiry)) {
         const remainingTime = parseInt(expiry) - Date.now();
         startLogoutTimer(remainingTime);
+
+        const style = document.createElement("style");
+        style.id = "dynamic-role-style";
+
+        if(role == "ADMIN"){
+          style.innerHTML = `
+            .ant-menu li[role="menuitem"]:nth-of-type(1),
+            .ant-menu li[role="menuitem"]:nth-of-type(2),
+            .ant-menu li[role="menuitem"]:nth-of-type(3) {
+              display: none;
+            }
+          `;
+        }else if(role == "SALES"){
+          style.innerHTML = `
+            .ant-menu li[role="menuitem"]:nth-of-type(4),
+            .ant-menu li[role="menuitem"]:nth-of-type(5),
+            .ant-menu li[role="menuitem"]:nth-of-type(6) {
+              display: none;
+            }
+          `;
+        }else if(role == "MARKETING"){
+          style.innerHTML = `
+            .ant-menu li[role="menuitem"]:nth-of-type(1),
+            .ant-menu li[role="menuitem"]:nth-of-type(3),
+            .ant-menu li[role="menuitem"]:nth-of-type(4),
+            .ant-menu li[role="menuitem"]:nth-of-type(5) {
+              display: none;
+            }
+          `;
+        }
+        document.head.appendChild(style);
         return { authenticated: true };
       } else {
         startLogoutTimer(0);

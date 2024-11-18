@@ -1,0 +1,11 @@
+#email-template:focus {
+    border-color: #1890ff;
+    box-shadow: 0 0 5px rgba(24, 144, 255, 0.5);
+  }
+  
+  #email-template p,
+  #email-template footer {
+    margin-bottom: 15px;
+    line-height: 1.6;
+  }
+  

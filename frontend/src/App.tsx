@@ -32,6 +32,7 @@ import { AuthPage } from "./pages/auth";
 import { CustomerList, CustomerShow } from "./pages/customers";
 import { DashboardPage } from "./pages/dashboard";
 import { OrderList, OrderShow } from "./pages/orders";
+import { NewsLetter } from "./pages/newsletter";
 import { CourierCreate, CourierEdit, UserManagement } from "./pages/users";
 
 import "@refinedev/antd/dist/reset.css";
@@ -96,35 +97,6 @@ const App: React.FC = () => {
                   icon: <UserOutlined />,
                 },
               },
-              // {
-              //   name: 'products',
-              //   list: '/products',
-              //   create: '/products/new',
-              //   edit: '/products/:id/edit',
-              //   show: '/products/:id',
-              //   meta: {
-              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              //     icon: <UnorderedListOutlined />,
-              //   },
-              // },
-              // {
-              //   name: 'categories',
-              //   list: '/categories',
-              //   meta: {
-              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              //     icon: <TagsOutlined />,
-              //   },
-              // },
-              // {
-              //   name: 'stores',
-              //   list: '/stores',
-              //   create: '/stores/new',
-              //   edit: '/stores/:id/edit',
-              //   meta: {
-              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              //     icon: <ShopOutlined />,
-              //   },
-              // },
               {
                 name: "Users",
                 list: "/userManagement",
@@ -143,6 +115,24 @@ const App: React.FC = () => {
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <LockOutlined />,
+                },
+              },
+              {
+                name: "newsletter",
+                list: "/newsletter",
+                show: "/newsletter",
+                meta: {
+                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+                  icon: <UserOutlined />,
+                },
+              },
+              {
+                name: "newsletter",
+                list: "/newsletter",
+                show: "/newsletter",
+                meta: {
+                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+                  icon: <UserOutlined />,
                 },
               },
             ]}
@@ -177,6 +167,10 @@ const App: React.FC = () => {
 
                 <Route path="/customers" element={<CustomerList />}>
                   <Route path=":id" element={<CustomerShow />} />
+                </Route>
+
+                <Route path="/newsletter" element={<NewsLetter />}>
+                  <Route element={<NewsLetter />} />
                 </Route>
 
                 <Route path="/userManagement">
