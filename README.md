@@ -1,3 +1,7 @@
+![fe workflow](https://github.com/SMU-IS/Timperio/actions/workflows/merged_frontend.yml/badge.svg)
+![be workflow](https://github.com/SMU-IS/Timperio/actions/workflows/merged_backend.yml/badge.svg)
+![cd workflow](https://github.com/SMU-IS/Timperio/actions/workflows/push_to_deployment_repo.yml/badge.svg)
+
 # IS442 T5 Timperio Project
 
 <img src="https://github.com/user-attachments/assets/92955185-f02a-4a74-9ef9-f8ce820e0dcf" width="600">
@@ -42,6 +46,11 @@
    JWT_SECRET_KEY={JWT_SECRET_KEY}
    SERVER=//localhost:5173
    MAILCHIMP_API_KEY={MAILCHIMP_API_KEY}
+   FRONT_END_SERVER_URL=https://timperio-t5.vercel.app
+   TEMPLATE_DIR=template
+   TEMPLATE_FILE_NAME=campaign_template.html
+   LOGIN_EMAIL={EMAIL}
+   LOGIN_PASSWORD={PASSWORD}
    ```
 
    create the file `.env` at `frontend/.env`

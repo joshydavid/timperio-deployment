@@ -21,13 +21,6 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    // TODO: to remove this
-    // @PostMapping("/populateCustomerDb")
-    // public SuccessMessage populateCustomers() {
-    // this.customerService.populateCustomersFromHistoryPurchases();
-    // return SuccessMessage.CUSTOMER_DB_POPULATED;
-    // }
-
     @GetMapping
     public Iterable<Customer> getAllCustomers() {
         return this.customerService.getAllCustomers();
