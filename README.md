@@ -1,6 +1,7 @@
-![fe workflow](https://github.com/SMU-IS/Timperio/actions/workflows/merged_frontend.yml/badge.svg)
-![be workflow](https://github.com/SMU-IS/Timperio/actions/workflows/merged_backend.yml/badge.svg)
-![cd workflow](https://github.com/SMU-IS/Timperio/actions/workflows/push_to_deployment_repo.yml/badge.svg)
+#
+![fe workflow](https://github.com/SMU-IS/Timperio/actions/workflows/merged_frontend.yml/badge.svg)  
+![be workflow](https://github.com/SMU-IS/Timperio/actions/workflows/merged_backend.yml/badge.svg)  
+![cd workflow](https://github.com/SMU-IS/Timperio/actions/workflows/push_to_deployment_repo.yml/badge.svg)  
 
 # IS442 T5 Timperio Project
 
