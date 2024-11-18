@@ -1,12 +1,14 @@
 import type { AuthProvider, OnErrorResponse } from "@refinedev/core";
 import { notification } from "antd";
 import axios from "axios";
+import { Role } from "./constant";
 import { disableAutoLogin, enableAutoLogin } from "./hooks";
 
-export const TOKEN_KEY = "token_timperio";
-export const EXPIRES_IN_KEY = "token_expiry";
-export const EMAIL = "loggedInEmail";
-export const ROLE = "role";
+const TOKEN_KEY = "token_timperio";
+const EXPIRES_IN_KEY = "token_expiry";
+const EMAIL = "loggedInEmail";
+const ROLE = "role";
+const ROLE_CONTAINER_ID = "dynamic-role-style";
 
 let logoutTimer: NodeJS.Timeout | null = null;
 let loggedInEmail: string;
@@ -24,16 +26,15 @@ export const authProvider: AuthProvider = {
       );
 
       const { token: newToken, expiresIn, role } = response.data;
-      
-      loggedInEmail = email;
-      localStorage.setItem(EMAIL, loggedInEmail);
 
+      loggedInEmail = email;
+
+      localStorage.setItem(EMAIL, loggedInEmail);
       localStorage.setItem(TOKEN_KEY, newToken);
       localStorage.setItem(
         EXPIRES_IN_KEY,
         String(Date.now() + expiresIn * 1000)
       );
-
       localStorage.setItem(ROLE, role);
 
       notification.success({
@@ -42,17 +43,19 @@ export const authProvider: AuthProvider = {
       });
 
       startLogoutTimer(expiresIn * 1000);
-      const redirectRoute = role == "ADMIN"? "/userManagement": role == "MARKETING" ? "/newsletter" : "/"
+
+      const redirectRoute =
+        role === Role.ADMIN
+          ? "/userManagement"
+          : role === Role.MARKETING
+          ? "/newsletter"
+          : "/";
+
       return {
         success: true,
         redirectTo: redirectRoute,
       };
     } catch (error) {
-      // notification.error({
-      //     message: 'Login Failed',
-      //     description: error.response?.data?.message || 'Please check your credentials.',
-      // });
-
       return {
         success: false,
         error: {
@@ -72,26 +75,27 @@ export const authProvider: AuthProvider = {
     loggedInEmail = "";
     return {
       success: true,
-      redirectTo: '/login',
+      redirectTo: "/login",
     };
   },
   check: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
     const expiry = localStorage.getItem(EXPIRES_IN_KEY);
     const role = localStorage.getItem(ROLE);
-    const injectedStyle = document.getElementById("dynamic-role-style");
+    const injectedStyle = document.getElementById(ROLE_CONTAINER_ID);
     if (injectedStyle) {
       injectedStyle.remove();
     }
+
     if (token) {
       if (expiry && Date.now() < parseInt(expiry)) {
         const remainingTime = parseInt(expiry) - Date.now();
         startLogoutTimer(remainingTime);
 
         const style = document.createElement("style");
-        style.id = "dynamic-role-style";
+        style.id = ROLE_CONTAINER_ID;
 
-        if(role == "ADMIN"){
+        if (role === Role.ADMIN) {
           style.innerHTML = `
             .ant-menu li[role="menuitem"]:nth-of-type(1),
             .ant-menu li[role="menuitem"]:nth-of-type(2),
@@ -99,7 +103,7 @@ export const authProvider: AuthProvider = {
               display: none;
             }
           `;
-        }else if(role == "SALES"){
+        } else if (role === Role.SALES) {
           style.innerHTML = `
             .ant-menu li[role="menuitem"]:nth-of-type(4),
             .ant-menu li[role="menuitem"]:nth-of-type(5),
@@ -107,7 +111,7 @@ export const authProvider: AuthProvider = {
               display: none;
             }
           `;
-        }else if(role == "MARKETING"){
+        } else if (role === Role.MARKETING) {
           style.innerHTML = `
             .ant-menu li[role="menuitem"]:nth-of-type(1),
             .ant-menu li[role="menuitem"]:nth-of-type(3),
@@ -131,7 +135,7 @@ export const authProvider: AuthProvider = {
         name: "Token expired or not found",
       },
       logout: true,
-      redirectTo: '/login',
+      redirectTo: "/login",
     };
   },
   getIdentity: async () => {

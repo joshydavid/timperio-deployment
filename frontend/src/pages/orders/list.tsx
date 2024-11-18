@@ -516,6 +516,11 @@ export const OrderList = () => {
         onOk={() => form.submit()}
         okText="Export"
         cancelText="Cancel"
+        okButtonProps={{
+          style: {
+            backgroundColor: "#014214",
+          },
+        }}
       >
         <Form
           form={form}
