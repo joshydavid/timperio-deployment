@@ -9,9 +9,17 @@ const { Option } = Select;
 
 const DEFAULT_TEMPLATE = "";
 export const NewsLetter = () => {
-    const userRole = localStorage.getItem('role');
-    const isAdmin = userRole === 'ADMIN';
-
+    const [showSetDefaultTemplate, setShowSetDefaultTemplate] = useState(false);
+    const [showSendDefaultTemplate, setShowSendDefaultTemplate] = useState(false);
+    useEffect(()=>{
+        const storedUserPerm = JSON.parse(localStorage.getItem('user-perm'));
+        if (storedUserPerm && storedUserPerm['format_newsletter'] !== undefined) {
+            setShowSetDefaultTemplate(storedUserPerm['format_newsletter']);
+        }
+        if (storedUserPerm && storedUserPerm['send_newsletter'] !== undefined) {
+            setShowSendDefaultTemplate(storedUserPerm['send_newsletter']);
+        }
+    })
     const DRAFT_KEY = "newsletter_draft";
     const [content, setContent] = useState("");
     const [isDraftLoaded, setIsDraftLoaded] = useState(false);
@@ -147,7 +155,7 @@ export const NewsLetter = () => {
     return (
         <div style={{ padding: "20px" }}>
         <Title level={2}>Email Template Editor</Title>
-        {!isAdmin && (
+        {showSendDefaultTemplate && (
             <>
                 <div style={{ marginBottom: "20px" }}>
                     <Title level={5}>Choose a customer segment to send to:</Title>
@@ -240,12 +248,12 @@ export const NewsLetter = () => {
             <Button type="default" onClick={handleSaveAsDraft}>
             Save as Draft
             </Button>
-            {!isAdmin && (
+            {showSendDefaultTemplate && (
                 <Button type="primary" onClick={handleSend}>
                 Send
                 </Button>
             )}
-            {isAdmin && (
+            {showSetDefaultTemplate && (
                 <Button type="primary" onClick={handleSetDefaultTemplate}>
                 Set Default Template
                 </Button>

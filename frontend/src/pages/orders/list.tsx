@@ -45,6 +45,18 @@ const SALES_TYPE = [
 ];
 
 export const OrderList = () => {
+  const [showExportData, setShowExportData] = useState(false);
+  const [showOrdersData, setShowOrdersData] = useState(false);
+  useEffect(()=>{
+      const storedUserPerm = JSON.parse(localStorage.getItem('user-perm'));
+      if (storedUserPerm && storedUserPerm['export_data'] !== undefined) {
+        setShowExportData(storedUserPerm['export_data']);
+      }
+      if (storedUserPerm && storedUserPerm['view_orders'] !== undefined) {
+        setShowOrdersData(storedUserPerm['view_orders']);
+      }
+  })
+
   const t = useTranslate();
   const { show } = useNavigation();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -161,27 +173,29 @@ export const OrderList = () => {
         title={t("Purchase History")}
         headerButtons={() => (
           <Col>
-            <Button
-              type="primary"
-              icon={
-                <ExportOutlined
-                  onPointerEnterCapture={undefined}
-                  onPointerLeaveCapture={undefined}
-                />
-              }
-              onClick={showCreateUserModal}
-              style={{
-                float: "right",
-                marginBottom: "16px",
-                backgroundColor: "#014214",
-              }}
-            >
-              {t("Export to CSV")}
-            </Button>
+            {showExportData && (<>
+              <Button
+                type="primary"
+                icon={
+                  <ExportOutlined
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}
+                  />
+                }
+                onClick={showCreateUserModal}
+                style={{
+                  float: "right",
+                  marginBottom: "16px",
+                  backgroundColor: "#014214",
+                }}
+              >
+                {t("Export to CSV")}
+              </Button>
+            </>)}
           </Col>
         )}
       />
-
+      {showOrdersData && (<>
       <Table
         dataSource={data}
         rowKey="salesId"
@@ -508,6 +522,7 @@ export const OrderList = () => {
           )}
         />
       </Table>
+      </>)}
 
       <Modal
         title="Export to CSV"

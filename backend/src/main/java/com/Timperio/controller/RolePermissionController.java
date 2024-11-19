@@ -25,7 +25,7 @@ public class RolePermissionController {
     @Autowired
     private RolePermissionService rolePermissionService;
 
-    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.toString())")
+    // @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.toString())")
     @GetMapping()
     public ResponseEntity<List<GetUpdateRolePermission>> getRolePermissions() {
         List<GetUpdateRolePermission> permissionList = rolePermissionService.getRolePermissions();

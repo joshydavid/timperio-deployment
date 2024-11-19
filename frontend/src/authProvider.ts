@@ -9,6 +9,7 @@ const EXPIRES_IN_KEY = "token_expiry";
 const EMAIL = "loggedInEmail";
 const ROLE = "role";
 const ROLE_CONTAINER_ID = "dynamic-role-style";
+const USERPERM = "user-perm";
 
 let logoutTimer: NodeJS.Timeout | null = null;
 let loggedInEmail: string;
@@ -83,44 +84,109 @@ export const authProvider: AuthProvider = {
     const expiry = localStorage.getItem(EXPIRES_IN_KEY);
     const role = localStorage.getItem(ROLE);
     const injectedStyle = document.getElementById(ROLE_CONTAINER_ID);
+
+    function filterActionsByRole(data, role) {
+        // Define the desired output keys
+        const resultKeys = {
+            "customer_page": "SEGMENT CUSTOMERS BY SPENDING",
+            "format_newsletter": "FORMAT NEWSLETTER TEMPLATE",
+            "send_newsletter": "CREATE AND SEND NEWSLETTER",
+            "dashboard_page": "VIEW SALES METRICS",
+            "view_orders": "ACCESS AND FILTER PURCHASE HISTORY",
+            "user_page": "MANAGE USER ACCOUNTS",
+            "export_data": "EXPORT FILTERED DATA"
+        };
+    
+        // Map the output format with true/false values based on role inclusion
+        const result = {};
+        for (const [key, action] of Object.entries(resultKeys)) {
+            // Find the action in the dataset
+            const matchingAction = data.find(item => item.action === action);
+            // Check if the role is included in the action's roles
+            result[key] = matchingAction ? matchingAction.role.includes(role) : false;
+        }
+    
+        return result;
+    }
+
+    // fetch permission
+    const fetchPermission = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER}/api/v1/permission`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const { data } = response;
+        const userPerm = filterActionsByRole(data, role)
+        localStorage.setItem(USERPERM, JSON.stringify(userPerm));
+        return userPerm
+        // setPermissions(data);
+      } catch (err) {}
+    };
+
     if (injectedStyle) {
       injectedStyle.remove();
     }
 
     if (token) {
+      const userPerm = await fetchPermission();
       if (expiry && Date.now() < parseInt(expiry)) {
         const remainingTime = parseInt(expiry) - Date.now();
         startLogoutTimer(remainingTime);
 
         const style = document.createElement("style");
         style.id = ROLE_CONTAINER_ID;
-
-        if (role === Role.ADMIN) {
-          style.innerHTML = `
-            .ant-menu li[role="menuitem"]:nth-of-type(1),
-            .ant-menu li[role="menuitem"]:nth-of-type(2),
+        
+        let hideTabsStyles = ``;
+        // hide page
+        if (!userPerm['customer_page']){
+          hideTabsStyles += `
             .ant-menu li[role="menuitem"]:nth-of-type(3) {
               display: none;
             }
-          `;
-        } else if (role === Role.SALES) {
-          style.innerHTML = `
-            .ant-menu li[role="menuitem"]:nth-of-type(4),
-            .ant-menu li[role="menuitem"]:nth-of-type(5),
+          `
+        }
+        if (!userPerm['dashboard_page']){
+          hideTabsStyles += `
+            .ant-menu li[role="menuitem"]:nth-of-type(1) {
+              display: none;
+            }
+          `
+        }
+        if (!userPerm['user_page']){
+          hideTabsStyles += `
+            .ant-menu li[role="menuitem"]:nth-of-type(4) {
+              display: none;
+            }
+          `
+        }
+        if (!userPerm['view_orders'] && !userPerm['export_data']){
+          hideTabsStyles += `
+            .ant-menu li[role="menuitem"]:nth-of-type(2) {
+              display: none;
+            }
+          `
+        }
+        if (!userPerm['format_newsletter'] && !userPerm['send_newsletter']){
+          hideTabsStyles += `
             .ant-menu li[role="menuitem"]:nth-of-type(6) {
               display: none;
             }
-          `;
-        } else if (role === Role.MARKETING) {
-          style.innerHTML = `
-            .ant-menu li[role="menuitem"]:nth-of-type(1),
-            .ant-menu li[role="menuitem"]:nth-of-type(3),
-            .ant-menu li[role="menuitem"]:nth-of-type(4),
+          `
+        }
+        // Hide user page - only admin can see
+        if (role != Role.ADMIN){
+          hideTabsStyles += `
             .ant-menu li[role="menuitem"]:nth-of-type(5) {
               display: none;
             }
-          `;
+          `
         }
+        style.innerHTML = hideTabsStyles;
         document.head.appendChild(style);
         return { authenticated: true };
       } else {
