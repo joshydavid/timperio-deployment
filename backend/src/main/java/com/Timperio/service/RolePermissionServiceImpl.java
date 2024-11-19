@@ -1,4 +1,5 @@
 package com.Timperio.service;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import com.Timperio.repository.RolePermissionRepository;
 import com.Timperio.repository.PermissionRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import com.Timperio.enums.Role;
 import com.Timperio.dto.GetUpdateRolePermission;
@@ -30,21 +32,20 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     };
 
     public List<GetUpdateRolePermission> getRolePermissions() {
-
         List<GetUpdateRolePermission> permissionList = new ArrayList<>();
         Map<String, Set<Role>> roleMap = new HashMap<>();
 
         List<RolePermission> rpList = this.findAll();
-        for (RolePermission rp: rpList) {
+        for (RolePermission rp : rpList) {
             Set<Role> roleSet;
             Role role = rp.getRole();
             Permission perm = rp.getPermission();
             String permName = perm.getName();
-            
+
             if (roleMap.containsKey(permName)) {
-                roleSet = roleMap.get(permName);                
+                roleSet = roleMap.get(permName);
             } else {
-                roleSet = new HashSet<>(); 
+                roleSet = new HashSet<>();
             }
 
             roleSet.add(role);
@@ -68,7 +69,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
             List<Role> roles = update.getRole();
 
             Permission permission = permissionRepository.findByName(action)
-                .orElseThrow(() -> new PermissionNotFoundException(ErrorMessage.PERMISSION_NOT_FOUND.getMessage()));
+                    .orElseThrow(() -> new PermissionNotFoundException(ErrorMessage.PERMISSION_NOT_FOUND.getMessage()));
 
             rolePermissionRepository.deleteByPermission(permission);
 
@@ -78,11 +79,10 @@ public class RolePermissionServiceImpl implements RolePermissionService {
                 rolePermission.setRole(role);
                 rolePermission.setCreatedAt(LocalDateTime.now());
                 rolePermission.setUpdatedAt(LocalDateTime.now());
-                
+
                 rolePermissionRepository.save(rolePermission);
             }
         }
     }
-
 
 }

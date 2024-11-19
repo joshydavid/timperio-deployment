@@ -16,6 +16,7 @@ import { Typography } from "antd/lib";
 import axios from "axios";
 import React, { useState } from "react";
 import type { ICourier } from "../../interfaces";
+import { Permission } from "../../constant";
 
 const { Text } = Typography;
 
@@ -274,6 +275,11 @@ export const UserManagement = () => {
         onOk={() => form.submit()}
         okText="Update"
         cancelText="Cancel"
+        okButtonProps={{
+          style: {
+            backgroundColor: "#014214",
+          },
+        }}
       >
         <Form form={form} layout="vertical" onFinish={handleEditUser}>
           <Form.Item

@@ -7,7 +7,7 @@ public enum Permission {
     CREATE_AND_SEND_NEWSLETTER("CREATE AND SEND NEWSLETTER"),
     VIEW_SALES_METRICS("VIEW SALES METRICS"),
     FORMAT_NEWSLETTER_TEMPLATE("FORMAT NEWSLETTER TEMPLATE"),
-    MANAGE_USER_ACCOUNTS("hasAuthority('MANAGE USER ACCOUNTS')");
+    MANAGE_USER_ACCOUNTS("MANAGE USER ACCOUNTS");
 
     private final String permission;
 
@@ -20,4 +20,3 @@ public enum Permission {
         return permission;
     }
 }
-

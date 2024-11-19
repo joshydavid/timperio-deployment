@@ -1,43 +1,57 @@
 import { EditOutlined } from "@ant-design/icons";
 import { List } from "@refinedev/antd";
-import { Button, Form, message, Modal, Select, Table } from "antd";
+import { Button, Form, message, Modal, Select, Table, Tag } from "antd";
 import { Typography } from "antd/lib";
 import axios from "axios";
 import React, { useState } from "react";
-import { Role } from "../../constant";
-import type { ICourier } from "../../interfaces";
-
-// TODO: fetch from backend
-const dataSource = [
-  { action: "VIEW PURCHASE HISTORY", role: [Role.MARKETING] },
-  { action: "VIEW CUSTOMERS", role: [Role.SALES] },
-  { action: "ALLOW EXPORT", role: [Role.MARKETING] },
-  { action: "NEWSLETTER MANAGEMENT", role: [Role.MARKETING, Role.ADMIN] },
-  { action: "VIEW, CREATE, DELETE USER", role: [Role.ADMIN] },
-];
 
 export const PermissionManagement = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [permissions, setPermissions] = useState<any[]>([]);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [editingUser, setEditingUser] = useState<ICourier | null>(null);
+  const [editPerm, setEditPerm] = useState<any | null>(null);
   const [form] = Form.useForm();
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    fetchPermission();
+  }, []);
 
-  const showEditModal = (user: ICourier) => {
-    setEditingUser(user);
-    form.setFieldsValue(user);
+  const fetchPermission = async () => {
+    try {
+      const token = localStorage.getItem("token_timperio");
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER}/api/v1/permission`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { data } = response;
+      setPermissions(data);
+    } catch (err) {}
+  };
+
+  const showEditModal = (record: any) => {
+    setEditPerm(record);
+    form.setFieldsValue(record);
     setIsEditModalVisible(true);
   };
 
   const handleEditPermission = async (values: any) => {
-    if (!editingUser) return;
+    const { action } = editPerm;
+    const { role } = values;
+
+    const requestBody = [
+      {
+        action,
+        role,
+      },
+    ];
+
     try {
       await axios.put(
-        `${import.meta.env.VITE_SERVER}/api/v1/user/admin/${
-          editingUser.userId
-        }`,
-        values,
+        `${import.meta.env.VITE_SERVER}/api/v1/permission`,
+        requestBody,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token_timperio")}`,
@@ -46,7 +60,9 @@ export const PermissionManagement = () => {
       );
       message.success("Permission updated successfully");
       setIsEditModalVisible(false);
+      fetchPermission();
     } catch (error) {
+      console.log(error);
       message.error("Failed to update permission");
     }
   };
@@ -90,7 +106,7 @@ export const PermissionManagement = () => {
   return (
     <div>
       <List title="Permission" />
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <Table dataSource={permissions} columns={columns} pagination={false} />
       <Modal
         title="Update Permission"
         open={isEditModalVisible}
@@ -106,8 +122,11 @@ export const PermissionManagement = () => {
       >
         <Form form={form} layout="vertical" onFinish={handleEditPermission}>
           <Form.Item>
-            <Typography.Text> VIEW PURCHASE HISTORY</Typography.Text>
+            <Tag color="green">
+              <Typography.Text>{editPerm?.action}</Typography.Text>
+            </Tag>
           </Form.Item>
+
           <Form.Item
             name="role"
             label="Assign to these roles:"

@@ -1,21 +1,20 @@
 package com.Timperio.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.Timperio.constant.UrlConstant;
 import com.Timperio.dto.LoginUserDto;
 import com.Timperio.enums.Role;
 import com.Timperio.models.User;
-
 import com.Timperio.responses.LoginResponse;
+import com.Timperio.service.CustomUserDetailsService;
 import com.Timperio.service.impl.AuthService;
 import com.Timperio.service.impl.JwtService;
-import com.Timperio.service.CustomUserDetailsService;
 
 @RequestMapping(UrlConstant.API_VERSION + "/auth")
 @RestController
@@ -24,7 +23,8 @@ public class AuthController {
     private final AuthService authenticationService;
     private final CustomUserDetailsService customUserDetailsService;
 
-    public AuthController(JwtService jwtService, AuthService authenticationService, CustomUserDetailsService customUserDetailsService) {
+    public AuthController(JwtService jwtService, AuthService authenticationService,
+            CustomUserDetailsService customUserDetailsService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
         this.customUserDetailsService = customUserDetailsService;
@@ -35,7 +35,6 @@ public class AuthController {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
         Role userRole = authenticatedUser.getRole();
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginUserDto.getUserEmail());
-
         String jwtToken = jwtService.generateToken(userDetails);
 
         LoginResponse response = new LoginResponse();
