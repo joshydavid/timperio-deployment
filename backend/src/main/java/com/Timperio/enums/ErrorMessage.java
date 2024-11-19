@@ -9,7 +9,7 @@ public enum ErrorMessage {
                                             "User is an admin account. You cannot update user details."), INVALID_ROLE(
                                                     "Invalid role: "), INVALID_USER_ID(
                                                             "Invalid valid userId: "), INVALID_USER_EMAIL(
-                                                                    "Invalid valid userEmail: ");
+                                                                    "Invalid valid userEmail: "), PERMISSION_NOT_FOUND("Permission not found.");
 
     private final String errMsg;
 

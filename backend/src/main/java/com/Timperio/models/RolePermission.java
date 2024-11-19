@@ -3,51 +3,50 @@ package com.Timperio.models;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
-import com.Timperio.enums.Role;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
+import jakarta.persistence.FetchType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import com.Timperio.enums.Role;
+
+import java.time.LocalDateTime;
+
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "users")
+@Table(name = "rolePermission")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class User {
-
+public class RolePermission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Integer userId;
-
-    @Column(name = "user_email", unique = true, nullable = false, length = 100)
-    private String userEmail;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Column(name = "user_name", nullable = false, length = 100)
-    private String name;
+    @Column(name = "role_permission_id")
+    private Integer rolePermissionId;
 
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "role")
     private Role role;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "permission_id", nullable = false)
+    private Permission permission;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

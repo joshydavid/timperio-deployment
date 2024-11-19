@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,21 +38,21 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.getValue())")
     @PostMapping()
     public ResponseEntity<User> createUser(@RequestBody CreateUpdateUserAdminDto createUserDto) {
         User newUser = this.userService.createUser(createUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.getValue())")
     @DeleteMapping("/id/{userId}")
     public ResponseEntity<String> deleteUserById(@PathVariable Integer userId) {
         this.userService.deleteUserById(userId);
         return ResponseEntity.ok(SuccessMessage.USER_DELETED_SUCCESS.toString());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.getValue())")
     @DeleteMapping("/email/{userEmail}")
     public ResponseEntity<String> deleteUserByEmail(@PathVariable String userEmail) {
         this.userService.deleteUserByEmail(userEmail);
@@ -75,7 +75,7 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.getValue())")
     @PutMapping("/admin/{userId}")
     public ResponseEntity<Object> updateUserAdmin(@PathVariable Integer userId,
             @RequestBody CreateUpdateUserAdminDto updateUserDto) {
