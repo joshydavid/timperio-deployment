@@ -372,7 +372,7 @@ export const CustomerList = () => {
 
       <Table
         rowKey="customerId"
-        columns={columns}
+        columns={columns as any}
         dataSource={customers}
         loading={isLoading}
         pagination={{
