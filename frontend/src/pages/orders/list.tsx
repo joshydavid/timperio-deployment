@@ -47,15 +47,15 @@ const SALES_TYPE = [
 export const OrderList = () => {
   const [showExportData, setShowExportData] = useState(false);
   const [showOrdersData, setShowOrdersData] = useState(false);
-  useEffect(()=>{
-      const storedUserPerm = JSON.parse(localStorage.getItem('user-perm'));
-      if (storedUserPerm && storedUserPerm['export_data'] !== undefined) {
-        setShowExportData(storedUserPerm['export_data']);
-      }
-      if (storedUserPerm && storedUserPerm['view_orders'] !== undefined) {
-        setShowOrdersData(storedUserPerm['view_orders']);
-      }
-  })
+  useEffect(() => {
+    const storedUserPerm = JSON.parse(localStorage.getItem("user-perm"));
+    if (storedUserPerm && storedUserPerm["export_data"] !== undefined) {
+      setShowExportData(storedUserPerm["export_data"]);
+    }
+    if (storedUserPerm && storedUserPerm["view_orders"] !== undefined) {
+      setShowOrdersData(storedUserPerm["view_orders"]);
+    }
+  });
 
   const t = useTranslate();
   const { show } = useNavigation();
@@ -173,356 +173,369 @@ export const OrderList = () => {
         title={t("Purchase History")}
         headerButtons={() => (
           <Col>
-            {showExportData && (<>
-              <Button
-                type="primary"
-                icon={
-                  <ExportOutlined
-                    onPointerEnterCapture={undefined}
-                    onPointerLeaveCapture={undefined}
-                  />
-                }
-                onClick={showCreateUserModal}
-                style={{
-                  float: "right",
-                  marginBottom: "16px",
-                  backgroundColor: "#014214",
-                }}
-              >
-                {t("Export to CSV")}
-              </Button>
-            </>)}
+            {showExportData && (
+              <>
+                <Button
+                  type="primary"
+                  icon={
+                    <ExportOutlined
+                      onPointerEnterCapture={undefined}
+                      onPointerLeaveCapture={undefined}
+                    />
+                  }
+                  onClick={showCreateUserModal}
+                  style={{
+                    float: "right",
+                    marginBottom: "16px",
+                    backgroundColor: "#014214",
+                  }}
+                >
+                  {t("Export to CSV")}
+                </Button>
+              </>
+            )}
           </Col>
         )}
       />
-      {showOrdersData && (<>
-      <Table
-        dataSource={data}
-        rowKey="salesId"
-        onRow={(record) => ({
-          onClick: () => {
-            show("orders", record.salesId);
-          },
-        })}
-      >
-        <Table.Column
-          key="salesId"
-          dataIndex="salesId"
-          title={t("orders.fields.order")}
-          render={(value) => <Typography.Text>#{value}</Typography.Text>}
-          filterDropdown={({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-          }) => (
-            <div style={{ padding: 8 }}>
-              <InputNumber
-                placeholder={t("orders.filter.orderId.placeholder")}
-                style={{ width: "100%" }}
-                // @ts-ignore
-                value={selectedKeys[0]}
-                onChange={(value) => {
-                  setSelectedKeys(value ? [value] : []);
-                }}
-                onPressEnter={() => confirm()}
-              />
-              <div style={{ marginTop: 8 }}>
-                <Button
-                  onClick={() => clearFilters()}
-                  size="small"
-                  style={{ width: 90, marginRight: 8 }}
-                >
-                  Clear
-                </Button>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => {
-                    confirm();
-                  }}
-                  style={{ width: 90 }}
-                >
-                  Apply
-                </Button>
-              </div>
-            </div>
-          )}
-          onFilter={(value, record) => {
-            return value
-              ? record.salesId.toString() === value.toString()
-              : true;
-          }}
-        />
+      {showOrdersData && (
+        <>
+          <Table
+            dataSource={data}
+            rowKey="salesId"
+            onRow={(record) => ({
+              onClick: () => {
+                show("orders", record.salesId);
+              },
+            })}
+          >
+            <Table.Column
+              key="salesId"
+              dataIndex="salesId"
+              title={t("orders.fields.order")}
+              render={(value) => <Typography.Text>#{value}</Typography.Text>}
+              filterDropdown={({
+                setSelectedKeys,
+                selectedKeys,
+                confirm,
+                clearFilters,
+              }) => (
+                <div style={{ padding: 8 }}>
+                  <InputNumber
+                    placeholder={t("orders.filter.orderId.placeholder")}
+                    style={{ width: "100%" }}
+                    // @ts-ignore
+                    value={selectedKeys[0]}
+                    onChange={(value) => {
+                      setSelectedKeys(value ? [value] : []);
+                    }}
+                    onPressEnter={() => {
+                      confirm();
+                    }}
+                  />
+                  <div style={{ marginTop: 8 }}>
+                    <Button
+                      onClick={() => clearFilters()}
+                      size="small"
+                      style={{
+                        width: 90,
+                        marginRight: 8,
+                      }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      type="primary"
+                      size="small"
+                      onClick={() => {
+                        confirm();
+                      }}
+                      style={{ width: 90, backgroundColor: "#014214" }}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              )}
+              onFilter={(value, record) => {
+                return value
+                  ? record.salesId.toString() === value.toString()
+                  : true;
+              }}
+            />
 
-        <Table.Column
-          key="customerId"
-          dataIndex="customerId"
-          title={t("orders.fields.customerID")}
-          filterDropdown={({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-          }) => (
-            <div style={{ padding: 8 }}>
-              <Input
-                placeholder={t("Search Customer ID")}
-                style={{ width: "100%" }}
-                value={selectedKeys[0]}
-                onChange={(e) => {
-                  setSelectedKeys(e.target.value ? [e.target.value] : []);
-                }}
-                onPressEnter={() => {
-                  confirm();
-                  form.setFieldsValue({
-                    customerId: Number(selectedKeys[0]),
-                  });
-                  fetchFilteredData("customerId", selectedKeys[0]);
-                }}
-              />
-              <div style={{ marginTop: 8 }}>
-                <Button
-                  onClick={() => {
-                    clearFilters();
-                    fetchFilteredData();
-                  }}
-                  size="small"
-                  style={{ width: 90, marginRight: 8 }}
-                >
-                  Clear
-                </Button>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => {
-                    confirm();
-                    form.setFieldsValue({
-                      customerId: Number(selectedKeys[0]),
-                    });
-                    fetchFilteredData("customerId", selectedKeys[0]);
-                  }}
-                  style={{ width: 90 }}
-                >
-                  Apply
-                </Button>
-              </div>
-            </div>
-          )}
-        />
+            <Table.Column
+              key="customerId"
+              dataIndex="customerId"
+              title={t("orders.fields.customerID")}
+              filterDropdown={({
+                setSelectedKeys,
+                selectedKeys,
+                confirm,
+                clearFilters,
+              }) => (
+                <div style={{ padding: 8 }}>
+                  <Input
+                    placeholder={t("Search Customer ID")}
+                    style={{ width: "100%" }}
+                    value={selectedKeys[0]}
+                    onChange={(e) => {
+                      setSelectedKeys(e.target.value ? [e.target.value] : []);
+                    }}
+                    onPressEnter={() => {
+                      confirm();
+                      form.setFieldsValue({
+                        customerId: Number(selectedKeys[0]),
+                      });
+                      fetchFilteredData("customerId", selectedKeys[0]);
+                    }}
+                  />
+                  <div style={{ marginTop: 8 }}>
+                    <Button
+                      onClick={() => {
+                        clearFilters();
+                        fetchFilteredData();
+                      }}
+                      size="small"
+                      style={{ width: 90, marginRight: 8 }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      type="primary"
+                      size="small"
+                      onClick={() => {
+                        confirm();
+                        form.setFieldsValue({
+                          customerId: Number(selectedKeys[0]),
+                        });
+                        fetchFilteredData("customerId", selectedKeys[0]);
+                      }}
+                      style={{ width: 90, backgroundColor: "#014214" }}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              )}
+            />
 
-        <Table.Column
-          key="product"
-          dataIndex="product"
-          title={t("orders.fields.products")}
-          //   filterDropdown={({
-          //     setSelectedKeys,
-          //     selectedKeys,
-          //     confirm,
-          //     clearFilters,
-          //   }) => (
-          //     <div style={{ padding: 8 }}>
-          //       <Input
-          //         placeholder={t("Search Product")}
-          //         style={{ width: "100%" }}
-          //         value={selectedKeys[0]}
-          //         onChange={(e) => {
-          //           setSelectedKeys(e.target.value ? [e.target.value] : []);
-          //         }}
-          //         onPressEnter={() => confirm()}
-          //       />
-          //       <div style={{ marginTop: 8 }}>
-          //         <Button
-          //           onClick={() => clearFilters()}
-          //           size="small"
-          //           style={{ width: 90, marginRight: 8 }}
-          //         >
-          //           Clear
-          //         </Button>
-          //         <Button
-          //           type="primary"
-          //           size="small"
-          //           onClick={() => confirm()}
-          //           style={{ width: 90 }}
-          //         >
-          //           Apply
-          //         </Button>
-          //       </div>
-          //     </div>
-          //   )}
-          onFilter={(value, record) => {
-            return value ? record.product.toLowerCase().includes(value) : true;
-          }}
-        />
+            <Table.Column
+              key="product"
+              dataIndex="product"
+              title={t("orders.fields.products")}
+              //   filterDropdown={({
+              //     setSelectedKeys,
+              //     selectedKeys,
+              //     confirm,
+              //     clearFilters,
+              //   }) => (
+              //     <div style={{ padding: 8 }}>
+              //       <Input
+              //         placeholder={t("Search Product")}
+              //         style={{ width: "100%" }}
+              //         value={selectedKeys[0]}
+              //         onChange={(e) => {
+              //           setSelectedKeys(e.target.value ? [e.target.value] : []);
+              //         }}
+              //         onPressEnter={() => confirm()}
+              //       />
+              //       <div style={{ marginTop: 8 }}>
+              //         <Button
+              //           onClick={() => clearFilters()}
+              //           size="small"
+              //           style={{ width: 90, marginRight: 8 }}
+              //         >
+              //           Clear
+              //         </Button>
+              //         <Button
+              //           type="primary"
+              //           size="small"
+              //           onClick={() => confirm()}
+              //           style={{ width: 90 }}
+              //         >
+              //           Apply
+              //         </Button>
+              //       </div>
+              //     </div>
+              //   )}
+              onFilter={(value, record) => {
+                return value
+                  ? record.product.toLowerCase().includes(value)
+                  : true;
+              }}
+            />
 
-        <Table.Column
-          key="totalPrice"
-          dataIndex="totalPrice"
-          title={t("orders.fields.amount")}
-          render={(value) => `$${value.toFixed(2)}`}
-          filterDropdown={({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-          }) => (
-            <div style={{ padding: 8 }}>
-              <InputNumber
-                placeholder={t("orders.filter.amount.placeholder")}
-                style={{ width: "100%" }}
-                // @ts-ignore
-                value={selectedKeys[0]}
-                onChange={(value) => {
-                  setSelectedKeys(value ? [value] : []);
-                }}
-                onPressEnter={() => confirm()}
-              />
-              <div style={{ marginTop: 8 }}>
-                <Button
-                  onClick={() => clearFilters()}
-                  size="small"
-                  style={{ width: 90, marginRight: 8 }}
-                >
-                  Clear
-                </Button>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => confirm()}
-                  style={{ width: 90 }}
-                >
-                  Apply
-                </Button>
-              </div>
-            </div>
-          )}
-          onFilter={(value, record) => {
-            return value
-              ? record.totalPrice.toString() === value.toString()
-              : true;
-          }}
-        />
+            <Table.Column
+              key="totalPrice"
+              dataIndex="totalPrice"
+              title={t("orders.fields.amount")}
+              render={(value) => `$${value.toFixed(2)}`}
+              filterDropdown={({
+                setSelectedKeys,
+                selectedKeys,
+                confirm,
+                clearFilters,
+              }) => (
+                <div style={{ padding: 8 }}>
+                  <InputNumber
+                    placeholder={t("Amount Less Than")}
+                    style={{ width: "100%" }}
+                    // @ts-ignore
+                    value={selectedKeys[0]}
+                    onChange={(value) => {
+                      console.log(value);
+                      setSelectedKeys(value ? [value] : []);
+                    }}
+                    onPressEnter={() => confirm()}
+                  />
+                  <div style={{ marginTop: 8 }}>
+                    <Button
+                      onClick={() => clearFilters()}
+                      size="small"
+                      style={{ width: 90, marginRight: 8 }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      type="primary"
+                      size="small"
+                      onClick={() => confirm()}
+                      style={{ width: 90, backgroundColor: "#014214" }}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              )}
+              onFilter={(value, record) => {
+                return value ? record.totalPrice < value : true;
+              }}
+            />
 
-        <Table.Column
-          key="salesDate"
-          dataIndex="salesDate"
-          title={t("orders.fields.salesDate")}
-          render={(value) => dayjs(value).format("YYYY-MM-DD")}
-          filterDropdown={({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-          }) => (
-            <div style={{ padding: 8 }}>
-              <RangePicker
-                style={{ width: "100%" }}
-                defaultValue={[START_DATE, END_DATE]}
-                // @ts-ignore
-                value={selectedKeys[0]}
-                onChange={(dates) => {
-                  // @ts-ignore
-                  setSelectedKeys(dates ? [dates] : []);
-                }}
-                onPressEnter={() => {
-                  confirm();
-                }}
-              />
-              <div style={{ marginTop: 8 }}>
-                <Button
-                  onClick={() => clearFilters()}
-                  size="small"
-                  style={{ width: 90, marginRight: 8 }}
-                >
-                  Clear
-                </Button>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => confirm()}
-                  style={{ width: 90 }}
-                >
-                  Apply
-                </Button>
-              </div>
-            </div>
-          )}
-          onFilter={(value, record) => {
-            return value
-              ? dayjs(record.salesDate).isBetween(
-                  value[0],
-                  value[1],
-                  null,
-                  "[]"
-                )
-              : true;
-          }}
-        />
-        <Table.Column
-          key="salesType"
-          dataIndex="salesType"
-          title={t("orders.fields.salesType")}
-          filterDropdown={({
-            setSelectedKeys,
-            selectedKeys,
-            confirm,
-            clearFilters,
-          }) => (
-            <div style={{ padding: 8 }}>
-              <Select
-                mode="multiple"
-                style={{ width: "100%" }}
-                value={selectedKeys}
-                onChange={(value) => {
-                  setSelectedKeys(value || []);
-                }}
-                onKeyDown={() => {
-                  confirm();
-                  form.setFieldsValue({
-                    salesType: selectedKeys,
-                  });
-                  fetchFilteredData("salesType", selectedKeys.join(","));
-                }}
-                placeholder="Select"
-              >
-                {SALES_TYPE.map(({ name, value }, i) => (
-                  <Select.Option key={i} value={value}>
-                    {name}
-                  </Select.Option>
-                ))}
-              </Select>
-              <div style={{ marginTop: 8 }}>
-                <Button
-                  onClick={() => {
-                    clearFilters();
-                    fetchFilteredData();
-                  }}
-                  size="small"
-                  style={{ width: 90, marginRight: 8 }}
-                >
-                  Clear
-                </Button>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => {
-                    confirm();
-                    form.setFieldsValue({
-                      salesType: selectedKeys,
-                    });
+            <Table.Column
+              key="salesDate"
+              dataIndex="salesDate"
+              title={t("orders.fields.salesDate")}
+              render={(value) => dayjs(value).format("YYYY-MM-DD")}
+              filterDropdown={({
+                setSelectedKeys,
+                selectedKeys,
+                confirm,
+                clearFilters,
+              }) => (
+                <div style={{ padding: 8 }}>
+                  <RangePicker
+                    style={{ width: "100%" }}
+                    defaultValue={[START_DATE, END_DATE]}
+                    // @ts-ignore
+                    value={selectedKeys[0]}
+                    onChange={(dates) => {
+                      // @ts-ignore
+                      setSelectedKeys(dates ? [dates] : []);
+                    }}
+                    onPressEnter={() => {
+                      confirm();
+                    }}
+                  />
+                  <div style={{ marginTop: 8 }}>
+                    <Button
+                      onClick={() => clearFilters()}
+                      size="small"
+                      style={{ width: 90, marginRight: 8 }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      type="primary"
+                      size="small"
+                      onClick={() => confirm()}
+                      style={{ width: 90, backgroundColor: "#014214" }}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              )}
+              onFilter={(value, record) => {
+                return value
+                  ? dayjs(record.salesDate).isBetween(
+                      value[0],
+                      value[1],
+                      null,
+                      "[]"
+                    )
+                  : true;
+              }}
+            />
+            <Table.Column
+              key="salesType"
+              dataIndex="salesType"
+              title={t("orders.fields.salesType")}
+              filterDropdown={({
+                setSelectedKeys,
+                selectedKeys,
+                confirm,
+                clearFilters,
+              }) => (
+                <div style={{ padding: 8 }}>
+                  <Select
+                    mode="multiple"
+                    style={{ width: "100%" }}
+                    value={selectedKeys}
+                    onChange={(value) => {
+                      setSelectedKeys(value || []);
+                    }}
+                    onKeyDown={() => {
+                      confirm();
+                      form.setFieldsValue({
+                        salesType: selectedKeys,
+                      });
+                      fetchFilteredData("salesType", selectedKeys.join(","));
+                    }}
+                    placeholder="Select"
+                  >
+                    {SALES_TYPE.map(({ name, value }, i) => (
+                      <Select.Option key={i} value={value}>
+                        {name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <div style={{ marginTop: 8 }}>
+                    <Button
+                      onClick={() => {
+                        clearFilters();
+                        fetchFilteredData();
+                      }}
+                      size="small"
+                      style={{
+                        width: 90,
+                        marginRight: 8,
+                      }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      type="primary"
+                      size="small"
+                      onClick={() => {
+                        confirm();
+                        form.setFieldsValue({
+                          salesType: selectedKeys,
+                        });
 
-                    fetchFilteredData("salesType", selectedKeys.join(","));
-                  }}
-                  style={{ width: 90 }}
-                >
-                  Apply
-                </Button>
-              </div>
-            </div>
-          )}
-        />
-      </Table>
-      </>)}
+                        fetchFilteredData("salesType", selectedKeys.join(","));
+                      }}
+                      style={{ width: 90, backgroundColor: "#014214" }}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              )}
+            />
+          </Table>
+        </>
+      )}
 
       <Modal
         title="Export to CSV"

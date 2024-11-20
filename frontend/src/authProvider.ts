@@ -49,7 +49,7 @@ export const authProvider: AuthProvider = {
         role === Role.ADMIN
           ? "/userManagement"
           : role === Role.MARKETING
-          ? "/newsletter"
+          ? "/purchaseHistory"
           : "/";
 
       return {
@@ -86,27 +86,29 @@ export const authProvider: AuthProvider = {
     const injectedStyle = document.getElementById(ROLE_CONTAINER_ID);
 
     function filterActionsByRole(data, role) {
-        // Define the desired output keys
-        const resultKeys = {
-            "customer_page": "SEGMENT CUSTOMERS BY SPENDING",
-            "format_newsletter": "FORMAT NEWSLETTER TEMPLATE",
-            "send_newsletter": "CREATE AND SEND NEWSLETTER",
-            "dashboard_page": "VIEW SALES METRICS",
-            "view_orders": "ACCESS AND FILTER PURCHASE HISTORY",
-            "user_page": "MANAGE USER ACCOUNTS",
-            "export_data": "EXPORT FILTERED DATA"
-        };
-    
-        // Map the output format with true/false values based on role inclusion
-        const result = {};
-        for (const [key, action] of Object.entries(resultKeys)) {
-            // Find the action in the dataset
-            const matchingAction = data.find(item => item.action === action);
-            // Check if the role is included in the action's roles
-            result[key] = matchingAction ? matchingAction.role.includes(role) : false;
-        }
-    
-        return result;
+      // Define the desired output keys
+      const resultKeys = {
+        customer_page: "SEGMENT CUSTOMERS BY SPENDING",
+        format_newsletter: "FORMAT NEWSLETTER TEMPLATE",
+        send_newsletter: "CREATE AND SEND NEWSLETTER",
+        dashboard_page: "VIEW SALES METRICS",
+        view_orders: "ACCESS AND FILTER PURCHASE HISTORY",
+        user_page: "MANAGE USER ACCOUNTS",
+        export_data: "EXPORT FILTERED DATA",
+      };
+
+      // Map the output format with true/false values based on role inclusion
+      const result = {};
+      for (const [key, action] of Object.entries(resultKeys)) {
+        // Find the action in the dataset
+        const matchingAction = data.find((item) => item.action === action);
+        // Check if the role is included in the action's roles
+        result[key] = matchingAction
+          ? matchingAction.role.includes(role)
+          : false;
+      }
+
+      return result;
     }
 
     // fetch permission
@@ -121,9 +123,9 @@ export const authProvider: AuthProvider = {
           }
         );
         const { data } = response;
-        const userPerm = filterActionsByRole(data, role)
+        const userPerm = filterActionsByRole(data, role);
         localStorage.setItem(USERPERM, JSON.stringify(userPerm));
-        return userPerm
+        return userPerm;
         // setPermissions(data);
       } catch (err) {}
     };
@@ -140,51 +142,51 @@ export const authProvider: AuthProvider = {
 
         const style = document.createElement("style");
         style.id = ROLE_CONTAINER_ID;
-        
+
         let hideTabsStyles = ``;
         // hide page
-        if (!userPerm['customer_page']){
+        if (!userPerm["customer_page"]) {
           hideTabsStyles += `
             .ant-menu li[role="menuitem"]:nth-of-type(3) {
               display: none;
             }
-          `
+          `;
         }
-        if (!userPerm['dashboard_page']){
+        if (!userPerm["dashboard_page"]) {
           hideTabsStyles += `
             .ant-menu li[role="menuitem"]:nth-of-type(1) {
               display: none;
             }
-          `
+          `;
         }
-        if (!userPerm['user_page']){
+        if (!userPerm["user_page"]) {
           hideTabsStyles += `
             .ant-menu li[role="menuitem"]:nth-of-type(4) {
               display: none;
             }
-          `
+          `;
         }
-        if (!userPerm['view_orders'] && !userPerm['export_data']){
+        if (!userPerm["view_orders"] && !userPerm["export_data"]) {
           hideTabsStyles += `
             .ant-menu li[role="menuitem"]:nth-of-type(2) {
               display: none;
             }
-          `
+          `;
         }
-        if (!userPerm['format_newsletter'] && !userPerm['send_newsletter']){
+        if (!userPerm["format_newsletter"] && !userPerm["send_newsletter"]) {
           hideTabsStyles += `
             .ant-menu li[role="menuitem"]:nth-of-type(6) {
               display: none;
             }
-          `
+          `;
         }
         // Hide user page - only admin can see
-        if (role != Role.ADMIN){
+        if (role != Role.ADMIN) {
           hideTabsStyles += `
             .ant-menu li[role="menuitem"]:nth-of-type(5) {
               display: none;
             }
-          `
+          `;
         }
         style.innerHTML = hideTabsStyles;
         document.head.appendChild(style);
