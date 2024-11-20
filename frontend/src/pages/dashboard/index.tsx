@@ -290,12 +290,6 @@ export const DashboardPage: React.FC = () => {
                     }}
                   />
                 }
-                rightSlot={
-                  <Flex align="center" gap={8}>
-                    <NumberField value={orders.trend} />
-                    {orders.trend > 0 ? <TrendUpIcon /> : <TrendDownIcon />}
-                  </Flex>
-                }
                 title={t("Orders")}
               >
                 <DailyOrders
