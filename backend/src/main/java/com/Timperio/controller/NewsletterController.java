@@ -12,35 +12,33 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Timperio.constant.UrlConstant;
 import com.Timperio.dto.NewsletterCampaignContentDTO;
 import com.Timperio.dto.NewsletterRequestDTO;
-import com.Timperio.service.impl.NewsletterService;
+import com.Timperio.service.impl.EmailSenderService;
+import com.Timperio.service.impl.TemplateService;
 
 @RequestMapping(UrlConstant.API_VERSION + "/newsletter")
 @RestController
-
 public class NewsletterController {
 
     @Autowired
-    private NewsletterService newsletterService;
+    private EmailSenderService emailSenderService;
 
-    @GetMapping("/healthCheck")
-    public ResponseEntity<String> healthCheck() {
-        return this.newsletterService.healthCheck();
-    }
+    @Autowired
+    private TemplateService templateService;
 
     @GetMapping("/getTemplates")
     public ResponseEntity<String> getTemplates() {
-        return this.newsletterService.getCampaignContent();
+        return this.templateService.getTemplate();
     }
 
     @PutMapping("/setTemplates")
     public ResponseEntity<String> setCampaignContent(
             @RequestBody NewsletterCampaignContentDTO newsletterCampaignContentDTO) {
-        return this.newsletterService.setCampaignContent(newsletterCampaignContentDTO);
+        return this.templateService.setTemplate(newsletterCampaignContentDTO);
     }
 
     @PostMapping("/send")
     public ResponseEntity<String> sendNewsletter(@RequestBody NewsletterRequestDTO newsletterRequestDTO) {
-        return this.newsletterService.sendNewsletter(newsletterRequestDTO);
+        return this.emailSenderService.sendNewsletter(newsletterRequestDTO);
     }
 
 }
