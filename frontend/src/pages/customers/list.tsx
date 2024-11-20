@@ -1,4 +1,3 @@
-import { EyeOutlined } from "@ant-design/icons";
 import { List } from "@refinedev/antd";
 import { useTranslate } from "@refinedev/core";
 import {
@@ -11,9 +10,9 @@ import {
   Statistic,
   Table,
   Tabs,
+  Tag,
   theme,
   Typography,
-  Tag,
 } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -25,7 +24,6 @@ const { TabPane } = Tabs;
 export const CustomerList = () => {
   const t = useTranslate();
   const { token } = theme.useToken();
-
   const [customers, setCustomers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -141,15 +139,93 @@ export const CustomerList = () => {
           #{value}
         </Typography.Text>
       ),
-      sorter: (a, b) => a.customerId - b.customerId,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => {
+              confirm();
+            }}
+            placeholder="Search by Customer ID"
+          />
+          <div style={{ marginTop: 8 }}>
+            <Button
+              onClick={() => clearFilters()}
+              size="small"
+              style={{ width: 90, marginRight: 8 }}
+            >
+              Clear
+            </Button>
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => {
+                confirm();
+              }}
+              style={{ width: 90, backgroundColor: "#014214" }}
+            >
+              Apply
+            </Button>
+          </div>
+        </div>
+      ),
+      onFilter: (value: any, record: any) => {
+        return record.customerId.toString() === value.toString();
+      },
     },
     {
       key: "customerEmail",
       dataIndex: "customerEmail",
       title: "Email",
-      filterDropdown: (props) => (
-        <Input {...props} placeholder={t("users.filter.email.placeholder")} />
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => {
+              confirm();
+            }}
+            placeholder="Search by Email"
+          />
+          <div style={{ marginTop: 8 }}>
+            <Button
+              onClick={() => clearFilters()}
+              size="small"
+              style={{ width: 90, marginRight: 8 }}
+            >
+              Clear
+            </Button>
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => {
+                confirm();
+              }}
+              style={{ width: 90, backgroundColor: "#014214" }}
+            >
+              Apply
+            </Button>
+          </div>
+        </div>
       ),
+      onFilter: (value: any, record: any) => {
+        return record.customerEmail.toString() === value.toString();
+      },
     },
     {
       key: "purchaseHistory",
