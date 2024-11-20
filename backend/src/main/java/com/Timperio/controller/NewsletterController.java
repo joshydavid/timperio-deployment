@@ -27,11 +27,6 @@ public class NewsletterController {
         return this.newsletterService.healthCheck();
     }
 
-    @GetMapping("/getCampaigns")
-    public ResponseEntity<String> getCampaigns() {
-        return this.newsletterService.getCampaigns();
-    }
-
     @GetMapping("/getTemplates")
     public ResponseEntity<String> getTemplates() {
         return this.newsletterService.getCampaignContent();

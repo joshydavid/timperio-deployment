@@ -35,6 +35,7 @@ public class AuthController {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
         Role userRole = authenticatedUser.getRole();
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginUserDto.getUserEmail());
+        System.out.println(userDetails);
         String jwtToken = jwtService.generateToken(userDetails);
 
         LoginResponse response = new LoginResponse();

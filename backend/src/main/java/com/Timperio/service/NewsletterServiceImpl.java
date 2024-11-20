@@ -80,9 +80,6 @@ public class NewsletterServiceImpl implements NewsletterService {
         return exchange;
     }
 
-    public ResponseEntity<String> getCampaigns() {
-        return ResponseEntity.status(404).body("Template not found");
-    }
 
     public ResponseEntity<String> setCampaignContent(NewsletterCampaignContentDTO newsletterCampaignContentDTO) {
         String htmlContent = newsletterCampaignContentDTO.getHtmlContent();
