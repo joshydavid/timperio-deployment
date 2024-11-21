@@ -71,15 +71,41 @@
 
     | Role        | Email                  | Password        |
     | :--------   | :-------               | :-------------- |
-    | `ADMIN`     | `admin@timperio.com`     | password123     |
-    | `MARKETING` | `marketing@timperio.com` | password123     |
-    | `SALES`     | `sales@timperio.com`     | password123     |
+    | `ADMIN`     | `admin@timperio.com`     | `password123`     |
+    | `MARKETING` | `marketing@timperio.com` | `password123`     |
+    | `SALES`     | `sales@timperio.com`     | `password123`     |
 
 6. Populate local database
 
-  ```http
-  POST /api/v1/import-data
-  ```
+   Authenticate to obtain a token <br>
+   ```http
+   POST /api/v1/auth/login
+   Content-Type: application/json
+      {
+          "userEmail": "your-email",
+          "password": "your-password"
+      }
+   ```
+   ```
+   Response
+   200 OK
+      {
+       "token": "your-jwt-token",
+       "expiresIn": 3600,
+       "role": "ADMIN"
+      }
+   ```
+
+     Call this endpoint to populate your local database
+     ```http
+     POST /api/v1/import-data
+     Authorization: Bearer your-jwt-token
+     ```
+     ```
+     Response
+     200 OK
+     Customer and Purchase History tables populated
+     ```
 
 ## API Documentation
 
